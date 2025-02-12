@@ -5,6 +5,7 @@ import {
     TranslateItemOutput,
     TranslateItemInput,
     TranslateItemOutputObjectSchema,
+    TranslateItemInputRecord,
 } from "./types";
 import type GenerateTranslationOptions from "./interfaces/generate_translation_options";
 
@@ -56,17 +57,29 @@ export default async function generateTranslation(
     return translated;
 }
 
+// function getTranslateItemsInput(
+//     translateItems: TranslateItem[],
+// ): TranslateItemInput[] {
+//     return translateItems.map(
+//         (translateItem) =>
+//             ({
+//                 id: translateItem.id,
+//                 original: translateItem.original,
+//                 context: translateItem.context,
+//             }) as TranslateItemInput,
+//     );
+// }
+
 function getTranslateItemsInput(
     translateItems: TranslateItem[],
-): TranslateItemInput[] {
-    return translateItems.map(
-        (translateItem) =>
-            ({
-                id: translateItem.id,
-                original: translateItem.original,
-                context: translateItem.context,
-            }) as TranslateItemInput,
-    );
+): TranslateItemInputRecord {
+    return translateItems.reduce((acc, translateItem) => {
+        acc[translateItem.id] = {
+            original: translateItem.original,
+            context: translateItem.context,
+        };
+        return acc;
+    }, {} as TranslateItemInputRecord);
 }
 
 function parseOutputToJson(outputText: string): TranslateItemOutput[] {
@@ -146,7 +159,7 @@ async function generate(
         TranslateItemOutputObjectSchema,
         "TranslateItemOutputObjectSchema",
     );
-    console.log(generationPromptText);
+    console.log(text);
     if (!text) {
         return verifyGenerationAndRetry(options, generateState);
     } else {

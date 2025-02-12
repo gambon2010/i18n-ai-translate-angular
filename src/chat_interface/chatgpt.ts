@@ -46,7 +46,8 @@ export default class ChatGPT extends ChatInterface {
 
         await this.rateLimiter.wait();
         this.rateLimiter.apiCalled();
-        this.history.push({ content: message, role: Role.User });
+        // this.history.push({ content: message, role: Role.User });
+        this.history = [{ content: message, role: Role.User }];
 
         const formatSchema = format
             ? zodResponseFormat(format, formatName ?? "")

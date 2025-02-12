@@ -1,3 +1,8 @@
+import {
+    type ChatParams,
+    type Model,
+    TranslateItemOutputObjectSchema,
+} from "../types";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Anthropic as InternalAnthropic } from "@anthropic-ai/sdk";
 import { Ollama as InternalOllama } from "ollama";
@@ -7,9 +12,9 @@ import Engine from "../enums/engine";
 import Gemini from "./gemini";
 import Ollama from "./ollama";
 import OpenAI from "openai";
-import type { ChatParams, Model } from "../types";
 import type ChatInterface from "./chat_interface";
 import type RateLimiter from "../rate_limiter";
+import { toGeminiSchema } from "gemini-zod";
 
 export default class ChatFactory {
     static newChat(
@@ -25,6 +30,14 @@ export default class ChatFactory {
             case Engine.Gemini: {
                 const genAI = new GoogleGenerativeAI(apiKey!);
                 const geminiModel = genAI.getGenerativeModel({ model });
+
+                geminiModel.generationConfig.responseMimeType =
+                    "application/json";
+
+                geminiModel.generationConfig.responseSchema = toGeminiSchema(
+                    TranslateItemOutputObjectSchema,
+                );
+
                 chat = new Gemini(geminiModel, rateLimiter);
                 params = {
                     history: [],

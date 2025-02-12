@@ -3,6 +3,7 @@ import {
     CheckTranslateItem,
     RetranslateItem,
     TranslateItemInput,
+    TranslateItemInputRecord,
 } from "./types";
 
 /**
@@ -16,7 +17,7 @@ import {
 export function generationPrompt(
     inputLanguage: string,
     outputLanguage: string,
-    translateItems: TranslateItemInput[],
+    translateItems: TranslateItemInputRecord,
     overridePrompt?: OverridePrompt,
 ): string {
     const customPrompt = overridePrompt?.generationPrompt;
@@ -49,6 +50,7 @@ Translate from ${inputLanguage} to ${outputLanguage}.
 - 'original' is the text to be translated. 
 - 'translated' must not be empty. 
 - 'context' is additional info if needed.
+- 'id' is the record key of the input object.
 - Preserve text formatting, case sensitivity, and whitespace.
 
 Special Instructions:

@@ -7,6 +7,9 @@ import type {
     StartChatParams,
 } from "@google/generative-ai";
 import type RateLimiter from "../rate_limiter";
+import { toGeminiSchema } from "gemini-zod";
+import { TranslateItemOutputObjectSchema } from "src/types";
+import { ZodType, ZodTypeDef } from "zod";
 
 interface HistoryEntry {
     role: Role;
@@ -48,7 +51,10 @@ export default class Gemini extends ChatInterface {
         this.chat = this.model.startChat(params);
     }
 
-    async sendMessage(message: string): Promise<string> {
+    async sendMessage(
+        message: string,
+        format?: ZodType<any, ZodTypeDef, any>,
+    ): Promise<string> {
         if (!this.chat) {
             console.trace("Chat not started");
             return "";
@@ -56,6 +62,10 @@ export default class Gemini extends ChatInterface {
 
         await this.rateLimiter.wait();
         this.rateLimiter.apiCalled();
+
+        this.model.generationConfig.responseMimeType = "application/json";
+
+        this.model.generationConfig.responseSchema = toGeminiSchema(format);
 
         try {
             const generatedContent = await this.chat.sendMessage(message);

@@ -201,7 +201,7 @@ function getBatchTranslateItemArray(
         generationPrompt(
             options.inputLanguage,
             options.outputLanguage,
-            [],
+            {},
             options.overridePrompt,
         ),
     );

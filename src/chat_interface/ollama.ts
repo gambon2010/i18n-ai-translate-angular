@@ -42,6 +42,8 @@ export default class Ollama extends ChatInterface {
         const formatSchema = format ? zodToJsonSchema(format) : undefined;
 
         this.history.push({ content: message, role: Role.User });
+        // this.history = [{ content: message, role: Role.User }];
+
         this.chatParams = {
             ...this.chatParams,
             format: formatSchema,

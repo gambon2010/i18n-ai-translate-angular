@@ -1279,6 +1279,11 @@ functions-have-names@^1.2.3:
   resolved "https://registry.npmjs.org/functions-have-names/-/functions-have-names-1.2.3.tgz"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
+gemini-zod@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/gemini-zod/-/gemini-zod-0.1.0.tgz"
+  integrity sha512-Y+0moSiLT0o4K8Dqi0ihDlLF2u34WqIP0d36ywr3NkzormU3ugG2pCfOJQHDSgg/9dR0rKNEyFUp3iYAoeZ+gQ==
+
 get-intrinsic@^1.1.3, get-intrinsic@^1.2.1, get-intrinsic@^1.2.3, get-intrinsic@^1.2.4:
   version "1.2.4"
   resolved "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.2.4.tgz"

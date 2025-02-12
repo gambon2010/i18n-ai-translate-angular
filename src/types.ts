@@ -34,10 +34,12 @@ export type TranslateItem = {
 };
 
 export type TranslateItemInput = {
-    id: number;
+    // id: number; //remove this
     original: string;
     context?: string;
 };
+
+export type TranslateItemInputRecord = Record<string, TranslateItemInput>;
 
 export const TranslateItemOutputSchema = z.object({
     id: z.number(),
