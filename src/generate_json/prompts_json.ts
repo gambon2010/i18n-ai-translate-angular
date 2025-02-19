@@ -55,7 +55,7 @@ Special Instructions:
 - Do not convert {{NEWLINE}} to \\n.
 - Use the think property to briefly reflect on the context or meaning of the text before generating the translation. This reflection should not be lengthy, just enough to aid in making the translation more accurate or contextually appropriate. Make sure to take into account the variable names during your reflection.
 
-Return the translation as JSON.
+Return as JSON.
 \`\`\`json
 ${input}
 \`\`\`
@@ -115,7 +115,7 @@ Special Instructions:
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
 
-Return the translation as JSON.
+Return as JSON.
 \`\`\`json
 ${input}
 \`\`\`
@@ -165,10 +165,15 @@ Check translations from ${inputLanguage} to ${outputLanguage}.
 - 'translated' is the translated text to verify. 
 - 'context' is additional info if needed.
 - 'lastFailure' explains why the previous translation failed.
-- check for Accuracy (meaning, tone, grammar, formality), Formatting (case, whitespace, punctuation) and that the translated text is in correct language.
+- check for Accuracy (meaning, tone, grammar, formality), Formatting (case, whitespace, punctuation).
 
-If correct, return 'isValid' as 'true' and nothing else.
-If incorrect, return 'isValid' as 'false' and explain the 'issue' thoroughly in a few words and fix the translation in 'translated'.
+If correct:
+- return 'isValid' as 'true' and nothing else.
+
+If incorrect:
+- return 'isValid' as 'false'
+- explain the 'issue' thoroughly in a few words
+- fix the translation in 'fixTranslation' as a string. Make sure that 'fixTranslation' is in ${outputLanguage}
 
 Special Instructions:
 - Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
@@ -176,7 +181,7 @@ Special Instructions:
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
 
-Return the verified as JSON.
+Return as JSON.
 \`\`\`json
 ${input} 
 \`\`\`

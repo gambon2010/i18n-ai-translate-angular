@@ -79,14 +79,14 @@ export const VerifyItemOutputSchema = z.object({
     id: z.number(),
     isValid: z.boolean(),
     issue: z.string(),
-    translated: z.string(),
+    fixTranslation: z.string(),
 });
 
 export type VerifyItemOutput = {
     id: number;
     isValid: boolean;
     issue: string;
-    translated: string;
+    fixTranslation: string;
 };
 
 export const VerifyItemOutputObjectSchema = z.object({

@@ -656,7 +656,7 @@ function isValidVerificationItem(
     if (!(typeof item.isValid === "boolean")) return false;
     if (item.id <= 0) return false;
     // 'fixedTranslation' should be a translation if valid is false
-    if (item.isValid === false && item.translated === "") return false;
+    if (item.isValid === false && item.fixTranslation === "") return false;
 
     return true;
 }
@@ -728,11 +728,12 @@ function createVerifyItemsWithTranslation(
                     failure: "",
                 } as TranslateItem);
             } else if (
-                verifiedItem.translated &&
-                verifiedItem.translated !== ""
+                verifiedItem.fixTranslation &&
+                verifiedItem.fixTranslation !== ""
             ) {
                 const templateStrings =
-                    verifiedItem.translated.match(templatedStringRegex) ?? [];
+                    verifiedItem.fixTranslation.match(templatedStringRegex) ??
+                    [];
 
                 const missingVariables = getMissingVariables(
                     translatedItem.templateStrings,
@@ -742,7 +743,7 @@ function createVerifyItemsWithTranslation(
                 if (missingVariables.length === 0) {
                     // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
                     translatedItem.translated =
-                        verifiedItem.translated as string;
+                        verifiedItem.fixTranslation as string;
                     translatedItem.lastFailure = `Previous issue: '${verifiedItem.issue}'. Correct this error and ensure it’s resolved in the current translation`;
                 } else {
                     translatedItem.lastFailure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables)}'`;
