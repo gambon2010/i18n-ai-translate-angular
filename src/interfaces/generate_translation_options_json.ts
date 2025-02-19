@@ -14,4 +14,5 @@ export default interface GenerateTranslationOptionsJson {
     skipTranslationVerification: boolean;
     skipStylingVerification: boolean;
     overridePrompt?: OverridePrompt;
+    disableThink: boolean;
 }

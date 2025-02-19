@@ -9,7 +9,7 @@ import type OverridePrompt from "../interfaces/override_prompt";
  * @param overridePrompt - An optional custom prompt
  * @returns A prompt for the AI to translate the input
  */
-export function translationPromptJson(
+export function translationPromptJsonWithThink(
     inputLanguage: string,
     outputLanguage: string,
     translateItems: TranslateItemInput[],
@@ -45,8 +45,69 @@ Translate from ${inputLanguage} to ${outputLanguage}.
 - 'original' is the text to be translated. 
 - 'translated' must not be empty. 
 - 'context' is additional info if needed.
-- 'failure' explains why the previous translation failed.
-- Preserve text formatting, case sensitivity, and whitespace.
+- 'lastFailure' explains why the previous translation failed.
+- Preserve text meaning, tone, grammar, formality and formatting (case, whitespace, punctuation).
+
+Special Instructions:
+- Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
+- Do not add your own variables
+- The number of variables like {{timeLeft}} must be the same in the translated text.
+- Do not convert {{NEWLINE}} to \\n.
+- Use the think property to briefly reflect on the context or meaning of the text before generating the translation. This reflection should not be lengthy, just enough to aid in making the translation more accurate or contextually appropriate. Make sure to take into account the variable names during your reflection.
+
+Return the translation as JSON.
+\`\`\`json
+${input}
+\`\`\`
+`;
+}
+
+/**
+ * Prompt an AI to convert a given input from one language to another
+ * @param inputLanguage - The language of the input
+ * @param outputLanguage - The language of the output
+ * @param translateItems - The input to be translated
+ * @param overridePrompt - An optional custom prompt
+ * @returns A prompt for the AI to translate the input
+ */
+export function translationPromptJsonWithoutThink(
+    inputLanguage: string,
+    outputLanguage: string,
+    translateItems: TranslateItemInput[],
+    overridePrompt?: OverridePrompt,
+): string {
+    const customPrompt = overridePrompt?.generationPrompt;
+    const requiredArguments = ["inputLanguage", "outputLanguage", "input"];
+    const input = JSON.stringify(translateItems);
+
+    if (customPrompt) {
+        for (const arg of requiredArguments) {
+            if (!customPrompt.includes(`\${${arg}}`)) {
+                throw new Error(`Missing required argument: \${${arg}}`);
+            }
+        }
+
+        const argumentToValue: { [key: string]: string } = {
+            input,
+            inputLanguage,
+            outputLanguage,
+        };
+
+        return customPrompt.replace(/\$\{([^}]+)\}/g, (match, key) =>
+            key in argumentToValue ? argumentToValue[key] : match,
+        );
+    }
+
+    return `You are a professional translator.
+
+Translate from ${inputLanguage} to ${outputLanguage}.
+
+- Translate each object in the array.
+- 'original' is the text to be translated. 
+- 'translated' must not be empty. 
+- 'context' is additional info if needed.
+- 'lastFailure' explains why the previous translation failed.
+- Preserve text meaning, tone, grammar, formality and formatting (case, whitespace, punctuation).
 
 Special Instructions:
 - Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
@@ -101,13 +162,13 @@ Check translations from ${inputLanguage} to ${outputLanguage}.
 
 - Verify each object in the array.
 - 'original' is the text to be translated. 
-- 'translated' is the translated text. 
+- 'translated' is the translated text to verify. 
 - 'context' is additional info if needed.
-- 'failure' explains why the previous translation failed.
-- check for Accuracy (meaning, tone, grammar), Formatting (case, whitespace, punctuation).
+- 'lastFailure' explains why the previous translation failed.
+- check for Accuracy (meaning, tone, grammar, formality), Formatting (case, whitespace, punctuation) and that the translated text is in correct language.
 
-If correct, return 'valid' as 'true' and leave 'fixedTranslation' and 'issue' empty.
-If incorrect, return 'valid' as 'false' and put the fixed translation in 'fixedTranslation' and explain what is 'issue'.
+If correct, return 'isValid' as 'true' and nothing else.
+If incorrect, return 'isValid' as 'false' and explain the 'issue' thoroughly in a few words and fix the translation in 'translated'.
 
 Special Instructions:
 - Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.

@@ -1,3 +1,4 @@
+import { ANSIStyles } from "./print_styles";
 import {
     CLI_HELP,
     DEFAULT_MODEL,
@@ -21,7 +22,6 @@ import fs from "fs";
 import path from "path";
 import type { ChatParams, Model, ModelArgs } from "./types";
 import type OverridePrompt from "./interfaces/override_prompt";
-import { ANSIStyles } from "./print_styles";
 
 config({ path: path.resolve(process.cwd(), ".env") });
 
@@ -306,6 +306,7 @@ program
     .option("--verbose", CLI_HELP.Verbose, false)
     .option("--prompt-mode <prompt-mode>", CLI_HELP.PromptMode)
     .option("--batch-max-tokens <batch-max-tokens>", CLI_HELP.MaxTokens)
+    .option("--disable-think", CLI_HELP.DisableThink, false)
     .action(async (options: any) => {
         const {
             model,
@@ -414,6 +415,7 @@ program
                             batchMaxTokens,
                             batchSize,
                             chatParams,
+                            disableThink: options.disableThink ?? false,
                             engine: options.engine,
                             ensureChangedTranslation:
                                 options.ensureChangedTranslation,
@@ -473,6 +475,7 @@ program
                             batchMaxTokens: options.batchMaxTokens,
                             batchSize: options.batchSize,
                             chatParams,
+                            disableThink: options.disableThink,
                             engine: options.engine,
                             ensureChangedTranslation:
                                 options.ensureChangedTranslation,
@@ -546,6 +549,7 @@ program
                         batchMaxTokens: options.batchMaxTokens,
                         batchSize: options.batchSize,
                         chatParams,
+                        disableThink: options.disableThink,
                         engine: options.engine,
                         ensureChangedTranslation:
                             options.ensureChangedTranslation,
@@ -628,6 +632,7 @@ program
     .option("--verbose", CLI_HELP.Verbose, false)
     .option("--prompt-mode <prompt-mode>", CLI_HELP.PromptMode)
     .option("--batch-max-tokens <batch-max-tokens>", CLI_HELP.MaxTokens)
+    .option("--disable-think", CLI_HELP.DisableThink, false)
     .action(async (options: any) => {
         const {
             model,
@@ -699,6 +704,7 @@ program
                 batchMaxTokens,
                 batchSize,
                 chatParams,
+                disableThink: options.disableThink,
                 engine: options.engine,
                 ensureChangedTranslation: options.ensureChangedTranslation,
                 host,
@@ -723,6 +729,7 @@ program
                 batchMaxTokens: options.batchMaxTokens,
                 batchSize: options.batchSize,
                 chatParams,
+                disableThink: options.disableThink,
                 engine: options.engine,
                 ensureChangedTranslation: options.ensureChangedTranslation,
                 host,

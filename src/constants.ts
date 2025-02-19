@@ -17,6 +17,8 @@ export const DEFAULT_MODEL = {
 export const CLI_HELP = {
     BatchSize:
         "How many keys to process at a time, 32 by default for chatgpt, 16 otherwise",
+    DisableThink:
+        "In json mode, the translation is preceded by a small think tag to help the lmm translate better",
     Engine: "Engine to use (chatgpt, gemini, ollama, or claude)",
     EnsureChangedTranslation:
         "Each generated translation key must differ from the input (for keys longer than 4)",
