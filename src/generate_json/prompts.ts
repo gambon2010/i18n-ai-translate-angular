@@ -1,4 +1,4 @@
-import type { TranslateItemInput, VerifyItemInput } from "./types_json";
+import type { TranslateItemInput, VerifyItemInput } from "./types";
 import type OverridePrompt from "../interfaces/override_prompt";
 
 /**
@@ -180,6 +180,9 @@ Special Instructions:
 - Do not add your own variables
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
+
+Allow minor grammar, phrasing, and formatting differences if meaning is clear.
+Flag only significant issues affecting accuracy or readability.
 
 Return as JSON.
 \`\`\`json

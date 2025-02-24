@@ -1,16 +1,18 @@
-import { ANSIStyles } from "../print_styles";
-import { failedTranslationPrompt, generationPrompt } from "./prompts_csv";
-import { isNAK } from "./utils_csv";
-import { retryJob } from "../utils";
-import { verifyStyling, verifyTranslation } from "./verify_csv";
+import { RETRY_ATTEMPTS } from "../constants";
+import { failedTranslationPrompt, generationPrompt } from "./prompts";
+import {
+    getProgressBar,
+    getTemplatedStringRegex,
+    isNAK,
+    printError,
+    printInfo,
+    retryJob,
+} from "../utils";
+import { verifyStyling, verifyTranslation } from "./verify";
 import type { GenerateStateCsv, TranslationStatsItem } from "../types";
 import type Chats from "../interfaces/chats";
 import type GenerateTranslationOptionsCsv from "../interfaces/generate_translation_options_csv";
 import type TranslateOptions from "../interfaces/translate_options";
-import {
-    DEFAULT_TEMPLATED_STRING_PREFIX,
-    DEFAULT_TEMPLATED_STRING_SUFFIX,
-} from "../constants";
 
 /**
  * Complete the initial translation of the input text.
@@ -33,28 +35,14 @@ export default async function translateCsv(
 
     translationStats.batchStartTime = Date.now();
 
+    const progressBar = getProgressBar("Completed");
+
+    if (options.verbose) {
+        progressBar.start(Object.keys(flatInput).length, 0);
+    }
+
     for (let i = 0; i < Object.keys(flatInput).length; i += batchSize) {
-        if (i > 0 && options.verbose) {
-            console.info(
-                ANSIStyles.bright,
-                ANSIStyles.fg.green,
-                `Completed ${((i / Object.keys(flatInput).length) * 100).toFixed(0)}%`,
-                ANSIStyles.reset,
-            );
-
-            const roundedEstimatedTimeLeftSeconds = Math.round(
-                (((Date.now() - translationStats.batchStartTime) / (i + 1)) *
-                    (Object.keys(flatInput).length - i)) /
-                    1000,
-            );
-
-            console.info(
-                ANSIStyles.bright,
-                ANSIStyles.fg.green,
-                `Estimated time left: ${roundedEstimatedTimeLeftSeconds} seconds\n`,
-                ANSIStyles.reset,
-            );
-        }
+        progressBar.update(i);
 
         const keys = allKeys.slice(i, i + batchSize);
         const input = keys.map((x) => `"${flatInput[x]}"`).join("\n");
@@ -62,30 +50,25 @@ export default async function translateCsv(
         // eslint-disable-next-line no-await-in-loop
         const generatedTranslation = await generateTranslation({
             chats,
-            ensureChangedTranslation: options.ensureChangedTranslation ?? false,
+            ensureChangedTranslation:
+                options.ensureChangedTranslation as boolean,
             input,
             inputLanguage: `[${options.inputLanguage}]`,
             keys,
             outputLanguage: `[${options.outputLanguage}]`,
             overridePrompt: options.overridePrompt,
-            skipStylingVerification: options.skipStylingVerification ?? false,
+            skipStylingVerification: options.skipStylingVerification as boolean,
             skipTranslationVerification:
-                options.skipTranslationVerification ?? false,
-            templatedStringPrefix:
-                options.templatedStringPrefix ??
-                DEFAULT_TEMPLATED_STRING_PREFIX,
-            templatedStringSuffix:
-                options.templatedStringSuffix ??
-                DEFAULT_TEMPLATED_STRING_SUFFIX,
-            verboseLogging: options.verbose ?? false,
+                options.skipTranslationVerification as boolean,
+            templatedStringPrefix: options.templatedStringPrefix as string,
+            templatedStringSuffix: options.templatedStringSuffix as string,
+            verboseLogging: options.verbose as boolean,
         });
 
         if (generatedTranslation === "") {
-            console.error(
-                ANSIStyles.bright,
-                ANSIStyles.fg.red,
+            progressBar.stop();
+            printError(
                 `Failed to generate translation for ${options.outputLanguage}`,
-                ANSIStyles.reset,
             );
             break;
         }
@@ -94,14 +77,13 @@ export default async function translateCsv(
             output[keys[j]] = generatedTranslation.split("\n")[j].slice(1, -1);
 
             if (options.verbose)
-                console.info(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.yellow,
+                printInfo(
                     `${keys[j].replaceAll("*", ".")}:\n${flatInput[keys[j]]}\n=>\n${output[keys[j]]}\n`,
-                    ANSIStyles.reset,
                 );
         }
     }
+
+    progressBar.stop();
 
     return output;
 }
@@ -124,9 +106,9 @@ async function generateTranslation(
         options.overridePrompt,
     );
 
-    const templatedStringRegex = new RegExp(
-        `${templatedStringPrefix}[^{}]+${templatedStringSuffix}`,
-        "g",
+    const templatedStringRegex = getTemplatedStringRegex(
+        templatedStringPrefix,
+        templatedStringSuffix,
     );
 
     const splitInput = input.split("\n");
@@ -152,18 +134,13 @@ async function generateTranslation(
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             generate,
             [options, generationPromptText, generateState],
-            25,
+            RETRY_ATTEMPTS,
             true,
             0,
             false,
         );
     } catch (e) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Failed to translate: ${e}`,
-            ANSIStyles.reset,
-        );
+        printError(`Failed to translate: ${e}`);
     }
 
     return translated;
@@ -205,12 +182,7 @@ async function generate(
             );
         }
 
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Erroring text = ${input}`,
-            ANSIStyles.reset,
-        );
+        printError(`Erroring text = ${input}`);
         chats.generateTranslationChat.rollbackLastMessage();
         return Promise.reject(
             new Error("Failed to generate content due to exception."),
@@ -221,12 +193,7 @@ async function generate(
 
     if (text.startsWith("```\n") && text.endsWith("\n```")) {
         if (verboseLogging) {
-            console.info(
-                ANSIStyles.bright,
-                ANSIStyles.fg.cyan,
-                "Response started and ended with triple backticks",
-                ANSIStyles.reset,
-            );
+            printInfo("\nResponse started and ended with triple backticks");
         }
 
         text = text.slice(4, -4);
@@ -262,11 +229,11 @@ async function generate(
     // Trim extra quotes if they exist
     for (let i = 0; i < splitText.length; i++) {
         let line = splitText[i];
-        while (line.startsWith('\"\"')) {
+        while (line.startsWith('""')) {
             line = line.slice(1);
         }
 
-        while (line.endsWith('\"\"')) {
+        while (line.endsWith('""')) {
             line = line.slice(0, -1);
         }
 
@@ -279,9 +246,9 @@ async function generate(
     for (let i = 0; i < splitText.length; i++) {
         let line = splitText[i];
         if (
-            !line.startsWith('\"') ||
-            !line.endsWith('\"') ||
-            line.endsWith('\\\"')
+            !line.startsWith('"') ||
+            !line.endsWith('"') ||
+            line.endsWith('\\"')
         ) {
             chats.generateTranslationChat.rollbackLastMessage();
             return Promise.reject(new Error(`Invalid line: ${line}`));
@@ -333,23 +300,18 @@ async function generate(
             }
 
             // TODO: Move to helper
-            if (!line.startsWith('\"') || !line.endsWith('\"')) {
+            if (!line.startsWith('"') || !line.endsWith('"')) {
                 chats.generateTranslationChat.rollbackLastMessage();
                 return Promise.reject(new Error(`Invalid line: ${line}`));
             }
 
-            while (line.startsWith('\"\"') && line.endsWith('\"\"')) {
+            while (line.startsWith('""') && line.endsWith('""')) {
                 line = line.slice(1, -1);
             }
 
             if (line !== splitInput[i]) {
                 if (verboseLogging) {
-                    console.info(
-                        ANSIStyles.bright,
-                        ANSIStyles.fg.yellow,
-                        `Successfully translated: ${oldText} => ${line}`,
-                        ANSIStyles.reset,
-                    );
+                    printInfo(`Successfully translated: ${oldText} => ${line}`);
                 }
 
                 text = splitText.join("\n");

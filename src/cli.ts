@@ -8,7 +8,13 @@ import {
 } from "./constants";
 import { OVERRIDE_PROMPT_KEYS } from "./interfaces/override_prompt";
 import { config } from "dotenv";
-import { getAllLanguageCodes, getLanguageCodeFromFilename } from "./utils";
+import {
+    getAllLanguageCodes,
+    getLanguageCodeFromFilename,
+    printError,
+    printInfo,
+    printWarn,
+} from "./utils";
 import { program } from "commander";
 import {
     translateDirectory,
@@ -31,9 +37,10 @@ const processModelArgs = (options: any): ModelArgs => {
     let rateLimitMs = Number(options.rateLimitMs);
     let apiKey: string | undefined;
     let host: string | undefined;
-    let promptMode: PromptMode;
-    let batchSize: number;
-    let batchMaxTokens: number;
+    let promptMode = options.promptMode as PromptMode;
+    let batchSize = Number(options.batchSize);
+    let batchMaxTokens = Number(options.batchMaxTokens);
+
     switch (options.engine) {
         case Engine.Gemini:
             model = options.model || DEFAULT_MODEL[Engine.Gemini];
@@ -51,23 +58,16 @@ const processModelArgs = (options: any): ModelArgs => {
 
             if (!options.promptMode) {
                 promptMode = PromptMode.JSON;
-            } else {
-                promptMode = options.promptMode;
-                if (promptMode === PromptMode.CSV) {
-                    console.warn("WARNING: Json mode recommended for Gemini");
-                }
+            } else if (promptMode === PromptMode.CSV) {
+                printWarn("Json mode recommended for Gemini");
             }
 
             if (!options.batchSize) {
-                batchSize = 16;
-            } else {
-                batchSize = options.batchSize;
+                batchSize = 32;
             }
 
             if (!options.batchMaxTokens) {
-                batchMaxTokens = 2048;
-            } else {
-                batchMaxTokens = options.batchMaxTokens;
+                batchMaxTokens = 4096;
             }
 
             break;
@@ -93,20 +93,14 @@ const processModelArgs = (options: any): ModelArgs => {
 
             if (!options.promptMode) {
                 promptMode = PromptMode.CSV;
-            } else {
-                promptMode = options.promptMode;
             }
 
             if (!options.batchSize) {
                 batchSize = 32;
-            } else {
-                batchSize = options.batchSize;
             }
 
             if (!options.batchMaxTokens) {
-                batchMaxTokens = 2048;
-            } else {
-                batchMaxTokens = options.batchMaxTokens;
+                batchMaxTokens = 4096;
             }
 
             break;
@@ -122,23 +116,18 @@ const processModelArgs = (options: any): ModelArgs => {
 
             if (!options.promptMode) {
                 promptMode = PromptMode.JSON;
-            } else {
-                promptMode = options.promptMode;
-                if (promptMode === PromptMode.CSV) {
-                    console.warn("WARNING: Json mode recommended for Ollama");
-                }
+            } else if (promptMode === PromptMode.CSV) {
+                printWarn("Json mode recommended for Ollama");
             }
 
             if (!options.batchSize) {
+                // Ollama's error rate is high with large batches
                 batchSize = 16;
-            } else {
-                batchSize = options.batchSize;
             }
 
             if (!options.batchMaxTokens) {
+                // Ollama's default amount of tokens per request
                 batchMaxTokens = 2048;
-            } else {
-                batchMaxTokens = options.batchMaxTokens;
             }
 
             break;
@@ -163,30 +152,39 @@ const processModelArgs = (options: any): ModelArgs => {
 
             if (!options.promptMode) {
                 promptMode = PromptMode.CSV;
-            } else {
-                promptMode = options.promptMode;
-                if (promptMode === PromptMode.JSON) {
-                    throw new Error(
-                        "JSON mode is not compatible with Anthropic",
-                    );
-                }
             }
 
             if (!options.batchSize) {
-                batchSize = 16;
-            } else {
-                batchSize = options.batchSize;
-            }
-
-            if (!options.batchMaxTokens) {
-                batchMaxTokens = 2048;
-            } else {
-                batchMaxTokens = options.batchMaxTokens;
+                batchSize = 32;
             }
 
             break;
         default: {
             throw new Error("Invalid engine");
+        }
+    }
+
+    switch (promptMode) {
+        case PromptMode.CSV:
+            if (options.batchMaxTokens) {
+                throw new Error("'--batch-max-tokens' is not used in CSV mode");
+            }
+
+            break;
+        case PromptMode.JSON:
+            if (options.skipStylingVerification) {
+                throw new Error(
+                    "'--skip-styling-verification' is not used in CSV mode",
+                );
+            }
+
+            if (options.engine === Engine.Claude) {
+                throw new Error("JSON mode is not compatible with Anthropic");
+            }
+
+            break;
+        default: {
+            throw new Error("Invalid prompt mode");
         }
     }
 
@@ -327,41 +325,27 @@ program
 
         if (options.outputLanguages) {
             if (options.forceLanguageName) {
-                console.error(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.red,
+                printError(
                     "Cannot use both --output-languages and --force-language",
-                    ANSIStyles.reset,
                 );
                 return;
             }
 
             if (options.allLanguages) {
-                console.error(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.red,
+                printError(
                     "Cannot use both --all-languages and --output-languages",
-                    ANSIStyles.reset,
                 );
                 return;
             }
 
             if (options.outputLanguages.length === 0) {
-                console.error(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.red,
-                    "No languages specified",
-                    ANSIStyles.reset,
-                );
+                printError("No languages specified");
                 return;
             }
 
             if (options.verbose) {
-                console.info(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.cyan,
+                printInfo(
                     `Translating to ${options.outputLanguages.join(", ")}...`,
-                    ANSIStyles.reset,
                 );
             }
 
@@ -381,11 +365,8 @@ program
                 for (const languageCode of options.outputLanguages) {
                     i++;
                     if (options.verbose) {
-                        console.info(
-                            ANSIStyles.bright,
-                            ANSIStyles.fg.cyan,
+                        printInfo(
                             `Translating ${i}/${options.outputLanguages.length} languages...`,
-                            ANSIStyles.reset,
                         );
                     }
 
@@ -437,11 +418,8 @@ program
                             verbose: options.verbose,
                         });
                     } catch (err) {
-                        console.error(
-                            ANSIStyles.bright,
-                            ANSIStyles.fg.red,
+                        printError(
                             `Failed to translate file to ${languageCode}: ${err}`,
-                            ANSIStyles.reset,
                         );
                     }
                 }
@@ -450,11 +428,8 @@ program
                 for (const languageCode of options.outputLanguages) {
                     i++;
                     if (options.verbose) {
-                        console.info(
-                            ANSIStyles.bright,
-                            ANSIStyles.fg.cyan,
+                        printInfo(
                             `Translating ${i}/${options.outputLanguages.length} languages...`,
-                            ANSIStyles.reset,
                         );
                     }
 
@@ -497,27 +472,21 @@ program
                             verbose: options.verbose,
                         });
                     } catch (err) {
-                        console.error(
-                            ANSIStyles.bright,
-                            ANSIStyles.fg.red,
+                        printError(
                             `Failed to translate directory to ${languageCode}: ${err}`,
-                            ANSIStyles.reset,
                         );
                     }
                 }
             }
         } else {
             if (options.forceLanguageName) {
-                console.error(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.red,
+                printError(
                     "Cannot use both --all-languages and --force-language",
-                    ANSIStyles.reset,
                 );
                 return;
             }
 
-            console.warn(
+            printWarn(
                 "Some languages may fail to translate due to the model's limitations",
             );
 
@@ -525,11 +494,8 @@ program
             for (const languageCode of getAllLanguageCodes()) {
                 i++;
                 if (options.verbose) {
-                    console.info(
-                        ANSIStyles.bright,
-                        ANSIStyles.fg.cyan,
+                    printInfo(
                         `Translating ${i}/${getAllLanguageCodes().length} languages...`,
-                        ANSIStyles.reset,
                     );
                 }
 
@@ -569,11 +535,8 @@ program
                         verbose: options.verbose,
                     });
                 } catch (err) {
-                    console.error(
-                        ANSIStyles.bright,
-                        ANSIStyles.fg.red,
+                    printError(
                         `Failed to translate to ${languageCode}: ${err}`,
-                        ANSIStyles.reset,
                     );
                 }
             }
@@ -676,11 +639,8 @@ program
             fs.statSync(beforeInputPath).isFile() !==
             fs.statSync(afterInputPath).isFile()
         ) {
-            console.error(
-                ANSIStyles.bright,
-                ANSIStyles.fg.red,
+            printError(
                 "--before and --after arguments must be both files or both directories",
-                ANSIStyles.reset,
             );
             return;
         }
@@ -690,12 +650,7 @@ program
             if (
                 path.dirname(beforeInputPath) !== path.dirname(afterInputPath)
             ) {
-                console.error(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.red,
-                    "Input files are not in the same directory",
-                    ANSIStyles.reset,
-                );
+                printError("Input files are not in the same directory");
                 return;
             }
 

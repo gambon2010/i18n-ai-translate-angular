@@ -1,4 +1,3 @@
-import { ANSIStyles } from "./print_styles";
 import {
     DEFAULT_BATCH_SIZE,
     DEFAULT_REQUEST_TOKENS,
@@ -12,14 +11,17 @@ import {
     getAllFilesInPath,
     getLanguageCodeFromFilename,
     getTranslationDirectoryKey,
+    printError,
+    printExecutionTime,
+    printInfo,
 } from "./utils";
 import ChatFactory from "./chat_interface/chat_factory";
 import PromptMode from "./enums/prompt_mode";
 import RateLimiter from "./rate_limiter";
 import fs from "fs";
 import path, { dirname } from "path";
-import translateCsv from "./generate_csv/generate_csv";
-import translateJson from "./generate_json/generate_json";
+import translateCsv from "./generate_csv/generate";
+import translateJson from "./generate_json/generate";
 import type { TranslationStats, TranslationStatsItem } from "./types";
 import type Chats from "./interfaces/chats";
 import type TranslateDiffOptions from "./interfaces/translate_diff_options";
@@ -32,7 +34,7 @@ import type TranslateOptions from "./interfaces/translate_options";
 function getChats(options: TranslateOptions): Chats {
     const rateLimiter = new RateLimiter(
         options.rateLimitMs,
-        options.verbose ?? false,
+        options.verbose as boolean,
     );
 
     return {
@@ -61,27 +63,29 @@ function getChats(options: TranslateOptions): Chats {
 }
 
 function replaceNewlinesWithPlaceholder(
-    options: TranslateOptions,
+    templatedStringPrefix: string,
+    templatedStringSuffix: string,
     flatInput: { [key: string]: string },
 ): void {
     for (const key in flatInput) {
         if (Object.prototype.hasOwnProperty.call(flatInput, key)) {
             flatInput[key] = flatInput[key].replaceAll(
                 "\n",
-                `${options.templatedStringPrefix}NEWLINE${options.templatedStringSuffix}`,
+                `${templatedStringPrefix}NEWLINE${templatedStringSuffix}`,
             );
         }
     }
 }
 
 function replacePlaceholderWithNewLines(
-    options: TranslateOptions,
+    templatedStringPrefix: string,
+    templatedStringSuffix: string,
     sortedOutput: { [key: string]: string },
 ): void {
     for (const key in sortedOutput) {
         if (Object.prototype.hasOwnProperty.call(sortedOutput, key)) {
             sortedOutput[key] = sortedOutput[key].replaceAll(
-                `${options.templatedStringPrefix}NEWLINE${options.templatedStringSuffix}`,
+                `${templatedStringPrefix}NEWLINE${templatedStringSuffix}`,
                 "\n",
             );
         }
@@ -156,23 +160,13 @@ async function getTranslation(
     switch (options.promptMode) {
         case PromptMode.JSON:
             if (options.verbose) {
-                console.info(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.orange,
-                    "Transaltion prompting mode: JSON\n",
-                    ANSIStyles.reset,
-                );
+                printInfo("Transaltion prompting mode: JSON\n");
             }
 
             return translateJson(flatInput, options, chats, translationStats);
         case PromptMode.CSV:
             if (options.verbose) {
-                console.info(
-                    ANSIStyles.bright,
-                    ANSIStyles.fg.orange,
-                    "Transaltion prompting mode: CSV\n",
-                    ANSIStyles.reset,
-                );
+                printInfo("Transaltion prompting mode: CSV\n");
             }
 
             return translateCsv(
@@ -211,11 +205,8 @@ export async function translate(options: TranslateOptions): Promise<Object> {
     setDefaults(options);
 
     if (options.verbose) {
-        console.info(
-            ANSIStyles.bright,
-            ANSIStyles.fg.cyan,
+        printInfo(
             `Translating from ${options.inputLanguage} to ${options.outputLanguage}...`,
-            ANSIStyles.reset,
         );
     }
 
@@ -227,7 +218,11 @@ export async function translate(options: TranslateOptions): Promise<Object> {
         [key: string]: string;
     };
 
-    replaceNewlinesWithPlaceholder(options, flatInput);
+    replaceNewlinesWithPlaceholder(
+        options.templatedStringPrefix as string,
+        options.templatedStringSuffix as string,
+        flatInput,
+    );
 
     flatInput = groupSimilarValues(flatInput);
 
@@ -246,23 +241,20 @@ export async function translate(options: TranslateOptions): Promise<Object> {
         sortedOutput[key] = output[key];
     }
 
-    replacePlaceholderWithNewLines(options, sortedOutput);
+    replacePlaceholderWithNewLines(
+        options.templatedStringPrefix as string,
+        options.templatedStringSuffix as string,
+        sortedOutput,
+    );
 
     const unflattenedOutput = unflatten(sortedOutput, {
         delimiter: FLATTEN_DELIMITER,
     });
 
     if (options.verbose) {
-        const endTime = Date.now();
-        const roundedSeconds = Math.round(
-            (endTime - translationStats.translate.batchStartTime) / 1000,
-        );
-
-        console.info(
-            ANSIStyles.bright,
-            ANSIStyles.fg.orange,
-            `Actual execution time: ${roundedSeconds} seconds`,
-            ANSIStyles.reset,
+        printExecutionTime(
+            translationStats.translate.batchStartTime,
+            "Total execution time: ",
         );
     }
 
@@ -324,26 +316,9 @@ export async function translateDiff(
     }
 
     if (options.verbose) {
-        console.info(
-            ANSIStyles.bright,
-            ANSIStyles.fg.cyan,
-            `Added keys: ${addedKeys.join("\n")}\n`,
-            ANSIStyles.reset,
-        );
-
-        console.info(
-            ANSIStyles.bright,
-            ANSIStyles.fg.cyan,
-            `Modified keys: ${modifiedKeys.join("\n")}\n`,
-            ANSIStyles.reset,
-        );
-
-        console.info(
-            ANSIStyles.bright,
-            ANSIStyles.fg.cyan,
-            `Deleted keys: ${deletedKeys.join("\n")}\n`,
-            ANSIStyles.reset,
-        );
+        printInfo(`Added keys: ${addedKeys.join("\n")}\n`);
+        printInfo(`Modified keys: ${modifiedKeys.join("\n")}\n`);
+        printInfo(`Deleted keys: ${deletedKeys.join("\n")}\n`);
     }
 
     for (const key of deletedKeys) {
@@ -446,12 +421,7 @@ export async function translateFile(
         const inputFile = fs.readFileSync(options.inputFilePath, "utf-8");
         inputJSON = JSON.parse(inputFile);
     } catch (e) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Invalid input JSON: ${e}`,
-            ANSIStyles.reset,
-        );
+        printError(`Invalid input JSON: ${e}`);
         return;
     }
 
@@ -490,12 +460,7 @@ export async function translateFile(
         const outputText = JSON.stringify(outputJSON, null, 4);
         fs.writeFileSync(options.outputFilePath, `${outputText}\n`);
     } catch (err) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Failed to translate file to ${outputLanguage}: ${err}`,
-            ANSIStyles.reset,
-        );
+        printError(`Failed to translate file to ${outputLanguage}: ${err}`);
     }
 }
 
@@ -568,12 +533,7 @@ export async function translateFileDiff(
         inputFile = fs.readFileSync(inputAfterPath, "utf-8");
         inputAfterJSON = JSON.parse(inputFile);
     } catch (e) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Invalid input JSON: ${e}`,
-            ANSIStyles.reset,
-        );
+        printError(`Invalid input JSON: ${e}`);
         return;
     }
 
@@ -595,12 +555,7 @@ export async function translateFileDiff(
             toUpdateJSONs[languageCode] = JSON.parse(outputFile);
             languageCodeToOutputPath[languageCode] = outputPath;
         } catch (e) {
-            console.error(
-                ANSIStyles.bright,
-                ANSIStyles.fg.red,
-                `Invalid output JSON: ${e}`,
-                ANSIStyles.reset,
-            );
+            printError(`Invalid output JSON: ${e}`);
         }
     }
 
@@ -644,12 +599,7 @@ export async function translateFileDiff(
             }
         }
     } catch (err) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Failed to translate file diff: ${err}`,
-            ANSIStyles.reset,
-        );
+        printError(`Failed to translate file diff: ${err}`);
     }
 }
 
@@ -770,11 +720,8 @@ export async function translateDirectory(
             }
         }
     } catch (err) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
+        printError(
             `Failed to translate directory to ${outputLanguage}: ${err}`,
-            ANSIStyles.reset,
         );
     }
 }
@@ -1014,12 +961,7 @@ export async function translateDirectoryDiff(
             }
         }
     } catch (err) {
-        console.error(
-            ANSIStyles.bright,
-            ANSIStyles.fg.red,
-            `Failed to translate directory diff: ${err}`,
-            ANSIStyles.reset,
-        );
+        printError(`Failed to translate directory diff: ${err}`);
     }
 
     // Remove any files in before not in after

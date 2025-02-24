@@ -1,5 +1,6 @@
-import { ANSIStyles } from "./print_styles";
 import ISO6391 from "iso-639-1";
+import ansiColors from "ansi-colors";
+import cliProgress, { Bar } from "cli-progress";
 import fs from "fs";
 import path from "path";
 
@@ -10,6 +11,27 @@ import path from "path";
 export function delay(delayDuration: number): Promise<void> {
     // eslint-disable-next-line no-promise-executor-return
     return new Promise((resolve) => setTimeout(resolve, delayDuration));
+}
+
+/**
+ * @param error - the error message
+ */
+export function printError(error: string): void {
+    console.error(ansiColors.redBright(error));
+}
+
+/**
+ * @param warn - the warning message
+ */
+export function printWarn(warn: string): void {
+    console.warn(ansiColors.yellowBright(warn));
+}
+
+/**
+ * @param info - the message
+ */
+export function printInfo(info: string): void {
+    console.log(ansiColors.cyanBright(info));
 }
 
 /**
@@ -35,19 +57,9 @@ export async function retryJob<Type>(
 
     return job(...jobArgs).catch((err) => {
         if (sendError) {
-            console.error(
-                ANSIStyles.bright,
-                ANSIStyles.fg.red,
-                `err = ${err}`,
-                ANSIStyles.reset,
-            );
+            printError(`err = ${err}`);
         } else {
-            console.warn(
-                ANSIStyles.bright,
-                ANSIStyles.fg.red,
-                `err = ${err}`,
-                ANSIStyles.reset,
-            );
+            printWarn(`err = ${err}`);
         }
 
         if (maxRetries <= 0) {
@@ -114,4 +126,81 @@ export function getTranslationDirectoryKey(
     );
 
     return `${outputPath}:${key}`;
+}
+
+/**
+ * @param response - the message from the LLM
+ * @returns whether the response includes NAK
+ */
+export function isNAK(response: string): boolean {
+    return response.includes("NAK") && !response.includes("ACK");
+}
+
+/**
+ * @param response - the message from the LLM
+ * @returns whether the response only contains ACK and not NAK
+ */
+export function isACK(response: string): boolean {
+    return response.includes("ACK") && !response.includes("NAK");
+}
+
+/**
+ * @param originalTemplateStrings - the template strings in the original text
+ * @param translatedTemplateStrings - the template strings in the translated text
+ * @returns the missing template string from the original
+ */
+export function getMissingVariables(
+    originalTemplateStrings: string[],
+    translatedTemplateStrings: string[],
+): string[] {
+    if (originalTemplateStrings.length === 0) return [];
+
+    const translatedTemplateStringsSet = new Set(translatedTemplateStrings);
+    const missingTemplateStrings = originalTemplateStrings.filter(
+        (originalTemplateString) =>
+            !translatedTemplateStringsSet.has(originalTemplateString),
+    );
+
+    return missingTemplateStrings;
+}
+
+/**
+ * @param templatedStringPrefix - templated String Prefix
+ * @param templatedStringSuffix - templated String Suffix
+ * @returns the regex needed to get the templated Strings
+ */
+export function getTemplatedStringRegex(
+    templatedStringPrefix: string,
+    templatedStringSuffix: string,
+): RegExp {
+    return new RegExp(
+        `${templatedStringPrefix}[^{}]+${templatedStringSuffix}`,
+        "g",
+    );
+}
+
+/**
+ * @param startTime - the startTime
+ * @param prefix - the prefix of the Execution Time
+ */
+export function printExecutionTime(startTime: number, prefix?: string): void {
+    const endTime = Date.now();
+    const roundedSeconds = Math.round((endTime - startTime) / 1000);
+
+    printInfo(`${prefix}${roundedSeconds} seconds\n`);
+}
+
+/**
+ * @param title - the title
+ * @returns the Progress Bar
+ */
+export function getProgressBar(title: string): Bar {
+    return new cliProgress.Bar({
+        barCompleteChar: "\u2588",
+        barIncompleteChar: "\u2591",
+        etaBuffer: 3,
+        format: `${title} |${ansiColors.cyan(
+            "{bar}",
+        )}| {percentage}% || ETA: {eta_formatted}`,
+    });
 }
