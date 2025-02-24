@@ -204,6 +204,7 @@ function setDefaults(options: TranslateOptions): void {
         options.skipTranslationVerification = false;
     if (!options.skipStylingVerification)
         options.skipStylingVerification = false;
+    if (!options.disableThink) options.disableThink = false;
 }
 
 /**

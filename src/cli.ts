@@ -169,6 +169,10 @@ const processModelArgs = (options: any): ModelArgs => {
                 throw new Error("'--batch-max-tokens' is not used in CSV mode");
             }
 
+            if (options.disableThink) {
+                throw new Error("'--disable-think' is not used in CSV mode");
+            }
+
             break;
         case PromptMode.JSON:
             if (options.skipStylingVerification) {

@@ -20,5 +20,5 @@ export default interface Options {
     skipStylingVerification?: boolean;
     overridePrompt?: OverridePrompt;
     promptMode: PromptMode;
-    disableThink: boolean;
+    disableThink?: boolean;
 }
