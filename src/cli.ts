@@ -1,4 +1,3 @@
-import { ANSIStyles } from "./print_styles";
 import {
     CLI_HELP,
     DEFAULT_MODEL,

@@ -1,15 +1,11 @@
 import * as cl100k_base from "tiktoken/encoders/cl100k_base.json";
 import { RETRY_ATTEMPTS } from "../constants";
-import { Tiktoken } from "tiktoken";
-import {
-    DEFAULT_TEMPLATED_STRING_PREFIX,
-    DEFAULT_TEMPLATED_STRING_SUFFIX,
-} from "../constants";
 import {
     ThinkTranslateItemOutputObjectSchema,
     TranslateItemOutputObjectSchema,
     VerifyItemOutputObjectSchema,
 } from "./types";
+import { Tiktoken } from "tiktoken";
 import {
     getMissingVariables,
     getProgressBar,
@@ -23,7 +19,7 @@ import {
     translationPromptJsonWithThink,
     translationPromptJsonWithoutThink,
     verificationPromptJson,
-} from "./prompts_json";
+} from "./prompts";
 import type {
     GenerateStateJson,
     TranslateItem,
@@ -116,6 +112,10 @@ function getBatchTranslateItemArray(
     tikToken: Tiktoken,
     promptTokens: number,
     tokenSplit: number,
+    itemTokenFunction: (
+        translatedItem: TranslateItem,
+        tikToken: Tiktoken,
+    ) => number,
 ): TranslateItem[] {
     // Remove the tokens used by the prompt and divide the remaining tokens divided by 2 (half for the input/output) with a 10% margin of error
     const maxInputTokens =
@@ -129,7 +129,7 @@ function getBatchTranslateItemArray(
         // If a failure message is added the tokens for an item change
         currentTokens +=
             translateItem.lastFailure !== ""
-                ? getTranslateItemToken(translateItem, tikToken)
+                ? itemTokenFunction(translateItem, tikToken)
                 : translateItem.translationTokens;
 
         if (
@@ -150,53 +150,6 @@ function getBatchTranslateItemArray(
     }
 
     return batchTranslateItemArray;
-}
-
-function getBatchVerifyItemArray(
-    translatedItemArray: TranslateItem[],
-    options: TranslateOptions,
-    tikToken: Tiktoken,
-): TranslateItem[] {
-    const promptTokens = tikToken.encode(
-        verificationPromptJson(
-            options.inputLanguage,
-            options.outputLanguage,
-            [],
-            options.overridePrompt,
-        ),
-    ).length;
-
-    const maxInputTokens =
-        ((Number(options.batchMaxTokens) - promptTokens) * 0.9) / 2;
-
-    let currentTokens = 0;
-
-    const batchVerifyItemArray: TranslateItem[] = [];
-
-    for (const translatedItem of translatedItemArray) {
-        currentTokens +=
-            translatedItem.failure !== ""
-                ? getVerifyItemToken(translatedItem, tikToken)
-                : translatedItem.verificationTokens;
-
-        if (
-            batchVerifyItemArray.length !== 0 &&
-            (currentTokens >= maxInputTokens ||
-                batchVerifyItemArray.length >= Number(options.batchSize))
-        ) {
-            break;
-        }
-
-        batchVerifyItemArray.push(translatedItem);
-
-        if (translatedItem.verificationAttempts > 5) {
-            // Add a minimum of one items if the item has been tried many times
-            // Too many items can cause translations to fail
-            break;
-        }
-    }
-
-    return batchVerifyItemArray;
 }
 
 function generateTranslateItemArray(
@@ -297,6 +250,7 @@ async function generateTranslationJson(
             tikToken,
             promptSize,
             options.disableThink ? 2 : 3,
+            getTranslateItemToken,
         );
 
         for (const batchTranslateItem of batchTranslateItemArray) {
@@ -305,7 +259,7 @@ async function generateTranslationJson(
                 progressBar.stop();
                 return Promise.reject(
                     new Error(
-                        `Item failed to translate too many times: ${JSON.stringify(batchTranslateItem)}. If this persists try a different model`,
+                        `Item failed to translate too many times: ${JSON.stringify(batchTranslateItem, null, 4)}. If this persists try a different model`,
                     ),
                 );
             }
@@ -337,7 +291,9 @@ async function generateTranslationJson(
 
         if (!result) {
             progressBar.stop();
-            return Promise.reject(new Error("Translation job failed"));
+            return Promise.reject(
+                new Error("Translation job failed, result null"),
+            );
         }
 
         for (const translatedItem of result) {
@@ -389,6 +345,15 @@ async function generateVerificationJson(
 
     translationStats.batchStartTime = Date.now();
 
+    const promptTokens = tikToken.encode(
+        verificationPromptJson(
+            options.inputLanguage,
+            options.outputLanguage,
+            [],
+            options.overridePrompt,
+        ),
+    ).length;
+
     const progressBar = getProgressBar("Step 2/2 - Verifying");
 
     if (options.verbose) {
@@ -397,20 +362,21 @@ async function generateVerificationJson(
     }
 
     while (verifyItemArray.length > 0) {
-        const batchVerifyItemArray = getBatchVerifyItemArray(
+        const batchVerifyItemArray = getBatchTranslateItemArray(
             verifyItemArray,
             options,
             tikToken,
             promptTokens,
             3,
+            getVerifyItemToken,
         );
 
         for (const batchVerifyItem of batchVerifyItemArray) {
-            if (batchVerifyItem.verificationAttempts > RETRY_ATTEMPTS) {
+            if (batchVerifyItem.translationAttempts > RETRY_ATTEMPTS) {
                 progressBar.stop();
                 return Promise.reject(
                     new Error(
-                        `Item failed to verify too many times: ${JSON.stringify(batchVerifyItem)}. If this persists try a different model`,
+                        `Item failed to verify too many times: ${JSON.stringify(batchVerifyItem, null, 4)}. If this persists try a different model`,
                     ),
                 );
             }
@@ -442,7 +408,9 @@ async function generateVerificationJson(
 
         if (!result) {
             progressBar.stop();
-            return Promise.reject(new Error("Verification job failed"));
+            return Promise.reject(
+                new Error("Verification job failed, result null"),
+            );
         }
 
         for (const verifiedItem of result) {
@@ -560,7 +528,9 @@ function parseTranslationToJson(outputText: string): TranslateItemOutput[] {
         return TranslateItemOutputObjectSchema.parse(JSON.parse(outputText))
             .items;
     } catch (error) {
-        printError(`\nError parsing JSON: '${error}', output: '${outputText}'`);
+        printError(
+            `\nError parsing JSON: '${error}' \noutput: '${outputText}'`,
+        );
         return [];
     }
 }
@@ -569,7 +539,9 @@ function parseVerificationToJson(outputText: string): VerifyItemOutput[] {
     try {
         return VerifyItemOutputObjectSchema.parse(JSON.parse(outputText)).items;
     } catch (error) {
-        printError(`\nError parsing JSON: '${error}', output: '${outputText}'`);
+        printError(
+            `\nError parsing JSON: '${error}' \noutput: '${outputText}'`,
+        );
         return [];
     }
 }
@@ -591,7 +563,7 @@ function isValidVerificationItem(
     if (!(typeof item.isValid === "boolean")) return false;
     if (item.id <= 0) return false;
     // 'fixedTranslation' should be a translation if valid is false
-    if (item.valid === false && !(typeof item.fixedTranslation === "string"))
+    if (item.isValid === false && !(typeof item.fixedTranslation === "string"))
         return false;
 
     return true;
@@ -614,7 +586,7 @@ function createTranslateItemsWithTranslation(
             untranslatedItem.translated = translatedItem.translated;
 
             if (translatedItem.translated === "") {
-                untranslatedItem.failure =
+                untranslatedItem.lastFailure =
                     "The translated value cannot be an empty string";
                 continue;
             }
@@ -630,7 +602,7 @@ function createTranslateItemsWithTranslation(
             if (missingVariables.length !== 0) {
                 // Item is updated with a failure message. This message gives the LLM a context to help it fix the translation.
                 // Without this the same error is made over and over again, with the message the new translation is generally accepted.
-                untranslatedItem.failure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables)}'`;
+                untranslatedItem.lastFailure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables, null, 4)}'`;
                 continue;
             }
 
@@ -666,14 +638,17 @@ function createVerifyItemsWithTranslation(
                 translatedItem.translated =
                     verifiedItem.fixedTranslation as string;
 
-                if (verifiedItem.fixedTranslation === "") {
-                    translatedItem.failure =
+                if (
+                    !verifiedItem.fixedTranslation ||
+                    verifiedItem.fixedTranslation === ""
+                ) {
+                    translatedItem.lastFailure =
                         "The translated value cannot be an empty string";
                     continue;
                 }
 
                 const templateStrings =
-                    verifiedItem.fixTranslation.match(templatedStringRegex) ??
+                    verifiedItem.fixedTranslation.match(templatedStringRegex) ??
                     [];
 
                 const missingVariables = getMissingVariables(
@@ -682,12 +657,12 @@ function createVerifyItemsWithTranslation(
                 );
 
                 if (missingVariables.length !== 0) {
-                    translatedItem.failure = `Must add variables, missing from last translation: '${JSON.stringify(missingVariables)}'`;
+                    translatedItem.lastFailure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables, null, 4)}'`;
                     continue;
                 }
 
                 // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
-                translatedItem.failure = `Previous issue that should be corrected: '${verifiedItem.issue}'`;
+                translatedItem.lastFailure = `Previous issue that should be corrected: '${verifiedItem.issue}'`;
             }
         }
     }

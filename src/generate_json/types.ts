@@ -77,14 +77,14 @@ export type VerifyItemInput = {
 export const VerifyItemOutputSchema = z.object({
     // the order is important, having 'valid' and 'issue' before 'fixedTranslation' helps the LLM think and provide a better fix
     id: z.number(),
-    valid: z.boolean(),
+    isValid: z.boolean(),
     issue: z.string(),
     fixedTranslation: z.string(),
 });
 
 export type VerifyItemOutput = {
     id: number;
-    valid: boolean;
+    isValid: boolean;
     issue: string;
     fixedTranslation: string;
 };

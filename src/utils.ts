@@ -1,8 +1,9 @@
 import ISO6391 from "iso-639-1";
 import ansiColors from "ansi-colors";
-import cliProgress, { Bar } from "cli-progress";
+import cliProgress from "cli-progress";
 import fs from "fs";
 import path from "path";
+import type { Bar } from "cli-progress";
 
 /**
  * @param delayDuration - time (in ms) to delay
@@ -31,7 +32,7 @@ export function printWarn(warn: string): void {
  * @param info - the message
  */
 export function printInfo(info: string): void {
-    console.log(ansiColors.cyanBright(info));
+    console.info(ansiColors.cyanBright(info));
 }
 
 /**
@@ -202,5 +203,6 @@ export function getProgressBar(title: string): Bar {
         format: `${title} |${ansiColors.cyan(
             "{bar}",
         )}| {percentage}% || ETA: {eta_formatted}`,
+        linewrap: true,
     });
 }
