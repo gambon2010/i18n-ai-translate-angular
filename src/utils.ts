@@ -1,9 +1,7 @@
 import ISO6391 from "iso-639-1";
 import ansiColors from "ansi-colors";
-import cliProgress from "cli-progress";
 import fs from "fs";
 import path from "path";
-import type { Bar } from "cli-progress";
 
 /**
  * @param delayDuration - time (in ms) to delay
@@ -193,16 +191,25 @@ export function printExecutionTime(startTime: number, prefix?: string): void {
 
 /**
  * @param title - the title
- * @returns the Progress Bar
+ * @param startTime - the startTime
+ * @param totalItems - the totalItems
+ * @param processedItems - the processedItems
  */
-export function getProgressBar(title: string): Bar {
-    return new cliProgress.Bar({
-        barCompleteChar: "\u2588",
-        barIncompleteChar: "\u2591",
-        etaBuffer: 3,
-        format: `${title} |${ansiColors.cyan(
-            "{bar}",
-        )}| {percentage}% || ETA: {eta_formatted}`,
-        linewrap: true,
-    });
+export function printProgress(
+    title: string,
+    startTime: number,
+    totalItems: number,
+    processedItems: number,
+): void {
+    const roundedEstimatedTimeLeftSeconds = Math.round(
+        (((Date.now() - startTime) / (processedItems + 1)) *
+            (totalItems - processedItems)) /
+            1000,
+    );
+
+    const percentage = ((processedItems / totalItems) * 100).toFixed(0);
+
+    process.stdout.write(
+        `\r${ansiColors.blueBright(title)} | ${ansiColors.greenBright(`Completed ${percentage}%`)} | ${ansiColors.yellowBright(`ETA: ${roundedEstimatedTimeLeftSeconds}s`)}`,
+    );
 }
