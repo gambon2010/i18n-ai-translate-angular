@@ -1,101 +1,78 @@
 import { z } from "zod";
 
-export type TranslateItem = {
+export type GradeItem = {
     id: number;
     key: string;
     original: string;
     translated: string;
     context: string;
-    translationTokens: number;
-    templateStrings: string[];
-    translationAttempts: number;
+    gradingTokens: number;
+    gradingAttempts: number;
     lastFailure: string;
+    grading: GradingScaleItemOutput;
 };
 
-// translation objects
-
-export type TranslateItemInput = {
+export type GradeItemInput = {
     id: number;
     original: string;
+    translated: string;
     context?: string;
     lastFailure?: string;
 };
 
-// Translate without think
+export type GradingScaleItemOutput = {
+    id: number;
+    think: string;
+    accuracy: {
+        meaning: number;
+        toneStyle: number;
+        grammarSyntax: number;
+    };
+    formatting: {
+        punctuationSpacing: number;
+        capitalizationFormatting: number;
+    };
+    fluencyReadability: {
+        naturalness: number;
+        clarity: number;
+    };
+    consistency: {
+        terminologyWordChoice: number;
+    };
+    culturalAdaptation: {
+        localization: number;
+    };
+};
 
-export const TranslateItemOutputSchema = z.object({
-    id: z.number(),
-    translated: z.string(),
-});
-
-export const TranslateItemOutputObjectSchema = z.object({
-    items: z
-        .array(TranslateItemOutputSchema)
-        .describe("TranslateItemOutputObjectSchema"), // used for open ai schema name
-});
-
-// Translate with think
-
-export const ThinkTranslateItemOutputSchema = z.object({
+export const GradingScaleItemOutputSchema = z.object({
     id: z.number(),
     think: z.string(),
-    // .min(
-    //     5,
-    //     "Think field should be at least 5 characters long to give a meaningful reflection.",
-    // ),
-    translated: z.string(),
-    // .min(1, "Translated field should not be empty."),
+    accuracy: z.object({
+        meaning: z.number(),
+        toneStyle: z.number(),
+        grammarSyntax: z.number(),
+    }),
+    formatting: z.object({
+        punctuationSpacing: z.number(),
+        capitalizationFormatting: z.number(),
+    }),
+    fluencyReadability: z.object({
+        naturalness: z.number(),
+        clarity: z.number(),
+    }),
+    consistency: z.object({
+        terminologyWordChoice: z.number(),
+    }),
+    culturalAdaptation: z.object({
+        localization: z.number(),
+    }),
 });
 
-export const ThinkTranslateItemOutputObjectSchema = z.object({
+export const GradingScaleItemOutputArraySchema = z.object({
     items: z
-        .array(ThinkTranslateItemOutputSchema)
-        .describe("TranslateItemOutputObjectSchema"), // used for open ai schema name
+        .array(GradingScaleItemOutputSchema)
+        .describe("GradingScaleItemOutputSchema"), // used for open ai schema name
 });
-
-// Discard think
-
-export type TranslateItemOutput = {
-    id: number;
-    translated: string;
-};
-
-export type TranslateItemOutputObject = {
-    items: TranslateItemOutput[];
-};
-
-// verification objects
-
-export type VerifyItemInput = {
-    id: number;
-    original: string;
-    translated: string;
-    context: string;
-    lastFailure: string;
-};
-
-export const VerifyItemOutputSchema = z.object({
-    // the order is important, having 'valid' and 'issue' before 'fixedTranslation' helps the LLM think and provide a better fix
-    id: z.number(),
-    isValid: z.boolean(),
-    issue: z.string(),
-    fixedTranslation: z.string(),
-});
-
-export type VerifyItemOutput = {
-    id: number;
-    isValid: boolean;
-    issue: string;
-    fixedTranslation: string;
-};
-
-export const VerifyItemOutputObjectSchema = z.object({
-    items: z.array(VerifyItemOutputSchema).describe("VerifyItemOutputSchema"), // used for open ai schema name
-});
-
-export type VerifyItemOutputObject = {
-    items: VerifyItemOutput[];
-};
 
 export type GenerateStateJson = {
     fixedTranslationMappings: { [input: string]: string };

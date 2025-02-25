@@ -1,8 +1,8 @@
 // #!/usr/bin/env node
 // eslint-disable-next-line import/no-import-module-exports
-import { translate, translateDiff } from "./translate";
+
+import grade from "./grade";
 
 module.exports = {
-    translate,
-    translateDiff,
+    grade,
 };

@@ -1,7 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { Anthropic as InternalAnthropic } from "@anthropic-ai/sdk";
 import { Ollama as InternalOllama } from "ollama";
-import Anthropic from "./anthropic";
 import ChatGPT from "./chatgpt";
 import Engine from "../enums/engine";
 import Gemini from "./gemini";
@@ -45,17 +43,6 @@ export default class ChatFactory {
             case Engine.Ollama: {
                 const llama = new InternalOllama({ host });
                 chat = new Ollama(llama);
-                params = {
-                    messages: [],
-                    model,
-                };
-
-                break;
-            }
-
-            case Engine.Claude: {
-                const anthropic = new InternalAnthropic({ apiKey: apiKey! });
-                chat = new Anthropic(anthropic, rateLimiter);
                 params = {
                     messages: [],
                     model,

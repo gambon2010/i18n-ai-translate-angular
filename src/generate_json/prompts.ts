@@ -1,188 +1,64 @@
-import type { TranslateItemInput, VerifyItemInput } from "./types";
-import type OverridePrompt from "../interfaces/override_prompt";
-
-/**
- * Prompt an AI to convert a given input from one language to another
- * @param inputLanguage - The language of the input
- * @param outputLanguage - The language of the output
- * @param translateItems - The input to be translated
- * @param overridePrompt - An optional custom prompt
- * @returns A prompt for the AI to translate the input
- */
-export function translationPromptJsonWithThink(
-    inputLanguage: string,
-    outputLanguage: string,
-    translateItems: TranslateItemInput[],
-    overridePrompt?: OverridePrompt,
-): string {
-    const customPrompt = overridePrompt?.generationPrompt;
-    const requiredArguments = ["inputLanguage", "outputLanguage", "input"];
-    const input = JSON.stringify(translateItems);
-
-    if (customPrompt) {
-        for (const arg of requiredArguments) {
-            if (!customPrompt.includes(`\${${arg}}`)) {
-                throw new Error(`Missing required argument: \${${arg}}`);
-            }
-        }
-
-        const argumentToValue: { [key: string]: string } = {
-            input,
-            inputLanguage,
-            outputLanguage,
-        };
-
-        return customPrompt.replace(/\$\{([^}]+)\}/g, (match, key) =>
-            key in argumentToValue ? argumentToValue[key] : match,
-        );
-    }
-
-    return `You are a professional translator.
-
-Translate from ${inputLanguage} to ${outputLanguage}.
-
-- Translate each object in the array.
-- 'original' is the text to be translated. 
-- 'translated' must not be empty. 
-- 'context' is additional info if needed.
-- 'lastFailure' explains why the previous translation failed.
-- Preserve text meaning, tone, grammar, formality, rough length and formatting (case, whitespace, punctuation).
-
-Special Instructions:
-- Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
-- Do not add your own variables
-- The number of variables like {{timeLeft}} must be the same in the translated text.
-- Do not convert {{NEWLINE}} to \\n.
-- Use the think property to briefly reflect on the context or meaning of the text before generating the translation. This reflection should not be lengthy, just enough to aid in making the translation more accurate or contextually appropriate. Make sure to take into account the variable names during your reflection.
-
-Return as JSON.
-\`\`\`json
-${input}
-\`\`\`
-`;
-}
-
-/**
- * Prompt an AI to convert a given input from one language to another
- * @param inputLanguage - The language of the input
- * @param outputLanguage - The language of the output
- * @param translateItems - The input to be translated
- * @param overridePrompt - An optional custom prompt
- * @returns A prompt for the AI to translate the input
- */
-export function translationPromptJsonWithoutThink(
-    inputLanguage: string,
-    outputLanguage: string,
-    translateItems: TranslateItemInput[],
-    overridePrompt?: OverridePrompt,
-): string {
-    const customPrompt = overridePrompt?.generationPrompt;
-    const requiredArguments = ["inputLanguage", "outputLanguage", "input"];
-    const input = JSON.stringify(translateItems);
-
-    if (customPrompt) {
-        for (const arg of requiredArguments) {
-            if (!customPrompt.includes(`\${${arg}}`)) {
-                throw new Error(`Missing required argument: \${${arg}}`);
-            }
-        }
-
-        const argumentToValue: { [key: string]: string } = {
-            input,
-            inputLanguage,
-            outputLanguage,
-        };
-
-        return customPrompt.replace(/\$\{([^}]+)\}/g, (match, key) =>
-            key in argumentToValue ? argumentToValue[key] : match,
-        );
-    }
-
-    return `You are a professional translator.
-
-Translate from ${inputLanguage} to ${outputLanguage}.
-
-- Translate each object in the array.
-- 'original' is the text to be translated. 
-- 'translated' must not be empty. 
-- 'context' is additional info if needed.
-- 'lastFailure' explains why the previous translation failed.
-- Preserve text meaning, tone, grammar, formality, rough length and formatting (case, whitespace, punctuation).
-
-Special Instructions:
-- Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
-- Do not add your own variables
-- The number of variables like {{timeLeft}} must be the same in the translated text.
-- Do not convert {{NEWLINE}} to \\n.
-
-Return as JSON.
-\`\`\`json
-${input}
-\`\`\`
-`;
-}
+import type { GradeItemInput } from "./types";
 
 /**
  * Prompt an AI to ensure a translation is valid
- * @param inputLanguage - The language of the input
- * @param outputLanguage - The language of the output
+ * @param originalLanguage - The language of the input
+ * @param translatedLanguage - The language of the output
  * @param verificationInput - The input to be translated
- * @param overridePrompt - An optional custom prompt
- * @returns A prompt for the AI to verify the translation
+ * @returns A prompt for the AI to grade the translation
  */
-export function verificationPromptJson(
-    inputLanguage: string,
-    outputLanguage: string,
-    verificationInput: VerifyItemInput[],
-    overridePrompt?: OverridePrompt,
+export default function gradingPromptJson(
+    originalLanguage: string,
+    translatedLanguage: string,
+    verificationInput: GradeItemInput[],
 ): string {
     const input = JSON.stringify(verificationInput);
-    const customPrompt = overridePrompt?.translationVerificationPrompt;
-    const requiredArguments = ["inputLanguage", "outputLanguage", "mergedCsv"];
-    if (customPrompt) {
-        for (const arg of requiredArguments) {
-            if (!customPrompt.includes(`\${${arg}}`)) {
-                throw new Error(`Missing required argument: \${${arg}}`);
-            }
-        }
 
-        const argumentToValue: { [key: string]: string } = {
-            inputLanguage,
-            outputLanguage,
-        };
+    return `You are an expert linguist and translation evaluator. Your task is to assess the quality of a translated sentence based on specific grading criteria.
 
-        return customPrompt.replace(/\$\{([^}]+)\}/g, (match, key) =>
-            key in argumentToValue ? argumentToValue[key] : match,
-        );
-    }
+Check translations from ${originalLanguage} to ${translatedLanguage}.
 
-    return `You are a professional translator.
+Input:
 
-Check translations from ${inputLanguage} to ${outputLanguage}.
+    Original Text: {original}
+    Translated Text: {translated}
+    Context (if available): {context}
+    Last Failure (if available) explains why the last attempt at grading was rejected: {lastFailure}
 
-- Verify each object in the array.
-- 'original' is the text to be translated. 
-- 'translated' is the translated text to verify. 
-- 'context' is additional info if needed.
-- 'lastFailure' explains why the previous translation failed.
-- check for Accuracy (meaning, tone, grammar, formality), Formatting (case, whitespace, punctuation).
+Grading Process:
 
-If correct:
-- return 'isValid' as 'true' and nothing else.
+    Before grading, reflect on the translation and provide a brief analysis in the "think" field. This should include any notable observations about meaning preservation, tone, fluency, and potential issues.
+    After reflection, proceed with grading according to the categories below.
 
-If incorrect:
-- return 'isValid' as 'false'
-- explain the 'issue' thoroughly in a few words
-- fix the translation in 'fixTranslation' as a string. Make sure that 'fixTranslation' is in ${outputLanguage}
+Grading Criteria (Score out of 20):
 
-Special Instructions:
-- Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
-- Do not add variables that are not in the original.
-- The number of variables like {{timeLeft}} must be the same in the translated text.
-- Do not convert {{NEWLINE}} to \\n.
+    Accuracy (8 points total)
+        Meaning (4 points): Does the translation preserve the exact meaning of the original text?
+        Tone & Style (2 points): Is the tone and formality appropriate?
+        Grammar & Syntax (2 points): Is the sentence grammatically correct and natural?
 
-Allow minor grammar, phrasing, and formatting differences if the meaning is clear.
-Flag only significant issues affecting accuracy or readability.
+    Formatting (4 points total)
+        Punctuation & Spacing (2 points): Is punctuation correctly placed and spaced?
+        Capitalization & Formatting (2 points): Are proper nouns, titles, and formatting preserved?
+
+    Fluency & Readability (4 points total)
+        Naturalness (2 points): Does the sentence flow smoothly?
+        Clarity (2 points): Is the meaning clear and unambiguous?
+
+    Consistency (2 points total)
+        Terminology & Word Choice (2 points): Are key terms translated consistently?
+
+    Cultural & Contextual Adaptation (2 points total)
+        Localization (2 points): Are idioms, cultural references, or region-specific phrases adapted correctly?
+
+Where X is a score between 0 and the max points per category.
+
+Guidelines:
+
+    Be strict but fair in grading.
+    If context is provided, take it into account.
+    If a category is flawless, give it full points.
+    Justify deductions based on clear linguistic issues.
 
 Return as JSON.
 \`\`\`json

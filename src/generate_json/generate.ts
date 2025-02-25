@@ -1,173 +1,125 @@
-import { RETRY_ATTEMPTS } from "../constants";
 import {
-    ThinkTranslateItemOutputObjectSchema,
-    TranslateItemOutputObjectSchema,
-    VerifyItemOutputObjectSchema,
+    type GenerateStateJson,
+    type GradeItem,
+    type GradeItemInput,
+    type GradingScaleItemOutput,
+    GradingScaleItemOutputArraySchema,
 } from "./types";
+import { RETRY_ATTEMPTS } from "../constants";
 import { Tiktoken } from "tiktoken";
 import {
-    getMissingVariables,
-    getTemplatedStringRegex,
     printError,
     printExecutionTime,
     printProgress,
     retryJob,
 } from "../utils";
-import {
-    translationPromptJsonWithThink,
-    translationPromptJsonWithoutThink,
-    verificationPromptJson,
-} from "./prompts";
+import ChatFactory from "../chat_interface/chat_factory";
+import RateLimiter from "../rate_limiter";
 import cl100k_base from "tiktoken/encoders/cl100k_base.json";
-import type {
-    GenerateStateJson,
-    TranslateItem,
-    TranslateItemInput,
-    TranslateItemOutput,
-    VerifyItemInput,
-    VerifyItemOutput,
-} from "./types";
-import type { TranslationStats, TranslationStatsItem } from "../types";
+import gradingPromptJson from "./prompts";
+import type { TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
-import type Chats from "../interfaces/chats";
-import type GenerateTranslationOptionsJson from "../interfaces/generate_translation_options_json";
-import type TranslateOptions from "../interfaces/translate_options";
+import type ChatInterface from "../chat_interface/chat_interface";
+import type GenerateGradeOptionsJson from "../interfaces/generate_grade_options_json";
+import type GradeOptions from "../interfaces/grade_options";
 
 export default class GenerateTranslationJson {
     tikToken: Tiktoken;
-    templatedStringRegex: RegExp;
+    chats: ChatInterface;
 
-    constructor(options: TranslateOptions) {
+    constructor(options: GradeOptions) {
         this.tikToken = new Tiktoken(
             cl100k_base.bpe_ranks,
             cl100k_base.special_tokens,
             cl100k_base.pat_str,
         );
 
-        this.templatedStringRegex = getTemplatedStringRegex(
-            options.templatedStringPrefix as string,
-            options.templatedStringPrefix as string,
+        const rateLimiter = new RateLimiter(
+            options.rateLimitMs,
+            options.verbose as boolean,
+        );
+
+        this.chats = ChatFactory.newChat(
+            options.engine,
+            options.model,
+            rateLimiter,
+            options.apiKey,
+            options.host,
         );
     }
 
     /**
      * Complete the initial translation of the input text.
-     * @param flatInput - The flatinput object containing the json to translate
+     * @param flattenedOriginalJson - The flatinput object containing the base file
+     * @param flattenedTranslatedJson - The flatinput object containing the translated file
      * @param options - The options to generate the translation
-     * @param chats - The options to generate the translation
      * @param translationStats - The translation statictics
      */
     public async translateJson(
-        flatInput: { [key: string]: string },
-        options: TranslateOptions,
-        chats: Chats,
-        translationStats: TranslationStats,
-    ): Promise<{ [key: string]: string }> {
-        const translateItemArray = this.generateTranslateItemArray(flatInput);
+        flattenedOriginalJson: { [key: string]: string },
+        flattenedTranslatedJson: { [key: string]: string },
+        options: GradeOptions,
+        translationStats: TranslationStatsItem,
+    ): Promise<void> {
+        const gradeItemArray = this.generateGradeItemArray(
+            flattenedOriginalJson,
+            flattenedTranslatedJson,
+        );
 
         const generatedTranslation = await this.generateTranslationJson(
-            translateItemArray,
+            gradeItemArray,
             options,
-            chats,
-            translationStats.translate,
+            translationStats,
         );
 
-        if (!options.skipTranslationVerification) {
-            const generatedVerification = await this.generateVerificationJson(
-                generatedTranslation,
-                options,
-                chats,
-                translationStats.verify,
-            );
-
-            for (const verificationItem of generatedTranslation) {
-                verificationItem.translationAttempts = 0;
-                verificationItem.translationTokens =
-                    this.getVerifyItemToken(verificationItem);
-                verificationItem.lastFailure = "";
-            }
-
-            return this.convertTranslateItemToIndex(generatedVerification);
-        }
-
-        return this.convertTranslateItemToIndex(generatedTranslation);
+        // this.convertTranslateItemToIndex(generatedTranslation);
     }
 
-    private generateTranslateItemsInput(
-        translateItems: TranslateItem[],
-    ): TranslateItemInput[] {
-        return translateItems.map(
-            (translateItem) =>
-                ({
-                    id: translateItem.id,
-                    original: translateItem.original,
-                    // Only adds 'context' to the object if it's not empty. Makes the prompt shorter and uses less tokens
-                    ...(translateItem.context !== ""
-                        ? { context: translateItem.context }
-                        : {}),
-                    ...(translateItem.lastFailure !== ""
-                        ? { failure: translateItem.lastFailure }
-                        : {}),
-                }) as TranslateItemInput,
-        );
+    private generateGradeItemsInput(gradeItems: GradeItem[]): GradeItemInput[] {
+        return gradeItems.map((gradeItem) => ({
+            id: gradeItem.id,
+            original: gradeItem.original,
+            translated: gradeItem.translated,
+            // Only adds 'context' to the object if it's not empty. Makes the prompt shorter and uses less tokens
+            ...(gradeItem.context !== "" ? { context: gradeItem.context } : {}),
+            ...(gradeItem.lastFailure !== ""
+                ? { lastFailure: gradeItem.lastFailure }
+                : {}),
+        }));
     }
 
-    private generateVerifyItemsInput(
-        verifyItems: TranslateItem[],
-    ): VerifyItemInput[] {
-        return verifyItems.map(
-            (verifyItem) =>
-                ({
-                    id: verifyItem.id,
-                    original: verifyItem.original,
-                    translated: verifyItem.translated,
-                    ...(verifyItem.context !== ""
-                        ? { context: verifyItem.context }
-                        : {}),
-                    ...(verifyItem.lastFailure !== ""
-                        ? { failure: verifyItem.lastFailure }
-                        : {}),
-                }) as VerifyItemInput,
-        );
-    }
-
-    private generateTranslateItem(
+    private generateGradeItem(
         id: number,
         key: string,
         original: string,
-    ): TranslateItem {
+        translated: string,
+    ): GradeItem {
         const translateItem = {
             context: "",
+            grading: {} as GradingScaleItemOutput,
+            gradingAttempts: 0,
+            gradingTokens: 0,
             id,
             key,
             lastFailure: "",
             original,
             templateStrings: [],
-            translated: "",
-            translationAttempts: 0,
-            translationTokens: 0,
-        } as TranslateItem;
-
-        // Maps the 'placeholders' in the translated object to make sure that none are missing
-        const match = original.match(this.templatedStringRegex);
-        if (match) {
-            translateItem.templateStrings = match;
-        }
+            translated,
+        } as GradeItem;
 
         // Tokens here are used to estimate accurately the execution time
-        translateItem.translationTokens =
-            this.getTranslateItemToken(translateItem);
+        translateItem.gradingTokens = this.getGradeItemToken(translateItem);
 
         return translateItem;
     }
 
-    private getBatchTranslateItemArray(
-        translateItemArray: TranslateItem[],
-        options: TranslateOptions,
+    private getBatchGradeItemArray(
+        gradeItemArray: GradeItem[],
+        options: GradeOptions,
         promptTokens: number,
         tokenSplit: number,
-        itemTokenFunction: (translatedItem: TranslateItem) => number,
-    ): TranslateItem[] {
+        itemTokenFunction: (translatedItem: GradeItem) => number,
+    ): GradeItem[] {
         // Remove the tokens used by the prompt and divide the remaining tokens divided by 2 (half for the input/output) with a 10% margin of error
         const maxInputTokens =
             ((Number(options.batchMaxTokens) - promptTokens) * 0.9) /
@@ -175,14 +127,14 @@ export default class GenerateTranslationJson {
 
         let currentTokens = 0;
 
-        const batchTranslateItemArray: TranslateItem[] = [];
+        const batchTranslateItemArray: GradeItem[] = [];
 
-        for (const translateItem of translateItemArray) {
+        for (const gradeItem of gradeItemArray) {
             // If a failure message is added the tokens for an item change
             currentTokens +=
-                translateItem.lastFailure !== ""
-                    ? itemTokenFunction(translateItem)
-                    : translateItem.translationTokens;
+                gradeItem.lastFailure !== ""
+                    ? itemTokenFunction(gradeItem)
+                    : gradeItem.gradingTokens;
 
             if (
                 batchTranslateItemArray.length !== 0 &&
@@ -192,9 +144,9 @@ export default class GenerateTranslationJson {
                 break;
             }
 
-            batchTranslateItemArray.push(translateItem);
+            batchTranslateItemArray.push(gradeItem);
 
-            if (translateItem.translationAttempts > 5) {
+            if (gradeItem.gradingAttempts > 5) {
                 // Add a minimum of one items if the item has been tried many times
                 // Too many items can cause translations to fail
                 break;
@@ -204,82 +156,71 @@ export default class GenerateTranslationJson {
         return batchTranslateItemArray;
     }
 
-    private generateTranslateItemArray(flatInput: any): TranslateItem[] {
-        return Object.keys(flatInput).reduce((acc, key) => {
-            if (Object.prototype.hasOwnProperty.call(flatInput, key)) {
+    private generateGradeItemArray(
+        flattenedOriginalJson: { [key: string]: string },
+        flattenedTranslatedJson: { [key: string]: string },
+    ): GradeItem[] {
+        return Object.keys(flattenedOriginalJson).reduce((acc, key) => {
+            if (
+                Object.prototype.hasOwnProperty.call(flattenedOriginalJson, key)
+            ) {
                 acc.push(
-                    this.generateTranslateItem(
-                        Object.keys(flatInput).indexOf(key) + 1,
+                    this.generateGradeItem(
+                        Object.keys(flattenedOriginalJson).indexOf(key) + 1,
                         key,
-                        flatInput[key],
+                        flattenedOriginalJson[key],
+                        flattenedTranslatedJson[key],
                     ),
                 );
             }
 
             return acc;
-        }, [] as TranslateItem[]);
+        }, [] as GradeItem[]);
     }
 
-    private getTranslateItemToken(translatedItem: TranslateItem): number {
+    private getGradeItemToken(gradeItem: GradeItem): number {
         return this.tikToken.encode(
-            JSON.stringify(
-                this.generateTranslateItemsInput([translatedItem])[0],
-            ),
-        ).length;
-    }
-
-    private getVerifyItemToken(translatedItem: TranslateItem): number {
-        return this.tikToken.encode(
-            JSON.stringify(this.generateVerifyItemsInput([translatedItem])[0]),
+            JSON.stringify(this.generateGradeItemsInput([gradeItem])[0]),
         ).length;
     }
 
     private async generateTranslationJson(
-        translateItemArray: TranslateItem[],
-        options: TranslateOptions,
-        chats: Chats,
+        gradeItemArray: GradeItem[],
+        options: GradeOptions,
         translationStats: TranslationStatsItem,
-    ): Promise<TranslateItem[]> {
+    ): Promise<GradeItem[]> {
         translationStats.batchStartTime = Date.now();
 
-        const generatedTranslation: TranslateItem[] = [];
+        const generatedTranslation: GradeItem[] = [];
 
-        translationStats.totalItems = translateItemArray.length;
-        translationStats.totalTokens = translateItemArray.reduce(
-            (sum, translateItem) => sum + translateItem.translationTokens,
+        translationStats.totalItems = gradeItemArray.length;
+        translationStats.totalTokens = gradeItemArray.reduce(
+            (sum, gradeItem) => sum + gradeItem.gradingTokens,
             0,
         );
 
         const promptSize = this.tikToken.encode(
-            options.disableThink
-                ? translationPromptJsonWithoutThink(
-                      options.inputLanguage,
-                      options.outputLanguage,
-                      [],
-                      options.overridePrompt,
-                  )
-                : translationPromptJsonWithThink(
-                      options.inputLanguage,
-                      options.outputLanguage,
-                      [],
-                      options.overridePrompt,
-                  ),
+            gradingPromptJson(
+                options.originalLanguage,
+                options.translatedLanguage,
+                [],
+            ),
         ).length;
 
         // translate items are removed from 'translateItemArray' when one is generated
         // this is done to avoid 'losing' items if the model doesn't return one
-        while (translateItemArray.length > 0) {
-            const batchTranslateItemArray = this.getBatchTranslateItemArray(
-                translateItemArray,
+        while (gradeItemArray.length > 0) {
+            const batchTranslateItemArray = this.getBatchGradeItemArray(
+                gradeItemArray,
                 options,
                 promptSize,
-                options.disableThink ? 2 : 3,
-                this.getTranslateItemToken,
+                3,
+                this.getGradeItemToken,
             );
 
             for (const batchTranslateItem of batchTranslateItemArray) {
-                batchTranslateItem.translationAttempts++;
-                if (batchTranslateItem.translationAttempts > RETRY_ATTEMPTS) {
+                batchTranslateItem.gradingAttempts++;
+                if (batchTranslateItem.gradingAttempts > RETRY_ATTEMPTS) {
                     return Promise.reject(
                         new Error(
                             `Item failed to translate too many times: ${JSON.stringify(batchTranslateItem)}. If this persists try a different model`,
@@ -291,21 +232,10 @@ export default class GenerateTranslationJson {
             translationStats.enqueuedItems += batchTranslateItemArray.length;
 
             // eslint-disable-next-line no-await-in-loop
-            const result = await this.runTranslationJob({
-                chats,
-                disableThink: options.disableThink as boolean,
-                ensureChangedTranslation:
-                    options.ensureChangedTranslation as boolean,
-                inputLanguage: `[${options.inputLanguage}]`,
-                outputLanguage: `[${options.outputLanguage}]`,
-                overridePrompt: options.overridePrompt,
-                skipStylingVerification:
-                    options.skipStylingVerification as boolean,
-                skipTranslationVerification:
-                    options.skipTranslationVerification as boolean,
-                templatedStringPrefix: options.templatedStringPrefix as string,
-                templatedStringSuffix: options.templatedStringSuffix as string,
-                translateItems: batchTranslateItemArray,
+            const result = await this.runJob({
+                gradeItems: batchTranslateItemArray,
+                originalLanguage: `[${options.originalLanguage}]`,
+                translatedLanguage: `[${options.translatedLanguage}]`,
                 verboseLogging: options.verbose as boolean,
             });
 
@@ -315,16 +245,16 @@ export default class GenerateTranslationJson {
 
             for (const translatedItem of result) {
                 // Check if the translated item exists in the untranslated item array
-                const index = translateItemArray.findIndex(
+                const index = gradeItemArray.findIndex(
                     (item) => item.id === translatedItem.id,
                 );
 
                 if (index !== -1) {
                     // If it does remove it from the 'translateItemArray' used to queue items for translation
-                    translateItemArray.splice(index, 1);
+                    gradeItemArray.splice(index, 1);
                     generatedTranslation.push(translatedItem);
                     translationStats.processedTokens +=
-                        translatedItem.translationTokens;
+                        translatedItem.gradingTokens;
                 }
 
                 translationStats.processedItems++;
@@ -332,9 +262,7 @@ export default class GenerateTranslationJson {
 
             if (options.verbose) {
                 printProgress(
-                    options.skipTranslationVerification
-                        ? "Translating"
-                        : "Step 1/2 - Translating",
+                    "Grading",
                     translationStats.batchStartTime,
                     translationStats.totalTokens,
                     translationStats.processedTokens,
@@ -352,115 +280,7 @@ export default class GenerateTranslationJson {
         return generatedTranslation;
     }
 
-    private async generateVerificationJson(
-        verifyItemArray: TranslateItem[],
-        options: TranslateOptions,
-        chats: Chats,
-        translationStats: TranslationStatsItem,
-    ): Promise<TranslateItem[]> {
-        const generatedVerification: TranslateItem[] = [];
-
-        translationStats.batchStartTime = Date.now();
-
-        translationStats.totalItems = verifyItemArray.length;
-
-        translationStats.totalTokens = verifyItemArray.reduce(
-            (sum, verifyItem) => sum + verifyItem.translationTokens,
-            0,
-        );
-
-        const promptTokens = this.tikToken.encode(
-            verificationPromptJson(
-                options.inputLanguage,
-                options.outputLanguage,
-                [],
-                options.overridePrompt,
-            ),
-        ).length;
-
-        while (verifyItemArray.length > 0) {
-            const batchVerifyItemArray = this.getBatchTranslateItemArray(
-                verifyItemArray,
-                options,
-                promptTokens,
-                3,
-                this.getVerifyItemToken,
-            );
-
-            for (const batchVerifyItem of batchVerifyItemArray) {
-                batchVerifyItem.translationAttempts++;
-                if (batchVerifyItem.translationAttempts > RETRY_ATTEMPTS) {
-                    return Promise.reject(
-                        new Error(
-                            `Item failed to verify too many times: ${JSON.stringify(batchVerifyItem)}. If this persists try a different model`,
-                        ),
-                    );
-                }
-            }
-
-            translationStats.enqueuedItems += batchVerifyItemArray.length;
-
-            // eslint-disable-next-line no-await-in-loop
-            const result = await this.runVerificationJob({
-                chats,
-                disableThink: options.disableThink as boolean,
-                ensureChangedTranslation:
-                    options.ensureChangedTranslation as boolean,
-                inputLanguage: `[${options.inputLanguage}]`,
-                outputLanguage: `[${options.outputLanguage}]`,
-                overridePrompt: options.overridePrompt,
-                skipStylingVerification:
-                    options.skipStylingVerification as boolean,
-                skipTranslationVerification:
-                    options.skipTranslationVerification as boolean,
-                templatedStringPrefix: options.templatedStringPrefix as string,
-                templatedStringSuffix: options.templatedStringSuffix as string,
-                translateItems: batchVerifyItemArray,
-                verboseLogging: options.verbose as boolean,
-            });
-
-            if (!result) {
-                return Promise.reject(new Error("Verification job failed"));
-            }
-
-            for (const translatedItem of result) {
-                const index = verifyItemArray.findIndex(
-                    (item) => item.id === translatedItem.id,
-                );
-
-                if (index !== -1) {
-                    verifyItemArray.splice(index, 1);
-                    generatedVerification.push(translatedItem);
-                    translationStats.processedTokens +=
-                        translatedItem.translationTokens;
-                }
-
-                translationStats.processedItems++;
-            }
-
-            if (options.verbose) {
-                printProgress(
-                    "Step 2/2 - Verifying",
-                    translationStats.batchStartTime,
-                    translationStats.totalTokens,
-                    translationStats.processedTokens,
-                );
-            }
-        }
-
-        if (options.verbose) {
-            printExecutionTime(
-                translationStats.batchStartTime,
-                "Verification execution time: ",
-            );
-        }
-
-        return generatedVerification;
-    }
-
-    private convertTranslateItemToIndex(
-        generatedTranslation: TranslateItem[],
-    ): {
+    private convertTranslateItemToIndex(generatedTranslation: GradeItem[]): {
         [key: string]: string;
     } {
         return generatedTranslation.reduce(
@@ -472,10 +292,11 @@ export default class GenerateTranslationJson {
         );
     }
 
-    private parseTranslationToJson(outputText: string): TranslateItemOutput[] {
+    private parseGradingToJson(outputText: string): GradingScaleItemOutput[] {
         try {
-            return TranslateItemOutputObjectSchema.parse(JSON.parse(outputText))
-                .items;
+            return GradingScaleItemOutputArraySchema.parse(
+                JSON.parse(outputText),
+            ).items;
         } catch (error) {
             printError(
                 `Error parsing JSON: '${error}', output: '${outputText}'\n`,
@@ -484,175 +305,152 @@ export default class GenerateTranslationJson {
         }
     }
 
-    private parseVerificationToJson(outputText: string): VerifyItemOutput[] {
-        try {
-            return VerifyItemOutputObjectSchema.parse(JSON.parse(outputText))
-                .items;
-        } catch (error) {
-            printError(
-                `Error parsing JSON: '${error}', output: '${outputText}'\n`,
-            );
-            return [];
-        }
-    }
-
-    private isValidTranslateItem(item: any): item is TranslateItemOutput {
+    private isValidGradeItem(
+        item: GradingScaleItemOutput,
+    ): item is GradingScaleItemOutput {
         return (
+            typeof item.accuracy.meaning === "number" &&
+            typeof item.accuracy.toneStyle === "number" &&
+            typeof item.accuracy.grammarSyntax === "number" &&
+            typeof item.formatting.punctuationSpacing === "number" &&
+            typeof item.formatting.capitalizationFormatting === "number" &&
+            typeof item.fluencyReadability.naturalness === "number" &&
+            typeof item.fluencyReadability.clarity === "number" &&
+            typeof item.consistency.terminologyWordChoice === "number" &&
+            typeof item.culturalAdaptation.localization === "number" &&
             typeof item.id === "number" &&
-            typeof item.translated === "string" &&
             item.id > 0
         );
     }
 
-    private isValidVerificationItem(item: any): item is VerifyItemOutput {
-        if (!(typeof item.id === "number")) return false;
-        if (!(typeof item.valid === "boolean")) return false;
-        if (item.id <= 0) return false;
-        // 'fixedTranslation' should be a translation if valid is false
-        if (
-            item.valid === false &&
-            !(typeof item.fixedTranslation === "string")
-        )
-            return false;
+    private createGradeItemsWithTranslation(
+        baseItems: GradeItem[],
+        gradedItems: GradingScaleItemOutput[],
+    ): GradeItem[] {
+        const output: GradeItem[] = [];
 
-        return true;
-    }
-
-    private createTranslateItemsWithTranslation(
-        untranslatedItems: TranslateItem[],
-        translatedItems: TranslateItemOutput[],
-    ): TranslateItem[] {
-        const output: TranslateItem[] = [];
-
-        for (const untranslatedItem of untranslatedItems) {
-            const translatedItem = translatedItems.find(
-                (checkTranslatedItem) =>
-                    untranslatedItem.id === checkTranslatedItem.id,
+        for (const baseItem of baseItems) {
+            const gradedItem = gradedItems.find(
+                (checkTranslatedItem) => baseItem.id === checkTranslatedItem.id,
             );
 
-            if (translatedItem) {
-                untranslatedItem.translated = translatedItem.translated;
+            if (gradedItem) {
+                baseItem.grading = gradedItem;
 
-                if (translatedItem.translated === "") {
-                    untranslatedItem.lastFailure =
-                        "The translated value cannot be an empty string";
+                if (
+                    gradedItem.accuracy.meaning < 0 ||
+                    gradedItem.accuracy.meaning > 4
+                ) {
+                    baseItem.lastFailure =
+                        "The meaning score must be between 0 and 4.";
                     continue;
                 }
 
-                const templateStrings =
-                    translatedItem.translated.match(
-                        this.templatedStringRegex,
-                    ) ?? [];
+                if (
+                    gradedItem.accuracy.toneStyle < 0 ||
+                    gradedItem.accuracy.toneStyle > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The tone style score must be between 0 and 2.";
+                    continue;
+                }
 
-                const missingVariables = getMissingVariables(
-                    untranslatedItem.templateStrings,
-                    templateStrings,
-                );
+                if (
+                    gradedItem.accuracy.grammarSyntax < 0 ||
+                    gradedItem.accuracy.grammarSyntax > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The grammar syntax score must be between 0 and 2.";
+                    continue;
+                }
 
-                if (missingVariables.length !== 0) {
-                    // Item is updated with a failure message. This message gives the LLM a context to help it fix the translation.
-                    // Without this the same error is made over and over again, with the message the new translation is generally accepted.
-                    untranslatedItem.lastFailure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables)}'`;
+                if (
+                    gradedItem.formatting.punctuationSpacing < 0 ||
+                    gradedItem.formatting.punctuationSpacing > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The punctuation spacing score must be between 0 and 2.";
+                    continue;
+                }
+
+                if (
+                    gradedItem.formatting.capitalizationFormatting < 0 ||
+                    gradedItem.formatting.capitalizationFormatting > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The capitalization formatting score must be between 0 and 2.";
+                    continue;
+                }
+
+                if (
+                    gradedItem.fluencyReadability.naturalness < 0 ||
+                    gradedItem.fluencyReadability.naturalness > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The naturalness score must be between 0 and 2.";
+                    continue;
+                }
+
+                if (
+                    gradedItem.fluencyReadability.clarity < 0 ||
+                    gradedItem.fluencyReadability.clarity > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The clarity score must be between 0 and 2.";
+                    continue;
+                }
+
+                if (
+                    gradedItem.consistency.terminologyWordChoice < 0 ||
+                    gradedItem.consistency.terminologyWordChoice > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The terminology word choice score must be between 0 and 2.";
+                    continue;
+                }
+
+                if (
+                    gradedItem.culturalAdaptation.localization < 0 ||
+                    gradedItem.culturalAdaptation.localization > 2
+                ) {
+                    baseItem.lastFailure =
+                        "The localization score must be between 0 and 2.";
                     continue;
                 }
 
                 output.push({
-                    ...untranslatedItem,
+                    ...baseItem,
                     failure: "",
-                } as TranslateItem);
+                } as GradeItem);
             }
         }
 
         return output;
     }
 
-    private createVerifyItemsWithTranslation(
-        translatedItemArray: TranslateItem[],
-        verifiedItemArray: VerifyItemOutput[],
-    ): TranslateItem[] {
-        const output: TranslateItem[] = [];
-
-        for (const translatedItem of translatedItemArray) {
-            const verifiedItem = verifiedItemArray.find(
-                (checkVerifiedItem) =>
-                    translatedItem.id === checkVerifiedItem.id,
-            );
-
-            if (verifiedItem) {
-                if (verifiedItem.isValid) {
-                    output.push({
-                        ...translatedItem,
-                        failure: "",
-                    } as TranslateItem);
-                } else {
-                    translatedItem.translated =
-                        verifiedItem.fixedTranslation as string;
-
-                    if (verifiedItem.fixedTranslation === "") {
-                        translatedItem.lastFailure =
-                            "The translated value cannot be an empty string";
-                        continue;
-                    }
-
-                    const templateStrings =
-                        verifiedItem.fixedTranslation.match(
-                            this.templatedStringRegex,
-                        ) ?? [];
-
-                    const missingVariables = getMissingVariables(
-                        translatedItem.templateStrings,
-                        templateStrings,
-                    );
-
-                    if (missingVariables.length !== 0) {
-                        translatedItem.lastFailure = `Must add variables, missing from last translation: '${JSON.stringify(missingVariables)}'`;
-                        continue;
-                    }
-
-                    // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
-                    translatedItem.lastFailure = `Previous issue that should be corrected: '${verifiedItem.issue}'`;
-                }
-            }
-        }
-
-        return output;
-    }
-
-    private async runTranslationJob(
-        options: GenerateTranslationOptionsJson,
-    ): Promise<TranslateItem[]> {
+    private async runJob(
+        options: GenerateGradeOptionsJson,
+    ): Promise<GradeItem[]> {
         const generateState: GenerateStateJson = {
             fixedTranslationMappings: {},
             generationRetries: 0,
             translationToRetryAttempts: {},
         };
 
-        const generationPromptText = options.disableThink
-            ? translationPromptJsonWithoutThink(
-                  options.inputLanguage,
-                  options.outputLanguage,
-                  this.generateTranslateItemsInput(options.translateItems),
-                  options.overridePrompt,
-              )
-            : translationPromptJsonWithThink(
-                  options.inputLanguage,
-                  options.outputLanguage,
-                  this.generateTranslateItemsInput(options.translateItems),
-                  options.overridePrompt,
-              );
+        const generationPromptText = gradingPromptJson(
+            options.originalLanguage,
+            options.translatedLanguage,
+            this.generateGradeItemsInput(options.gradeItems),
+        );
 
-        let translated = "";
+        let grades = "";
         try {
-            translated = await retryJob(
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                this.generateJob,
+            grades = await retryJob(
+                this.generateJob.bind(this),
                 [
                     generationPromptText,
-                    options,
                     generateState,
-                    options.disableThink
-                        ? TranslateItemOutputObjectSchema
-                        : ThinkTranslateItemOutputObjectSchema,
+                    GradingScaleItemOutputArraySchema,
                 ],
                 RETRY_ATTEMPTS,
                 true,
@@ -660,75 +458,29 @@ export default class GenerateTranslationJson {
                 false,
             );
         } catch (e) {
-            printError(`Failed to translate: ${e}\n`);
+            printError(`Failed to grade: ${e}\n`);
         }
 
-        const parsedOutput = this.parseTranslationToJson(translated);
+        console.log(grades);
+
+        const parsedOutput = this.parseGradingToJson(grades);
         const validTranslationObjects = parsedOutput.filter(
-            this.isValidTranslateItem,
+            this.isValidGradeItem,
         );
 
-        return this.createTranslateItemsWithTranslation(
-            options.translateItems,
-            validTranslationObjects,
-        );
-    }
-
-    private async runVerificationJob(
-        options: GenerateTranslationOptionsJson,
-    ): Promise<TranslateItem[]> {
-        const generateState: GenerateStateJson = {
-            fixedTranslationMappings: {},
-            generationRetries: 0,
-            translationToRetryAttempts: {},
-        };
-
-        const generationPromptText = verificationPromptJson(
-            options.inputLanguage,
-            options.outputLanguage,
-            this.generateVerifyItemsInput(options.translateItems),
-            options.overridePrompt,
-        );
-
-        let verified = "";
-        try {
-            verified = await retryJob(
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                this.generateJob,
-                [
-                    generationPromptText,
-                    options,
-                    generateState,
-                    VerifyItemOutputObjectSchema,
-                ],
-                RETRY_ATTEMPTS,
-                true,
-                0,
-                false,
-            );
-        } catch (e) {
-            printError(`Failed to translate: ${e}\n`);
-        }
-
-        const parsedOutput = this.parseVerificationToJson(verified);
-        const validTranslationObjects = parsedOutput.filter(
-            this.isValidVerificationItem,
-        );
-
-        return this.createVerifyItemsWithTranslation(
-            options.translateItems,
+        return this.createGradeItemsWithTranslation(
+            options.gradeItems,
             validTranslationObjects,
         );
     }
 
     private verifyGenerationAndRetry(
         generationPromptText: string,
-        options: GenerateTranslationOptionsJson,
         generateState: GenerateStateJson,
     ): Promise<string> {
         generateState.generationRetries++;
         if (generateState.generationRetries > 10) {
-            options.chats.generateTranslationChat.resetChatHistory();
+            this.chats.resetChatHistory();
             return Promise.reject(
                 new Error(
                     "Failed to generate content due to exception. Resetting history.",
@@ -738,7 +490,7 @@ export default class GenerateTranslationJson {
 
         printError(`Erroring text = ${generationPromptText}\n`);
 
-        options.chats.generateTranslationChat.rollbackLastMessage();
+        this.chats.rollbackLastMessage();
         return Promise.reject(
             new Error("Failed to generate content due to exception."),
         );
@@ -746,19 +498,14 @@ export default class GenerateTranslationJson {
 
     private async generateJob(
         generationPromptText: string,
-        options: GenerateTranslationOptionsJson,
         generateState: GenerateStateJson,
         format: ZodType<any, ZodTypeDef, any>,
     ): Promise<string> {
-        const text = await options.chats.generateTranslationChat.sendMessage(
-            generationPromptText,
-            format,
-        );
+        const text = await this.chats.sendMessage(generationPromptText, format);
 
         if (!text) {
             return this.verifyGenerationAndRetry(
                 generationPromptText,
-                options,
                 generateState,
             );
         } else {
