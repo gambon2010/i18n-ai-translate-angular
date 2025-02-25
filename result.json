@@ -1,0 +1,2564 @@
+[
+    {
+        "grading": {
+            "id": 1,
+            "think": "The translation from '10th' to '10번째' represents the ordinal number accurately using the Korean suffix.\n- Accuracy: Fully captures the meaning and tone of an ordinal number.\n- Formatting: Reflects the typical format for ordinals in Korean.\n- No cultural adaptation needed.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "10th",
+        "original": "10th",
+        "translated": "10번째"
+    },
+    {
+        "grading": {
+            "id": 2,
+            "think": "The translation for '11th' as '11' fails to retain its ordinal nature. An oversight in preserving meaning and format.\n- Needs to be '11번째'.\n- Issues in meaning, formatting, consistency.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "11th",
+        "original": "11th",
+        "translated": "11"
+    },
+    {
+        "grading": {
+            "id": 3,
+            "think": "For '12th', the translation '12' again misses the ordinal nature of the number.\n- Should be translated as '12번째'.\n- Errors hurt accuracy and consistency.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "12th",
+        "original": "12th",
+        "translated": "12"
+    },
+    {
+        "grading": {
+            "id": 4,
+            "think": "Ordinal number '13th' translated as '13'. Same issue with missing ordinal representation.\n- Needs correction to '13번째'.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "13th",
+        "original": "13th",
+        "translated": "13"
+    },
+    {
+        "grading": {
+            "id": 5,
+            "think": "Translation of '14th' to '14' overlooks its ordinal status.\n- Proper translation should be '14번째'.\n- Lacking in accuracy, formatting.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "14th",
+        "original": "14th",
+        "translated": "14"
+    },
+    {
+        "grading": {
+            "id": 6,
+            "think": "'15th' was translated incorrectly as '15'.\n- To keep meaning clear, translate to '15번째'.\n- Affects accuracy, consistency.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "15th",
+        "original": "15th",
+        "translated": "15"
+    },
+    {
+        "grading": {
+            "id": 7,
+            "think": "Translation for '16th' given as '16', failing to convey the ordinal meaning correctly.\n- Needs '16번째'.\n- Issues impact all grading criteria.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "16th",
+        "original": "16th",
+        "translated": "16"
+    },
+    {
+        "grading": {
+            "id": 8,
+            "think": "The ordinal number '17th' translated to '17' doesn't retain ordinal character.\n- Should be '17번째'.\n- Falling short in accuracy, formatting.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "17th",
+        "original": "17th",
+        "translated": "17"
+    },
+    {
+        "grading": {
+            "id": 9,
+            "think": "For '18th' translated as '18', the ordinal aspect is lost.\n- Must use '18번째'.\n- Looks incorrect and inconsistent.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "18th",
+        "original": "18th",
+        "translated": "18"
+    },
+    {
+        "grading": {
+            "id": 10,
+            "think": "'19th' rendered as '19' misses the ordinal ranking feature.\n- Properly, it should be '19번째'.\n- Several grading criteria suffer as a result.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "19th",
+        "original": "19th",
+        "translated": "19"
+    },
+    {
+        "grading": {
+            "id": 11,
+            "think": "Translation of '1st' as '1' overlooks the ordinal requirement.\n- Should reflect as '첫번째' or '1번째'.\n- Accuracy, formatting, and consistency are affected.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "1st",
+        "original": "1st",
+        "translated": "1"
+    },
+    {
+        "grading": {
+            "id": 12,
+            "think": "'20th' translated to '20' fails to indicate its ordinal standing.\n- Better served as '20번째'.\n- Consider fixing for all metrics.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "20th",
+        "original": "20th",
+        "translated": "20"
+    },
+    {
+        "grading": {
+            "id": 13,
+            "think": "For '21st', translated just to '21', the title as an ordinal is overlooked.\n- Inclusion of '21번째' would serve better.\n- Misalignment affects accuracy, consistency, etc.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "21st",
+        "original": "21st",
+        "translated": "21"
+    },
+    {
+        "grading": {
+            "id": 14,
+            "think": "Translation '22nd' as '22' misses out on ordinal depiction.\n- Needs '22번째'.\n- Grading reflects deficiencies.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "22nd",
+        "original": "22nd",
+        "translated": "22"
+    },
+    {
+        "grading": {
+            "id": 15,
+            "think": "'23rd' rendered as '23' drops its ordinal meaning.\n- Correct as '23번째'.\n- Key factors like accuracy affected.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "23rd",
+        "original": "23rd",
+        "translated": "23"
+    },
+    {
+        "grading": {
+            "id": 16,
+            "think": "For '24th' translated as '24', it's missing the ordinal nuance.\n- Format as '24번째'.\n- Overall grading drops due to this.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "24th",
+        "original": "24th",
+        "translated": "24"
+    },
+    {
+        "grading": {
+            "id": 17,
+            "think": "Translation of '25th' as '25' misses the required ordinal conversion. Should be '25번째'. This affects accuracy and formatting.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "25th",
+        "original": "25th",
+        "translated": "25"
+    },
+    {
+        "grading": {
+            "id": 18,
+            "think": "The translation for '2nd' to '2' is lacking the ordinal suffix. Proper adaptation is '2번째'. Errors are seen in accuracy and formatting.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "2nd",
+        "original": "2nd",
+        "translated": "2"
+    },
+    {
+        "grading": {
+            "id": 19,
+            "think": "For the ordinal '3rd', translating it as '3' omits its ranking position. Better translation would be '3번째'. Impacts accuracy and consistency.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "3rd",
+        "original": "3rd",
+        "translated": "3"
+    },
+    {
+        "grading": {
+            "id": 20,
+            "think": "The translation of '4th' as '4' ignores the ordinal nature. Proper conversion should be '4번째'. This translation suffers primarily in accuracy and consistency.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "4th",
+        "original": "4th",
+        "translated": "4"
+    },
+    {
+        "grading": {
+            "id": 21,
+            "think": "For '5th', the rendering '5' does not reflect the ordinal character. Correct it to '5번째'. All criteria suffer due to this error.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "5th",
+        "original": "5th",
+        "translated": "5"
+    },
+    {
+        "grading": {
+            "id": 22,
+            "think": "Translating '6th' as '6' misses the ordinal representation. It should be '6번째'. Accuracy, formatting, and consistency are affected.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "6th",
+        "original": "6th",
+        "translated": "6"
+    },
+    {
+        "grading": {
+            "id": 23,
+            "think": "'7th' rendered as '7' omits its ordinal purpose. Should appear as '7번째'. Misdirected translation affects all scores.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "7th",
+        "original": "7th",
+        "translated": "7"
+    },
+    {
+        "grading": {
+            "id": 24,
+            "think": "'8th' was translated as '8', losing the sense of order. Needs to be '8번째'. This impacts accuracy and formatting, among other criteria.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "8th",
+        "original": "8th",
+        "translated": "8"
+    },
+    {
+        "grading": {
+            "id": 25,
+            "think": "The translation for '9th' as '9' lacks the ordinal suffix. Better expressed as '9번째'. Translation falls short in accuracy and consistency.\n",
+            "accuracy": 20,
+            "formatting": 5,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "9th",
+        "original": "9th",
+        "translated": "9"
+    },
+    {
+        "grading": {
+            "id": 26,
+            "think": "Translation captures the sense of the phrase 'and many others...' with '그리고 많은 다른 사람들...'. Preserves tone and style well.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*andManyOthers",
+        "original": "and many others...",
+        "translated": "그리고 많은 다른 사람들..."
+    },
+    {
+        "grading": {
+            "id": 27,
+            "think": "The English word 'artist' translated as '아티스트' is accurate and commonly used. No issues present.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*artist",
+        "original": "artist",
+        "translated": "아티스트"
+    },
+    {
+        "grading": {
+            "id": 28,
+            "think": "Translation for 'Artist Aliases' as '아티스트 별칭' is accurate in meaning and terminology. Successfully retains tone and style.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*artistAliases",
+        "original": "Artist Aliases",
+        "translated": "아티스트 별칭"
+    },
+    {
+        "grading": {
+            "id": 29,
+            "think": "'Bookmark' correctly translated to '북마크', a direct and commonly accepted term in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*bookmark",
+        "original": "Bookmark",
+        "translated": "북마크"
+    },
+    {
+        "grading": {
+            "id": 30,
+            "think": "Translation of 'Your score is {{score}}.' as '당신의 점수는 {{score}}점 입니다.' is fully accurate and preserves the placeholder format correctly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*classic*yourScore",
+        "original": "Your score is {{score}}.",
+        "translated": "당신의 점수는 {{score}}점 입니다."
+    },
+    {
+        "grading": {
+            "id": 31,
+            "think": "The term 'conflict' left untranslated. This leads to issues in meaning preservation. A more suitable term could be '갈등'.\n",
+            "accuracy": 20,
+            "formatting": 10,
+            "fluencyReadability": 5,
+            "consistency": 5,
+            "culturalAdaptation": 5
+        },
+        "key": "misc*conflict",
+        "original": "conflict",
+        "translated": "conflict"
+    },
+    {
+        "grading": {
+            "id": 32,
+            "think": "'Duration' translated accurately as '시간', which is appropriate for context referring to time period.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*duration",
+        "original": "Duration",
+        "translated": "시간"
+    },
+    {
+        "grading": {
+            "id": 33,
+            "think": "Translation accurately reflects the placeholder format and meaning for 'You have {{lives}} lives.'\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*elimination*yourLives",
+        "original": "You have {{lives}} lives.",
+        "translated": "{{lives}}개의 목숨이 있습니다."
+    },
+    {
+        "grading": {
+            "id": 34,
+            "think": "Translation diverges slightly from original intent; it focuses on bot requirements rather than 'hearing' the speaker. It could phrase more accurately by aligning closer with the original message.\n",
+            "accuracy": 40,
+            "formatting": 10,
+            "fluencyReadability": 8,
+            "consistency": 8,
+            "culturalAdaptation": 8
+        },
+        "key": "misc*failure*afkChannel*description",
+        "original": "Ensure you're not in the inactive voice channel so that you can hear me!",
+        "translated": "봇이 노래를 재생할 수 있도록 비활성 음성 채널에 있지 않은지 확인하세요!"
+    },
+    {
+        "grading": {
+            "id": 35,
+            "think": "'AFK Voice Channel' is directly and correctly translated as 'AFK 음성 채널'. Maintains technical terminology.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*afkChannel*title",
+        "original": "AFK Voice Channel",
+        "translated": "AFK 음성 채널"
+    },
+    {
+        "grading": {
+            "id": 36,
+            "think": "Translation faithfully represents the original message and retains the technical components for error reporting.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*command*description",
+        "original": "I ran into an error while running this command.\nProvide this to a developer if this happens consistently:\n{{debugId}}",
+        "translated": "이 명령어를 실행하는 동안 오류가 발생했습니다.\n이 문제가 계속 발생하면 개발자에게 다음 정보를 제공하세요.\n{{debugId}}"
+    },
+    {
+        "grading": {
+            "id": 37,
+            "think": "'Error Running Command' effectively translated as '명령어 실행 오류'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*command*title",
+        "original": "Error Running Command",
+        "translated": "명령어 실행 오류"
+    },
+    {
+        "grading": {
+            "id": 38,
+            "think": "Translation captures the full intent and important instructional elements though with added clarity to a Korean reader.\n",
+            "accuracy": 55,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*deprecatedTextCommand*description",
+        "original": "Text commands are no longer supported for new commands. Try out the new and improved slash commands instead! If slash commands are not visible in the server, please re-invite KMQ to the server.",
+        "translated": "새 명령에 대해 텍스트 명령이 더 이상 지원되지 않습니다. 대신 새롭고 향상된 슬래시 명령을 사용해 보십시오! 서버에서 슬래시 명령어가 보이지 않는다면 KMQ를 서버에 다시 초대해 주세요."
+    },
+    {
+        "grading": {
+            "id": 39,
+            "think": "'Text Commands Deprecated' translated accurately; both concise and clear.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*deprecatedTextCommand*title",
+        "original": "Text Commands Deprecated",
+        "translated": "더 이상 사용되지 않는 텍스트 명령"
+    },
+    {
+        "grading": {
+            "id": 40,
+            "think": "The term 'Error' translated as '오류', which is accurate and straightforward.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*error",
+        "original": "Error",
+        "translated": "오류"
+    },
+    {
+        "grading": {
+            "id": 41,
+            "think": "Instructions implemented accurately in 'Please try starting the round again...', effectively guiding the user.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*errorSelectingSong*description",
+        "original": "Please try starting the round again. If the issue persists, report it in our official KMQ server.",
+        "translated": "라운드를 다시 시작하십시오. 문제가 지속되면 공식 KMQ 서버에 보고하세요."
+    },
+    {
+        "grading": {
+            "id": 42,
+            "think": "'Error Selecting Song' clearly and straightforwardly translated as '노래 선택 오류'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*errorSelectingSong*title",
+        "original": "Error Selecting Song",
+        "translated": "노래 선택 오류"
+    },
+    {
+        "grading": {
+            "id": 43,
+            "think": "Translation 'There is no game in progress.' accurately keeps the message clear.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*game*noneInProgress*description",
+        "original": "There is no game in progress.",
+        "translated": "진행중인 게임이 없습니다."
+    },
+    {
+        "grading": {
+            "id": 44,
+            "think": "Translation for 'No Active Game' conveys the intended meaning crisply and accurately.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*game*noneInProgress*title",
+        "original": "No Active Game",
+        "translated": "활성화된 게임 없음."
+    },
+    {
+        "grading": {
+            "id": 45,
+            "think": "Maintains the message clarity while translating multiple placeholders and conditions accurately.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*gameOptionConflict*description",
+        "original": "{{optionOne}} game option is currently set. {{optionTwo}} and {{optionOne}} are incompatible. Remove the {{optionOne}} option by typing {{optionOneCommand}} to proceed.",
+        "translated": "현재 {{optionOne}} 게임 옵션이 설정되어 있습니다. {{optionTwo}} 및 {{optionOne}}은(는) 호환되지 않습니다. 계속하려면 {{optionOneCommand}}을(를) 입력하여 {{optionOne}} 옵션을 제거하세요."
+    },
+    {
+        "grading": {
+            "id": 46,
+            "think": "'Game Option Conflict' translated precisely and retains technical tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*gameOptionConflict*title",
+        "original": "Game Option Conflict",
+        "translated": "게임 옵션 충돌"
+    },
+    {
+        "grading": {
+            "id": 47,
+            "think": "Translation 'to allow them to play' accurately captures the intent with '재생을 할 수 있도록'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*groupsExcludeConflict*allow",
+        "original": "to allow them to play",
+        "translated": "재생을 할 수 있도록"
+    },
+    {
+        "grading": {
+            "id": 48,
+            "think": "Translation accurately retains the original sense of ‘one or more’ conflicts and provides an appropriate adaptation while properly managing the placeholders.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*groupsExcludeConflict*description",
+        "original": "One or more of the given {{conflictingOptionOne}} is already included in {{conflictingOptionTwo}}. \nThe following groups were **not** added to {{conflictingOptionOne}}:\n {{groupsList}}\nUse {{solutionStepOne}} and then {{solutionStepTwo}} {{allowOrPrevent}}.",
+        "translated": "주어진 {{conflictingOptionOne}} 중 하나 이상이 {{conflictingOptionTwo}}에 이미 포함되어 있습니다. \n다음 그룹은 {{conflictingOptionOne}}에 추가되지 **않았습니다**:\n {{groupsList}}\n{{solutionStepOne}}을(를) 사용한 다음 {{solutionStepTwo}} {{allowOrPrevent}}을(를) 사용하세요."
+    },
+    {
+        "grading": {
+            "id": 49,
+            "think": "Translation accurately captures the intention of 'to prevent them from playing' with the phrase '재생을 하지 못하도록'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*groupsExcludeConflict*prevent",
+        "original": "to prevent them from playing",
+        "translated": "재생을 하지 못하도록"
+    },
+    {
+        "grading": {
+            "id": 50,
+            "think": "The phrase 'Groups and Exclude Conflict' is translated clearly as '그룹 및 제외 충돌', maintaining the original meaning and tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*groupsExcludeConflict*title",
+        "original": "Groups and Exclude Conflict",
+        "translated": "그룹 및 제외 충돌"
+    },
+    {
+        "grading": {
+            "id": 51,
+            "think": "Translated text conveys the same meaning as 'You've already been eliminated this round.' in a clear and natural way.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*alreadyEliminated",
+        "original": "You've already been eliminated this round.",
+        "translated": "당신은 이미 이번 라운드에서 탈락했습니다."
+    },
+    {
+        "grading": {
+            "id": 52,
+            "think": "Translation accurately reflects the original sentence, maintaining clarity and grammatical correctness.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*bookmarkOutsideGame",
+        "original": "You can only bookmark songs during a game.",
+        "translated": "게임 중에만 노래를 북마크할 수 있습니다."
+    },
+    {
+        "grading": {
+            "id": 53,
+            "think": "'You've been eliminated this round.' is accurately and naturally translated; consistent with prior translations.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*eliminated",
+        "original": "You've been eliminated this round.",
+        "translated": "당신은 이번 라운드에서 탈락했습니다."
+    },
+    {
+        "grading": {
+            "id": 54,
+            "think": "The translation 'This server is banned from using KMQ...' retains key elements and directives clearly, matching the structure effectively.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*guildBanned",
+        "original": "This server is banned from using KMQ. For appeals, contact the official KMQ support server at {{supportServer}}.",
+        "translated": "이 서버는 KMQ 사용이 금지되었습니다. 항소하려면 {{supportServer}}의 공식 KMQ 지원 서버에 연락하세요."
+    },
+    {
+        "grading": {
+            "id": 55,
+            "think": "Translation of 'KMQ can only be used in servers.' is precise and natural in Korean context.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*guildOnly",
+        "original": "KMQ can only be used in servers.",
+        "translated": "KMQ는 서버에서만 사용할 수 있습니다."
+    },
+    {
+        "grading": {
+            "id": 56,
+            "think": "Successfully maintains original message complexity in translation, keeping placeholders in check.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*invalidBookmark",
+        "original": "You can only bookmark songs recently played in the last {{BOOKMARK_MESSAGE_SIZE}} rounds. You must bookmark the message sent by the bot containing the song.",
+        "translated": "최근 {{BOOKMARK_MESSAGE_SIZE}} 라운드에서 재생한 노래만 북마크에 추가할 수 있습니다. 노래가 포함된 봇이 보낸 메시지를 북마크해야 합니다."
+    },
+    {
+        "grading": {
+            "id": 57,
+            "think": "The translation communicates the intent of the English message consistently with a smooth flow.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*optionFromPreviousRound",
+        "original": "You are attempting to pick an option from an already completed round.",
+        "translated": "이미 완료된 라운드에서 옵션을 선택하려고 합니다."
+    },
+    {
+        "grading": {
+            "id": 58,
+            "think": "Clear and direct translation of the banning notice; retains clarity and necessary details.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*interaction*playerBanned",
+        "original": "You are banned from using KMQ. For appeals, contact the official KMQ support server at {{supportServer}}.",
+        "translated": "당신은 KMQ 사용이 금지되었습니다. 항소하려면 {{supportServer}}의 공식 KMQ 지원 서버에 연락하세요."
+    },
+    {
+        "grading": {
+            "id": 59,
+            "think": "Translation maintains the brevity and urgency of the original 'KMQ is currently under maintenance.'\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*maintenanceMode*description",
+        "original": "KMQ is currently under maintenance. Check back later!",
+        "translated": "KMQ는 현재 유지보수 중입니다. 나중에 다시 확인하세요!"
+    },
+    {
+        "grading": {
+            "id": 60,
+            "think": "'Maintenance Mode' translated accurately and faithfully as '유지 관리 모드.'\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*maintenanceMode*title",
+        "original": "Maintenance Mode",
+        "translated": "유지 관리 모드"
+    },
+    {
+        "grading": {
+            "id": 61,
+            "think": "Translation delivers the message in an appropriate tone, reflecting meaning of 'Response message was too long'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*messageTooLong",
+        "original": "Response message was too long, report this error to the KMQ help server",
+        "translated": "응답 메시지가 너무 깁니다. 이 오류를 KMQ 도움말 서버에 보고하십시오."
+    },
+    {
+        "grading": {
+            "id": 62,
+            "think": "Translation faithfully represents the original, ensuring all critical details and placeholders are maintained.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*missingPermissions*description",
+        "original": "Hi! I'm unable to message in the {{channelName}} channel. Please make sure the bot has permissions to message in this channel. See the following link for details: {{permissionsLink}}.",
+        "translated": "안녕하세요! {{channelName}} 채널에서 메시지를 보낼 수 없습니다. 봇이 이 채널에서 메시지를 보낼 수 있는 권한이 있는지 확인하십시오. 자세한 내용은 {{permissionsLink}} 링크를 참조하세요."
+    },
+    {
+        "grading": {
+            "id": 63,
+            "think": "'Missing Permissions' maintains the technical accuracy; aligns with the expected context in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*missingPermissions*title",
+        "original": "Missing Permissions",
+        "translated": "누락된 권한"
+    },
+    {
+        "grading": {
+            "id": 64,
+            "think": "Translation accurately reflects all necessary permissions directives, ensuring clarity across multiple lines.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*missingPermissionsText",
+        "original": "Ensure that the bot has the following permissions: {{missingPermissions}}\n\nSee the following link for details: {{permissionsLink}}. If you are still having issues, join the official KMQ server found in {{helpCommand}}",
+        "translated": "봇에 다음 권한이 있는지 확인하세요. {{missingPermissions}}\n\n자세한 내용은 {{permissionsLink}} 링크를 참조하세요. 여전히 문제가 있는 경우 {{helpCommand}}에 있는 공식 KMQ 서버에 가입하세요."
+    },
+    {
+        "grading": {
+            "id": 65,
+            "think": "Translation shifts the responsibility to the action of the command, slightly altering the sense. Better phrased as '음성 채널에 있을 때 {{command}}를 다시 보내세요.'\n",
+            "accuracy": 55,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*notInVC*description",
+        "original": "Send {{command}} again when you are in a voice channel.",
+        "translated": "음성 채널에 있을 때 {{command}}를 다시 보냅니다."
+    },
+    {
+        "grading": {
+            "id": 66,
+            "think": "Translation accurately represents the original phrase with direct and proper instruction.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*notInVC*title",
+        "original": "Join a Voice Channel",
+        "translated": "음성 채널 가입"
+    },
+    {
+        "grading": {
+            "id": 67,
+            "think": "Translation accurately mirrors the logic of the original, including detailed error reporting instructions.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*optionsGeneration*description",
+        "original": "Failed sending options to the channel. Use {{resetCommand}} and try again. If the issue persists, report it in the official KMQ server found in {{helpCommand}} and provide the following ID to a developer:\n{{debugId}}",
+        "translated": "채널에 옵션을 보내는 데 실패했습니다. {{resetCommand}}를 사용하고 다시 시도하십시오. 문제가 계속되면 {{helpCommand}}에서 찾을 수 있는 공식 KMQ 서버에 보고하고 다음 ID를 개발자에게 제공하십시오:\n{{debugId}}"
+    },
+    {
+        "grading": {
+            "id": 68,
+            "think": "Translation succinctly conveys the original message 'Error Sending Options', preserving the original tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*optionsGeneration*title",
+        "original": "Error Sending Options",
+        "translated": "옵션 보내기 오류"
+    },
+    {
+        "grading": {
+            "id": 69,
+            "think": "Translation accurately captures the intent and instruction of the original message, maintaining clarity and directness.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*retrievingSongData*description",
+        "original": "Try again in a bit, or report this error to the official KMQ server found in {{helpCommand}}.",
+        "translated": "잠시 후 다시 시도하거나 {{helpCommand}}에 있는 공식 KMQ 서버에 이 오류를 보고하세요."
+    },
+    {
+        "grading": {
+            "id": 70,
+            "think": "Direct and clear translation, effectively conveying the error message 'Error Retrieving Song Data'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*retrievingSongData*title",
+        "original": "Error Retrieving Song Data",
+        "translated": "노래 데이터 검색 오류"
+    },
+    {
+        "grading": {
+            "id": 71,
+            "think": "Translation keeps the sense of urgency and clarity intact from the original 'Current round has ended!'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*round*noneInProgress*description",
+        "original": "Current round has ended! Wait for the next round to begin.",
+        "translated": "현재 라운드가 종료되었습니다! 다음 라운드가 시작될 때까지 기다리십시오."
+    },
+    {
+        "grading": {
+            "id": 72,
+            "think": "Effective translation of the term 'Round Finished', keeping original intent and tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*round*noneInProgress*title",
+        "original": "Round Finished",
+        "translated": "라운드 종료"
+    },
+    {
+        "grading": {
+            "id": 73,
+            "think": "Translation preserves the context of time and sequence from 'Starting new round in 3 seconds...'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*songPlaying*description",
+        "original": "Starting new round in 3 seconds...",
+        "translated": "3초 안에 새로운 라운드 시작됩니다..."
+    },
+    {
+        "grading": {
+            "id": 74,
+            "think": "Clearly conveys the error within 'Error Playing Song', maintaining directness and comprehension.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*songPlaying*title",
+        "original": "Error Playing Song",
+        "translated": "노래 재생 오류"
+    },
+    {
+        "grading": {
+            "id": 75,
+            "think": "Translation 'Failed to find songs...' effectively communicates the action and suggested guidance.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*songQuery*description",
+        "original": "Failed to find songs matching this criteria. Try to broaden your search.",
+        "translated": "이 기준과 일치하는 노래를 찾지 못했습니다. 검색 범위를 넓히십시오."
+    },
+    {
+        "grading": {
+            "id": 76,
+            "think": "The translated term 'Song Query Error' retains the meaning in a clear and concise way.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*songQuery*title",
+        "original": "Song Query Error",
+        "translated": "노래 검색 오류"
+    },
+    {
+        "grading": {
+            "id": 77,
+            "think": "Simple and effective translation for 'added', aligning with consistent use in action-based contexts.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*unrecognizedGroups*added",
+        "original": "added",
+        "translated": "추가"
+    },
+    {
+        "grading": {
+            "id": 78,
+            "think": "Translation captures complex error details while maintaining original directives, ensuring clarity.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*unrecognizedGroups*description",
+        "original": "One or more of the specified group names was not recognized. Those groups that matched are {{matchedGroupsAction}}. Please ensure that the group name matches exactly with the list provided by {{helpGroups}}.\nThe following groups were **not** recognized:\n {{unmatchedGroups}}\n{{solution}}",
+        "translated": "지정된 그룹 이름 중 하나 이상이 인식되지 않았습니다. 일치하는 그룹은 {{matchedGroupsAction}}입니다. 그룹 이름이 {{helpGroups}}에서 제공한 목록과 정확히 일치하는지 확인하세요.\n다음 그룹은 인식되지 **않았습니다**:\n {{unmatchedGroups}}\n{{solution}}"
+    },
+    {
+        "grading": {
+            "id": 79,
+            "think": "The translation accurately proposes suggestions to the user, maintaining original intent and tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*unrecognizedGroups*didYouMean",
+        "original": "__Did you mean:__\n {{suggestions}}",
+        "translated": "__이건 어떠신가요?:__\n {{suggestions}}"
+    },
+    {
+        "grading": {
+            "id": 80,
+            "think": "Instruction is clearly communicated in the translation equivalent, maintaining original guidance.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*unrecognizedGroups*solution",
+        "original": "Use {{command}} to add the unmatched groups.",
+        "translated": "일치하지 않는 그룹을 추가하려면 {{command}}을(를) 사용하세요."
+    },
+    {
+        "grading": {
+            "id": 81,
+            "think": "Translation matches the directness and clarity of the original message 'Unknown Group Name'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*unrecognizedGroups*title",
+        "original": "Unknown Group Name",
+        "translated": "알 수 없는 그룹 이름"
+    },
+    {
+        "grading": {
+            "id": 82,
+            "think": "Translation of 'Expected true/false value for...' conveys the expected logic structure naturally in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*boolean*notBoolean",
+        "original": "Expected true/false value for {{argument}}.",
+        "translated": "{{argument}}에 대한 예상 true/false 값입니다."
+    },
+    {
+        "grading": {
+            "id": 83,
+            "think": "The requirement for a 'character' in '{{argument}}' is accurately and unambiguously retained.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*char*notChar",
+        "original": "Expected a character for {{argument}}.",
+        "translated": "{{argument}}에 대한 문자가 필요합니다."
+    },
+    {
+        "grading": {
+            "id": 84,
+            "think": "Translation effectively maintains the list and expectation format from 'Expected one of the following valid values:...'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*enum*notInEnum",
+        "original": "Expected one of the following valid {{argument}} values: ({{validValues}}).",
+        "translated": "다음 유효한 {{argument}} 값 중 하나가 필요합니다: ({{validValues}})."
+    },
+    {
+        "grading": {
+            "id": 85,
+            "think": "Translation captures the instruction and error notice related to argument number requirements correctly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*numArguments*incorrect",
+        "original": "Incorrect number of arguments. See {{help}} action:{{command}} for usage.",
+        "translated": "인수 수가 잘못되었습니다. 사용법은 {{help}} action:{{command}}을(를) 참조하세요."
+    },
+    {
+        "grading": {
+            "id": 86,
+            "think": "Translation conveys the expected logic limitation of '<= max' for argument value clearly in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*number*max",
+        "original": "Expected value less than or equal to {{max}} for {{argument}}",
+        "translated": "{{argument}}에 대해 {{max}}보다 작거나 같은 예상 값입니다."
+    },
+    {
+        "grading": {
+            "id": 87,
+            "think": "The message of 'Expected value greater than or equal to...' is aptly translated word-for-word, retaining precision.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*number*min",
+        "original": "Expected value greater than or equal to {{min}} for {{argument}}.",
+        "translated": "{{argument}}에 대해 {{min}}보다 크거나 같은 예상 값입니다."
+    },
+    {
+        "grading": {
+            "id": 88,
+            "think": "The expectation of a numeric value for '{{argument}}' is maintained correctly and comprehensibly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*number*notNumber",
+        "original": "Expected numeric value for {{argument}}.",
+        "translated": "{{argument}}에 대한 예상 숫자 값입니다."
+    },
+    {
+        "grading": {
+            "id": 89,
+            "think": "Translation succinctly conveys the notion of input validation issues.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*validation*title",
+        "original": "Input validation error",
+        "translated": "입력 유효성 검사 오류"
+    },
+    {
+        "grading": {
+            "id": 90,
+            "think": "Translation keeps the focus on ensuring voice channel space smoothly and naturally in Korean context.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*vcFull*description",
+        "original": "Ensure that there's enough room in the voice channel for me to join.",
+        "translated": "봇이 참여할 수 있도록 음성 채널에 충분한 공간이 있는지 확인하세요."
+    },
+    {
+        "grading": {
+            "id": 91,
+            "think": "Translation of 'Voice Channel Full' is both accurate and maintains the concerned tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*vcFull*title",
+        "original": "Voice Channel Full",
+        "translated": "음성 채널이 가득 참"
+    },
+    {
+        "grading": {
+            "id": 92,
+            "think": "The message about something going wrong retains its casual prompting nature well translated in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*vcJoin*description",
+        "original": "Something went wrong, try starting the game again in a bit.",
+        "translated": "문제가 발생했습니다. 잠시 후 게임을 다시 시작해 보세요."
+    },
+    {
+        "grading": {
+            "id": 93,
+            "think": "Translation precisely conveys the error nature related to joining a voice channel.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*failure*vcJoin*title",
+        "original": "Error Joining Voice Channel",
+        "translated": "음성 채널 가입 오류"
+    },
+    {
+        "grading": {
+            "id": 94,
+            "think": "Translation successfully adapts numerical and placeholder relations effectively for '{{limitStart}} to {{limitEnd}}'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*formattedLimit",
+        "original": "{{limitStart}} to {{limitEnd}} ({{songCount}} songs)",
+        "translated": "{{limitStart}} ~ {{limitEnd}} ({{songCount}} 곡)"
+    },
+    {
+        "grading": {
+            "id": 95,
+            "think": "Translation faithfully retains the role designation and actions for the new game owner.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*gameOwnerChanged*description",
+        "original": "The new game owner is {{newGameOwner}}. They are in charge of {{forcehintCommand}} and {{forceskipCommand}}.",
+        "translated": "새 게임 소유자는 {{newGameOwner}}입니다. {{forcehintCommand}} 및 {{forceskipCommand}}을(를) 담당합니다."
+    },
+    {
+        "grading": {
+            "id": 96,
+            "think": "Translation of 'Game Owner Changed' maintains the formal alert style.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*gameOwnerChanged*title",
+        "original": "Game Owner Changed",
+        "translated": "게임 소유자 변경"
+    },
+    {
+        "grading": {
+            "id": 97,
+            "think": "'Guess Rate' translated as '추측 비율' captures the concept accurately while maintaining the original tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*guessRate",
+        "original": "Guess Rate",
+        "translated": "추측 비율"
+    },
+    {
+        "grading": {
+            "id": 98,
+            "think": "Translation of 'Aliases' to '별칭' is direct and captures the meaning correctly in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*aliases",
+        "original": "Aliases",
+        "translated": "별칭"
+    },
+    {
+        "grading": {
+            "id": 99,
+            "think": "Translation maintains the excitement and clarity for 'BONUS ARTIST ROUND' with '보너스 아티스트 라운드'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*bonusArtistRound",
+        "original": "BONUS ARTIST ROUND",
+        "translated": "보너스 아티스트 라운드"
+    },
+    {
+        "grading": {
+            "id": 100,
+            "think": "The translation '보너스 경험치 및 아티스트 라운드' accurately conveys both components of the 'BONUS EXP AND ARTIST ROUND'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*bonusExpArtistRound",
+        "original": "BONUS EXP AND ARTIST ROUND",
+        "translated": "보너스 경험치 및 아티스트 라운드"
+    },
+    {
+        "grading": {
+            "id": 101,
+            "think": "'BONUS EXP ROUND' is effectively translated to '보너스 경험치 라운드', retaining the core concepts.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*bonusExpRound",
+        "original": "BONUS EXP ROUND",
+        "translated": "보너스 경험치 라운드"
+    },
+    {
+        "grading": {
+            "id": 102,
+            "think": "Complex translation delivering correct guess information, preserving placeholders and grammatical clarity.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*correctGuess",
+        "original": "{{correctGuesser}} guessed correctly (+{{expGain}} EXP) ({{timeToGuess}}s)",
+        "translated": "{{correctGuesser}}(이)가 올바르게 추측하였습니다 (+{{expGain}} 경험치) ({{timeToGuess}}초)"
+    },
+    {
+        "grading": {
+            "id": 103,
+            "think": "'Waiting for' translates to '기다리는 중', accurately conveying the ongoing status action.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*hiddenRemainingPlayers",
+        "original": "Waiting for",
+        "translated": "기다리는 중"
+    },
+    {
+        "grading": {
+            "id": 104,
+            "think": "Translation is straightforward and maintains the operational tone expected in '{{guessButton}} before the round ends {{timestamp}}!'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*hiddenTimerInfo",
+        "original": "{{guessButton}} before the round ends {{timestamp}}!",
+        "translated": "{{guessButton}} 라운드 종료 전 {{timestamp}}!"
+    },
+    {
+        "grading": {
+            "id": 105,
+            "think": "'Nobody got it.' is translated accurately and clearly with '아무도 맞추지 못했습니다.'\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*noCorrectGuesses",
+        "original": "Nobody got it.",
+        "translated": "아무도 맞추지 못했습니다."
+    },
+    {
+        "grading": {
+            "id": 106,
+            "think": "Translation captures the result clearly with '아무도 우승하지 못했습니다.', maintaining the original's intent.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*noWinners",
+        "original": "Nobody Won",
+        "translated": "아무도 우승하지 못했습니다."
+    },
+    {
+        "grading": {
+            "id": 107,
+            "think": "'Runners Up' translated as '준우승' captures the competitive context correctly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*runnersUp",
+        "original": "Runners Up",
+        "translated": "준우승"
+    },
+    {
+        "grading": {
+            "id": 108,
+            "think": "Translation accurately conveys the excitement and clarity of '{{songCount}} songs correctly guessed!'\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*songsCorrectlyGuessed",
+        "original": "{{songCount}} songs correctly guessed!",
+        "translated": "{{songCount}}곡을 정확히 추측을 하였습니다!"
+    },
+    {
+        "grading": {
+            "id": 109,
+            "think": "'Unique songs played' translated effectively with context preservation.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*inGame*uniqueSongsPlayed",
+        "original": "{{uniqueSongCount}} unique songs played.",
+        "translated": "{{uniqueSongCount}}개의 노래가 재생되었습니다."
+    },
+    {
+        "grading": {
+            "id": 110,
+            "think": "The translation delivers message clarity and structural correctness for future actions.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*bookmarked*description",
+        "original": "You'll receive a direct message with a link to '{{songName}}' at the end of the game.",
+        "translated": "게임이 끝나면 '{{songName}}'에 대한 링크가 포함된 다이렉트 메시지를 받게 됩니다."
+    },
+    {
+        "grading": {
+            "id": 111,
+            "think": "Direct and contextually accurate for listing dates with 'Played on {{date}}'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*bookmarked*message*playedOn",
+        "original": "Played on {{date}}",
+        "translated": "{{date}}에 플레이함."
+    },
+    {
+        "grading": {
+            "id": 112,
+            "think": "Translation maintains purpose and guidance related to song bookmarking effectively.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*bookmarked*message*title",
+        "original": "Bookmarked Songs",
+        "translated": "북마크된 노래들"
+    },
+    {
+        "grading": {
+            "id": 113,
+            "think": "'Song Bookmarked' is translated effectively with '노래 북마크', maintaining clarity and purpose.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*bookmarked*title",
+        "original": "Song Bookmarked",
+        "translated": "노래 북마크"
+    },
+    {
+        "grading": {
+            "id": 114,
+            "think": "Translation of 'Frequently Asked Questions' to '자주 묻는 질문' is standard and well-understood by Korean users.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*faq",
+        "original": "Frequently Asked Questions",
+        "translated": "자주 묻는 질문"
+    },
+    {
+        "grading": {
+            "id": 115,
+            "think": "Translation captures the complete essence and meaning of 'Full List of Groups'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*fullGroupsList",
+        "original": "Full List of Groups",
+        "translated": "전체 그룹 목록"
+    },
+    {
+        "grading": {
+            "id": 116,
+            "think": "For '🤖', no translation is needed as it's universally recognized, accurately conveyed.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*genericProgress*description",
+        "original": "🤖",
+        "translated": "🤖"
+    },
+    {
+        "grading": {
+            "id": 117,
+            "think": "'Working on it!' adequately captures the sense of the phrase in a concise and colloquial fashion.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*genericProgress*title",
+        "original": "Working on it!",
+        "translated": "작업 중!"
+    },
+    {
+        "grading": {
+            "id": 118,
+            "think": "'Guess the {{songOrArtist}}!' translation maintains the interactive tone and instruction clearly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*guess*title",
+        "original": "Guess the {{songOrArtist}}!",
+        "translated": "{{songOrArtist}} 추측!"
+    },
+    {
+        "grading": {
+            "id": 119,
+            "think": "Translation precisely captures the instructional nature of 'How To Play'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*howToPlay",
+        "original": "How To Play",
+        "translated": "게임 방법"
+    },
+    {
+        "grading": {
+            "id": 120,
+            "think": "Translation maintains the engaging and encouraging tone of 'Leave a review!' \n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*leaveReview",
+        "original": "Leave a review!",
+        "translated": "리뷰를 남겨주세요!"
+    },
+    {
+        "grading": {
+            "id": 121,
+            "think": "'Official KMQ Server' accurately reflects the formality and specificity needed in the context.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*officialKmqServer",
+        "original": "Official KMQ Server",
+        "translated": "공식 KMQ 서버"
+    },
+    {
+        "grading": {
+            "id": 122,
+            "think": "Translation effectively communicates the current access limitations and alternative suggestion.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*profile*inaccessible",
+        "original": "I can't access that user right now. Try using {{profileUserID}} instead.",
+        "translated": "지금은 해당 사용자에 액세스할 수 없습니다. 대신 {{profileUserID}}을(를) 사용해 보세요."
+    },
+    {
+        "grading": {
+            "id": 123,
+            "think": "The translation clearly outlines the prerequisite for tracking stats with complete context.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*profile*noStats",
+        "original": "This user needs to play their first game before their stats are tracked.",
+        "translated": "이 사용자는 통계를 추적하기 전에 첫 번째 게임을 플레이해야 합니다."
+    },
+    {
+        "grading": {
+            "id": 124,
+            "think": "Reflects the action of 'resetting' options effectively, with correct terminology.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*resetOption",
+        "original": "Resets the {{optionName}} option",
+        "translated": "{{optionName}} 옵션을 재설정합니다."
+    },
+    {
+        "grading": {
+            "id": 125,
+            "think": "'Uh-oh' naturally translated to '이런!' retaining the exclamation and surprise element.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*title*failure",
+        "original": "Uh-oh",
+        "translated": "이런!"
+    },
+    {
+        "grading": {
+            "id": 126,
+            "think": "Direct translation 'Vote!' to '투표' captures the interactive call to action succinctly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*interaction*vote",
+        "original": "Vote!",
+        "translated": "투표"
+    },
+    {
+        "grading": {
+            "id": 127,
+            "think": "Retains the original meaning and applicability across contexts for 'Level'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*level",
+        "original": "Level",
+        "translated": "레벨"
+    },
+    {
+        "grading": {
+            "id": 128,
+            "think": "Translation handles leveling details efficiently, maintaining order and clarity with placeholders.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*levelUp*entry",
+        "original": "{{user}} has leveled up from {{startLevel}} to {{endLevel}} ({{rank}})",
+        "translated": "{{user}}님이 {{startLevel}}에서 {{endLevel}}({{rank}})로 레벨 업되었습니다."
+    },
+    {
+        "grading": {
+            "id": 129,
+            "think": "The translation adds a celebratory tone '레벨 업을 축하합니다!' which slightly extends beyond the original 'Power Up'.\n",
+            "accuracy": 55,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*levelUp*title",
+        "original": "🚀 Power Up!",
+        "translated": "🚀 레벨 업을 축하합니다! 🚀"
+    },
+    {
+        "grading": {
+            "id": 130,
+            "think": "'List of groups' translated accurately and directly as '그룹 목록'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*listOfGroups",
+        "original": "list of groups",
+        "translated": "그룹 목록"
+    },
+    {
+        "grading": {
+            "id": 131,
+            "think": "Translation 'No' to '아니요' accurately captures the refusal or negation meaning.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*no",
+        "original": "No",
+        "translated": "아니요"
+    },
+    {
+        "grading": {
+            "id": 132,
+            "think": "'None' translated straightforwardly as '없음', accurately conveying absence.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*none",
+        "original": "None",
+        "translated": "없음"
+    },
+    {
+        "grading": {
+            "id": 133,
+            "think": "'N/A' translated as '해당 없음' efficiently indicates non-applicability.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*notApplicable",
+        "original": "N/A",
+        "translated": "해당 없음"
+    },
+    {
+        "grading": {
+            "id": 134,
+            "think": "Translation accurately reflects time unit with '{{count}} day' translated to '{{count}}일'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*day_one",
+        "original": "{{count}} day",
+        "translated": "{{count}}일"
+    },
+    {
+        "grading": {
+            "id": 135,
+            "think": "Plural form 'days' accurately conveyed as '일', suitable for numerical qualifiers.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*day_other",
+        "original": "{{count}} days",
+        "translated": "{{count}}일"
+    },
+    {
+        "grading": {
+            "id": 136,
+            "think": "Translation for '{{count}} hour ago' maintains the same past reference format and clarity.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*hourAgo_one",
+        "original": "{{count}} hour ago",
+        "translated": "{{count}}시간 전"
+    },
+    {
+        "grading": {
+            "id": 137,
+            "think": "The translation accurately uses pluralization to maintain the passage of time context.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*hourAgo_other",
+        "original": "{{count}} hours ago",
+        "translated": "{{count}}시간 전"
+    },
+    {
+        "grading": {
+            "id": 138,
+            "think": "Singular form 'hour' accurately conveyed with '{{count}}시간'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*hour_one",
+        "original": "{{count}} hour",
+        "translated": "{{count}}시간"
+    },
+    {
+        "grading": {
+            "id": 139,
+            "think": "Translates 'hours' with plural implication in Korean, maintaining regular usage.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*hour_other",
+        "original": "{{count}} hours",
+        "translated": "{{count}}시간"
+    },
+    {
+        "grading": {
+            "id": 140,
+            "think": "Translation accurately reflects the standard use of 'level' in games or contexts.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*level_one",
+        "original": "level",
+        "translated": "레벨"
+    },
+    {
+        "grading": {
+            "id": 141,
+            "think": "Translation retains consistency and usage suitability for 'levels'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*level_other",
+        "original": "levels",
+        "translated": "레벨"
+    },
+    {
+        "grading": {
+            "id": 142,
+            "think": "Translation effectively communicates '{{count}} minute ago' with past tense implication.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*minuteAgo_one",
+        "original": "{{count}} minute ago",
+        "translated": "{{count}}분 전"
+    },
+    {
+        "grading": {
+            "id": 143,
+            "think": "Maintains plurality and correct time context in translation to '{{count}}분 전'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*minuteAgo_other",
+        "original": "{{count}} minutes ago",
+        "translated": "{{count}}분 전"
+    },
+    {
+        "grading": {
+            "id": 144,
+            "think": "Translation of 'minutes remaining' accurately captures time left concept in Korean.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*minuteRemaining_one",
+        "original": "{{count}} minute remaining",
+        "translated": "{{count}}분 남음"
+    },
+    {
+        "grading": {
+            "id": 145,
+            "think": "Translation succinctly captures remaining time with '{{count}}분 남음', accurately contextualizing time left.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*minuteRemaining_other",
+        "original": "{{count}} minutes remaining",
+        "translated": "{{count}}분 남음"
+    },
+    {
+        "grading": {
+            "id": 146,
+            "think": "Translation of singular 'minute' remains consistent and accurate as '{{count}}분'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*minute_one",
+        "original": "{{count}} minute",
+        "translated": "{{count}}분"
+    },
+    {
+        "grading": {
+            "id": 147,
+            "think": "Accurate in reflecting plural form 'minutes' while maintaining intended meaning with '{{count}}분'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*minute_other",
+        "original": "{{count}} minutes",
+        "translated": "{{count}}분"
+    },
+    {
+        "grading": {
+            "id": 148,
+            "think": "Translation captures singular 'player' effectively and suits common usage as '{{count}}명'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*player_one",
+        "original": "{{count}} player",
+        "translated": "{{count}}명"
+    },
+    {
+        "grading": {
+            "id": 149,
+            "think": "Plural 'players' succinctly translated while maintaining coherence as '{{count}}명'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*player_other",
+        "original": "{{count}} players",
+        "translated": "{{count}}명"
+    },
+    {
+        "grading": {
+            "id": 150,
+            "think": "Accurate reflection of singular 'second' with '{{count}}초', maintaining clarity in time expression.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*second_one",
+        "original": "{{count}} second",
+        "translated": "{{count}}초"
+    },
+    {
+        "grading": {
+            "id": 151,
+            "think": "Translation captures plural 'seconds' consistently, using '{{count}}초' for clarity.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*second_other",
+        "original": "{{count}} seconds",
+        "translated": "{{count}}초"
+    },
+    {
+        "grading": {
+            "id": 152,
+            "think": "Translation of singular 'song' as '{{count}}곡' is accurate and contextually appropriate.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*song_one",
+        "original": "{{count}} song",
+        "translated": "{{count}}곡"
+    },
+    {
+        "grading": {
+            "id": 153,
+            "think": "Plural 'songs' translates effectively, remaining grammatically sound.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*song_other",
+        "original": "{{count}} songs",
+        "translated": "{{count}}곡"
+    },
+    {
+        "grading": {
+            "id": 154,
+            "think": "'You survived {{count}} song!' preserved the meaning but incorrectly used plural form '개의'. It should be object-less or singular form.\n",
+            "accuracy": 55,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*suddenDeathEnd_one",
+        "original": "You survived {{count}} song!",
+        "translated": "{{count}}개의 노래에서 생존하셨습니다!"
+    },
+    {
+        "grading": {
+            "id": 155,
+            "think": "Effectively keeps original excitement in communicating endurance over {{count}} songs.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*suddenDeathEnd_other",
+        "original": "You survived {{count}} songs!",
+        "translated": "{{count}}개의 노래에서 생존하셨습니다!"
+    },
+    {
+        "grading": {
+            "id": 156,
+            "think": "Translation captures list format and victory context comprehensibly.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*winMessage_one",
+        "original": "{{winners, list}} wins!",
+        "translated": "{{winners, list}} 승리!"
+    },
+    {
+        "grading": {
+            "id": 157,
+            "think": "Correctly translated, but {{winners, list}} should match the verb tense to 'win'.\n",
+            "accuracy": 58,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*plural*winMessage_other",
+        "original": "{{winners, list}} win!",
+        "translated": "{{winners, list}} 승리!"
+    },
+    {
+        "grading": {
+            "id": 158,
+            "think": "Context of deactivation in games is correctly conveyed, upholding restriction tone and meaning.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*competition",
+        "original": "This command has been disabled for regular users in the competition.",
+        "translated": "이 명령어는 게임에서 일반 사용자에게는 비활성화되어 있습니다."
+    },
+    {
+        "grading": {
+            "id": 159,
+            "think": "Translation validly retains requirement of same voice channel context with the bot.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*differentVC",
+        "original": "You must be in the same voice channel as the bot to use this command.",
+        "translated": "이 명령어를 사용하려면 봇과 동일한 음성 채널에 있어야 합니다."
+    },
+    {
+        "grading": {
+            "id": 160,
+            "think": "Conveys restriction 'You can't...' concerning mode usage effectively.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*notClipMode",
+        "original": "You can't do that while in clip mode.",
+        "translated": "클립 모드인 동안에는 그것을 할 수 없습니다."
+    },
+    {
+        "grading": {
+            "id": 161,
+            "think": "Translation captures restrictions accurately during a 'game session', with formal tone intact.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*notGameSession",
+        "original": "You can't do that while in a game session.",
+        "translated": "게임 세션 중에는 이 작업을 수행할 수 없습니다."
+    },
+    {
+        "grading": {
+            "id": 162,
+            "think": "Translation effectively conveys restriction during 'hidden round' with appropriate formality.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*notHidden",
+        "original": "You can't do that during a hidden round.",
+        "translated": "숨겨진 라운드에서는 해당 작업을 실행할 수 없습니다."
+    },
+    {
+        "grading": {
+            "id": 163,
+            "think": "Message of restriction during 'listening session' is accurately conveyed with correct grammar and tone.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*notListeningSession",
+        "original": "You can't do that while in a listening session.",
+        "translated": "청취 세션 중에는 이 작업을 수행할 수 없습니다."
+    },
+    {
+        "grading": {
+            "id": 164,
+            "think": "Translation handles complex action instructions efficiently for 'playlist' restrictions.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*notPlaylist",
+        "original": "You can't change that option when playing from a playlist. Use {{playlistResetCommand}} before changing this option.",
+        "translated": "재생 목록에서 재생할 때 해당 옵션을 변경할 수 없습니다. 이 옵션을 변경하기 전에 {{playlistResetCommand}}를 사용하세요."
+    },
+    {
+        "grading": {
+            "id": 165,
+            "think": "The translation accurately maintains restriction context during 'sudden death' with a slight loose translation on 'sudden death'.\n",
+            "accuracy": 55,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*notSuddenDeath",
+        "original": "You can't do that during sudden death.",
+        "translated": "폭사 게임 중에는 그렇게 할 수 없습니다."
+    },
+    {
+        "grading": {
+            "id": 166,
+            "think": "Use of polite format in 'Wait...' accurately contextualizes patience request.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*preCheck*title",
+        "original": "Wait...",
+        "translated": "잠시만 기다려주십시오..."
+    },
+    {
+        "grading": {
+            "id": 167,
+            "think": "Translation maintains clarity and standard use for 'Release Date'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*releaseDate",
+        "original": "Release Date",
+        "translated": "발매 날짜"
+    },
+    {
+        "grading": {
+            "id": 168,
+            "think": "Translation accurately conveys urgency and ensures logical sequence during downtime notifications.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*restart*description_hard",
+        "original": "Downtime will be approximately a few seconds. Please end the current game to ensure your progress is saved!",
+        "translated": "작동 중지 시간은 약 몇 초입니다. 진행 상황이 저장되었는지 확인하려면 현재 게임을 종료하세요!"
+    },
+    {
+        "grading": {
+            "id": 169,
+            "think": "Translation of an upcoming event maintains clarity and timeline specificity.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*restart*title",
+        "original": "Upcoming Restart in {{timeUntilRestart}} Minutes.",
+        "translated": "{{timeUntilRestart}} 분 후 재시동 예정"
+    },
+    {
+        "grading": {
+            "id": 170,
+            "think": "Conveys the message of task completion appropriately in sending entities within the game.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*sendingBookmarkedSongs*description",
+        "original": "Sending {{songs}} to {{players}}.",
+        "translated": "{{songs}}를 {{players}}에게 보내는 중입니다."
+    },
+    {
+        "grading": {
+            "id": 171,
+            "think": "Communicates the action of sending 'bookmarked songs' succinctly without ambiguity.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*sendingBookmarkedSongs*title",
+        "original": "Sending Bookmarked Songs...",
+        "translated": "북마크된 노래를 보내는 중..."
+    },
+    {
+        "grading": {
+            "id": 172,
+            "think": "Translation retains original brevity and action implication for 'Skip'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*skip",
+        "original": "Skip",
+        "translated": "건너뛰기"
+    },
+    {
+        "grading": {
+            "id": 173,
+            "think": "Retains universality and regular usage for 'song'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*song",
+        "original": "song",
+        "translated": "노래"
+    },
+    {
+        "grading": {
+            "id": 174,
+            "think": "Translation maintains the noun form and meaning for 'Song Aliases'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*songAliases",
+        "original": "Song Aliases",
+        "translated": "노래 별칭"
+    },
+    {
+        "grading": {
+            "id": 175,
+            "think": "Effectively maintains ownership of score in format and context.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*team*yourScore",
+        "original": "Your score: {{score}}",
+        "translated": "당신의 점수: {{score}}"
+    },
+    {
+        "grading": {
+            "id": 176,
+            "think": "Team-based scoring preserved in translation with suitable structuring and fluency.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*team*yourTeamScore",
+        "original": "Your team's score: {{teamScore}}",
+        "translated": "당신의 팀 점수: {{teamScore}}"
+    },
+    {
+        "grading": {
+            "id": 177,
+            "think": "The translation '시간의 최대' does not accurately convey the meaning of 'Time's up'. A more correct translation might be '시간이 다 됐습니다.'\n",
+            "accuracy": 30,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*timeFinished",
+        "original": "Time's up",
+        "translated": "시간의 최대"
+    },
+    {
+        "grading": {
+            "id": 178,
+            "think": "Effectively communicates playlist completion and clarifies action with 'reshuffling'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*uniqueSongsReset*description",
+        "original": "All songs have been played. {{totalSongCount}} songs will be reshuffled.",
+        "translated": "모든 곡이 재생되었습니다. {{totalSongCount}}곡이 재구성됩니다."
+    },
+    {
+        "grading": {
+            "id": 179,
+            "think": "The translation does not fully capture 'Unique Songs'. A more accurate translation could be '고유 곡 재설정'.\n",
+            "accuracy": 45,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*uniqueSongsReset*title",
+        "original": "Resetting Unique Songs",
+        "translated": "곡 재설정"
+    },
+    {
+        "grading": {
+            "id": 180,
+            "think": "Translation maintains the simplicity and instructional nature of 'Usage'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*usage",
+        "original": "Usage",
+        "translated": "사용법"
+    },
+    {
+        "grading": {
+            "id": 181,
+            "think": "Translation accurately conveys the concept of 'views' in digital contexts.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*views",
+        "original": "views",
+        "translated": "조회수"
+    },
+    {
+        "grading": {
+            "id": 182,
+            "think": "Translation effectively presents the question format and context for user action.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*warning*addRemoveOrdering*footer",
+        "original": "Did you mean to use {{command}} {{addOrRemove}}?",
+        "translated": "{{command}} {{addOrRemove}}을(를) 사용하려고 했습니까?"
+    },
+    {
+        "grading": {
+            "id": 183,
+            "think": "Translation is accurate and appropriately utilizes common expression for 'Yes'.\n",
+            "accuracy": 60,
+            "formatting": 10,
+            "fluencyReadability": 10,
+            "consistency": 10,
+            "culturalAdaptation": 10
+        },
+        "key": "misc*yes",
+        "original": "Yes",
+        "translated": "예"
+    }
+]

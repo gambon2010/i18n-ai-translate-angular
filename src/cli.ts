@@ -35,7 +35,7 @@ const processModelArgs = (options: any): ModelArgs => {
             }
 
             if (!options.batchSize) {
-                batchSize = 32;
+                batchSize = 16;
             }
 
             if (!options.batchMaxTokens) {
@@ -64,7 +64,7 @@ const processModelArgs = (options: any): ModelArgs => {
             }
 
             if (!options.batchSize) {
-                batchSize = 32;
+                batchSize = 16;
             }
 
             if (!options.batchMaxTokens) {
@@ -117,7 +117,7 @@ program
     .version(VERSION);
 
 program
-    .command("grade-test")
+    .command("grade")
     .requiredOption(
         "-o, --original <original>",
         "Original i18n file or path of source language, in the jsons/ directory if a relative path is given",

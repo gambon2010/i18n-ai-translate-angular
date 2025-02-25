@@ -1,3 +1,4 @@
+import type { GradeItemOutput } from "./types";
 import {
     type GenerateStateJson,
     type GradeItem,
@@ -60,19 +61,27 @@ export default class GenerateTranslationJson {
         flattenedTranslatedJson: { [key: string]: string },
         options: GradeOptions,
         translationStats: TranslationStatsItem,
-    ): Promise<void> {
+    ): Promise<GradeItemOutput[]> {
         const gradeItemArray = this.generateGradeItemArray(
             flattenedOriginalJson,
             flattenedTranslatedJson,
         );
 
-        const generatedTranslation = await this.generateTranslationJson(
+        const response = await this.generateTranslationJson(
             gradeItemArray,
             options,
             translationStats,
         );
 
-        // this.convertTranslateItemToIndex(generatedTranslation);
+        return response.map(
+            (gradeItem) =>
+                ({
+                    grading: gradeItem.grading,
+                    key: gradeItem.key,
+                    original: gradeItem.original,
+                    translated: gradeItem.translated,
+                }) as GradeItemOutput,
+        );
     }
 
     private generateGradeItemsInput(gradeItems: GradeItem[]): GradeItemInput[] {
@@ -162,7 +171,14 @@ export default class GenerateTranslationJson {
     ): GradeItem[] {
         return Object.keys(flattenedOriginalJson).reduce((acc, key) => {
             if (
-                Object.prototype.hasOwnProperty.call(flattenedOriginalJson, key)
+                Object.prototype.hasOwnProperty.call(
+                    flattenedOriginalJson,
+                    key,
+                ) &&
+                Object.prototype.hasOwnProperty.call(
+                    flattenedTranslatedJson,
+                    key,
+                )
             ) {
                 acc.push(
                     this.generateGradeItem(
@@ -172,6 +188,8 @@ export default class GenerateTranslationJson {
                         flattenedTranslatedJson[key],
                     ),
                 );
+            } else {
+                throw new Error(`Key: '${key}' is missing in translated file`);
             }
 
             return acc;
@@ -215,7 +233,7 @@ export default class GenerateTranslationJson {
                 options,
                 promptSize,
                 3,
-                this.getGradeItemToken,
+                this.getGradeItemToken.bind(this),
             );
 
             for (const batchTranslateItem of batchTranslateItemArray) {
@@ -270,26 +288,7 @@ export default class GenerateTranslationJson {
             }
         }
 
-        if (options.verbose) {
-            printExecutionTime(
-                translationStats.batchStartTime,
-                "Translation execution time: ",
-            );
-        }
-
         return generatedTranslation;
-    }
-
-    private convertTranslateItemToIndex(generatedTranslation: GradeItem[]): {
-        [key: string]: string;
-    } {
-        return generatedTranslation.reduce(
-            (acc, translation) => {
-                acc[translation.key] = translation.translated;
-                return acc;
-            },
-            {} as { [key: string]: string },
-        );
     }
 
     private parseGradingToJson(outputText: string): GradingScaleItemOutput[] {
@@ -309,15 +308,11 @@ export default class GenerateTranslationJson {
         item: GradingScaleItemOutput,
     ): item is GradingScaleItemOutput {
         return (
-            typeof item.accuracy.meaning === "number" &&
-            typeof item.accuracy.toneStyle === "number" &&
-            typeof item.accuracy.grammarSyntax === "number" &&
-            typeof item.formatting.punctuationSpacing === "number" &&
-            typeof item.formatting.capitalizationFormatting === "number" &&
-            typeof item.fluencyReadability.naturalness === "number" &&
-            typeof item.fluencyReadability.clarity === "number" &&
-            typeof item.consistency.terminologyWordChoice === "number" &&
-            typeof item.culturalAdaptation.localization === "number" &&
+            typeof item.accuracy === "number" &&
+            typeof item.formatting === "number" &&
+            typeof item.fluencyReadability === "number" &&
+            typeof item.consistency === "number" &&
+            typeof item.culturalAdaptation === "number" &&
             typeof item.id === "number" &&
             item.id > 0
         );
@@ -337,81 +332,36 @@ export default class GenerateTranslationJson {
             if (gradedItem) {
                 baseItem.grading = gradedItem;
 
-                if (
-                    gradedItem.accuracy.meaning < 0 ||
-                    gradedItem.accuracy.meaning > 20
-                ) {
+                if (gradedItem.accuracy < 0 || gradedItem.accuracy > 60) {
                     baseItem.lastFailure =
                         "The meaning score must be between 0 and 20.";
                     continue;
                 }
 
-                if (
-                    gradedItem.accuracy.toneStyle < 0 ||
-                    gradedItem.accuracy.toneStyle > 10
-                ) {
-                    baseItem.lastFailure =
-                        "The tone style score must be between 0 and 10.";
-                    continue;
-                }
-
-                if (
-                    gradedItem.accuracy.grammarSyntax < 0 ||
-                    gradedItem.accuracy.grammarSyntax > 10
-                ) {
-                    baseItem.lastFailure =
-                        "The grammar syntax score must be between 0 and 10.";
-                    continue;
-                }
-
-                if (
-                    gradedItem.formatting.punctuationSpacing < 0 ||
-                    gradedItem.formatting.punctuationSpacing > 10
-                ) {
+                if (gradedItem.formatting < 0 || gradedItem.formatting > 10) {
                     baseItem.lastFailure =
                         "The punctuation spacing score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
-                    gradedItem.formatting.capitalizationFormatting < 0 ||
-                    gradedItem.formatting.capitalizationFormatting > 10
-                ) {
-                    baseItem.lastFailure =
-                        "The capitalization formatting score must be between 0 and 10.";
-                    continue;
-                }
-
-                if (
-                    gradedItem.fluencyReadability.naturalness < 0 ||
-                    gradedItem.fluencyReadability.naturalness > 10
+                    gradedItem.fluencyReadability < 0 ||
+                    gradedItem.fluencyReadability > 10
                 ) {
                     baseItem.lastFailure =
                         "The naturalness score must be between 0 and 10.";
                     continue;
                 }
 
-                if (
-                    gradedItem.fluencyReadability.clarity < 0 ||
-                    gradedItem.fluencyReadability.clarity > 10
-                ) {
-                    baseItem.lastFailure =
-                        "The clarity score must be between 0 and 10.";
-                    continue;
-                }
-
-                if (
-                    gradedItem.consistency.terminologyWordChoice < 0 ||
-                    gradedItem.consistency.terminologyWordChoice > 10
-                ) {
+                if (gradedItem.consistency < 0 || gradedItem.consistency > 10) {
                     baseItem.lastFailure =
                         "The terminology word choice score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
-                    gradedItem.culturalAdaptation.localization < 0 ||
-                    gradedItem.culturalAdaptation.localization > 10
+                    gradedItem.culturalAdaptation < 0 ||
+                    gradedItem.culturalAdaptation > 10
                 ) {
                     baseItem.lastFailure =
                         "The localization score must be between 0 and 10.";
@@ -460,8 +410,6 @@ export default class GenerateTranslationJson {
         } catch (e) {
             printError(`Failed to grade: ${e}\n`);
         }
-
-        console.log(grades);
 
         const parsedOutput = this.parseGradingToJson(grades);
         const validTranslationObjects = parsedOutput.filter(

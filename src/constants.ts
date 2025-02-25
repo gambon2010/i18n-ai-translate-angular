@@ -1,6 +1,6 @@
 import Engine from "./enums/engine";
 
-export const DEFAULT_BATCH_SIZE = 32;
+export const DEFAULT_BATCH_SIZE = 16;
 export const DEFAULT_REQUEST_TOKENS = 4096;
 export const VERSION = "0.0.1";
 export const FLATTEN_DELIMITER = "*";

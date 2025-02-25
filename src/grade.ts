@@ -6,9 +6,11 @@ import {
 import { flatten } from "flat";
 import {
     getLanguageCodeFromFilename,
+    getMeanGrade,
     printError,
     printExecutionTime,
     printInfo,
+    printResults,
 } from "./utils";
 import GenerateTranslationJson from "./generate_json/generate";
 import fs from "fs";
@@ -63,18 +65,24 @@ export default async function grade(options: GradeOptions): Promise<Object> {
 
     const generateTranslationJson = new GenerateTranslationJson(options);
 
-    await generateTranslationJson.translateJson(
+    const response = await generateTranslationJson.translateJson(
         flattenedOriginalJson,
         flattenedTranslatedJson,
         options,
         translationStats,
     );
 
+    if (response) {
+        fs.writeFileSync("result.json", JSON.stringify(response, null, 4));
+    }
+
     if (options.verbose) {
         printExecutionTime(
             translationStats.batchStartTime,
             "Total execution time: ",
         );
+        const meanGrade = getMeanGrade(response);
+        printResults(meanGrade);
     }
 
     return Object;

@@ -14,50 +14,45 @@ export default function gradingPromptJson(
 ): string {
     const input = JSON.stringify(verificationInput);
 
-    return `You are an expert linguist and translation evaluator. Your task is to assess the quality of a translated sentence based on specific grading criteria.
+    return `You are an expert linguist and translation evaluator. Assess translation quality based on set criteria.
 
 Check translations from ${originalLanguage} to ${translatedLanguage}.
 
 Input:
 
-    Original Text: {original}
-    Translated Text: {translated}
-    Context (if available): {context}
-    Last Failure (if available) explains why the last attempt at grading was rejected: {lastFailure}
+    Original: {original}
+    Translated: {translated}
+    Context (if any): {context}
+    Last Grading Failure (if any): {lastFailure}
 
 Grading Process:
 
-    Before grading, reflect on the translation and provide a brief analysis in the "think" field. This should include any notable observations about meaning preservation, tone, fluency, and potential issues.
-    After reflection, proceed with grading according to the categories below.
+    Reflection ("think" field): Briefly analyze meaning, tone, fluency, and issues before grading.
+    Scoring (0 to max points per category):
 
-Grading Criteria (Score out of 100):
+Criteria (100 points total):
 
-    Accuracy (40 points total)
-        Meaning (20 points): Does the translation preserve the exact meaning of the original text?
-        Tone & Style (10 points): Is the tone and formality appropriate?
-        Grammar & Syntax (10 points): Is the sentence grammatically correct and natural?
-
-    Formatting (20 points total)
-        Punctuation & Spacing (10 points): Is punctuation correctly placed and spaced?
-        Capitalization & Formatting (10 points): Are proper nouns, titles, and formatting preserved?
-
-    Fluency & Readability (20 points total)
-        Naturalness (10 points): Does the sentence flow smoothly?
-        Clarity (10 points): Is the meaning clear and unambiguous?
-
-    Consistency (10 points total)
-        Terminology & Word Choice (10 points): Are key terms translated consistently?
-
-    Cultural & Contextual Adaptation (10 points total)
-        Localization (10 points): Are idioms, cultural references, or region-specific phrases adapted correctly?
-
-Where X is a score between 0 and the max points per category.
+    Accuracy (60 points)
+        Meaning: Preserves original meaning?
+        Tone & Style: Matches tone/formality?
+        Grammar & Syntax: Grammatically correct and natural?
+    Formatting (10 points)
+        Punctuation & Spacing: Correct punctuation placed & spaced?
+        Capitalization & Formatting: Are proper nouns, titles, and formatting preserved?
+    Fluency & Readability (10 points)
+        Naturalness: Sentences flow smoothly?
+        Clarity: Meaning clear and unambiguous?
+    Consistency (10 points)
+        Terminology & Word Choice: Key terms translated consistently?
+    Cultural & Contextual Adaptation (10 points)
+        Localization: Idioms, cultural references, or region-specific phrases adapted correctly?
 
 Guidelines:
 
-    Be strict in grading.
-    If context is provided, take it into account.
-    If a category is flawless, give it full points.
+    Grade strictly. 
+    Consider context if available.
+    Only give more than half points in each category if the translation is acceptable.
+    Full points for flawless categories.
     Justify deductions based on clear linguistic issues.
 
 Return as JSON.

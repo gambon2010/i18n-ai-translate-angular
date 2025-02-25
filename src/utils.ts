@@ -2,6 +2,10 @@ import ISO6391 from "iso-639-1";
 import ansiColors from "ansi-colors";
 import fs from "fs";
 import path from "path";
+import type {
+    GradeItemOutput,
+    GradingScaleItemOutput,
+} from "./generate_json/types";
 
 /**
  * @param delayDuration - time (in ms) to delay
@@ -161,4 +165,82 @@ export function printProgress(
     process.stdout.write(
         `\r${ansiColors.blueBright(title)} | ${ansiColors.greenBright(`Completed ${percentage}%`)} | ${ansiColors.yellowBright(`ETA: ${roundedEstimatedTimeLeftSeconds}s`)}`,
     );
+}
+
+/**
+ * @param gradeItems - the gradeItems
+ * @returns the mean of the results
+ */
+export function getMeanGrade(
+    gradeItems: GradeItemOutput[],
+): GradingScaleItemOutput {
+    const total = {
+        accuracy: 0,
+        consistency: 0,
+        culturalAdaptation: 0,
+        fluencyReadability: 0,
+        formatting: 0,
+        sum: 0,
+    };
+
+    for (const gradeItem of gradeItems) {
+        total.accuracy += gradeItem.grading.accuracy;
+
+        total.formatting += gradeItem.grading.formatting;
+
+        total.fluencyReadability += gradeItem.grading.fluencyReadability;
+
+        total.consistency += gradeItem.grading.consistency;
+
+        total.culturalAdaptation += gradeItem.grading.culturalAdaptation;
+
+        total.sum +=
+            gradeItem.grading.accuracy +
+            gradeItem.grading.formatting +
+            gradeItem.grading.fluencyReadability +
+            gradeItem.grading.consistency +
+            gradeItem.grading.culturalAdaptation;
+    }
+
+    const itemCount = gradeItems.length;
+
+    return {
+        accuracy: total.accuracy / itemCount,
+        consistency: total.consistency / itemCount,
+        culturalAdaptation: total.culturalAdaptation / itemCount,
+        fluencyReadability: total.fluencyReadability / itemCount,
+        formatting: total.formatting / itemCount,
+        id: 0,
+        think: "Compiled results of the results array",
+    };
+}
+
+/**
+ * @param meanScores - the meanScores
+ */
+export function printResults(meanScores: GradingScaleItemOutput): void {
+    console.log("Mean Scores:");
+    console.log(`- Accuracy: ${meanScores.accuracy.toFixed(2)}`);
+
+    console.log(`- Formatting: ${meanScores.formatting.toFixed(2)}`);
+
+    console.log(
+        `- Fluency & Readability: ${meanScores.fluencyReadability.toFixed(2)}`,
+    );
+
+    console.log(`- Consistency: ${meanScores.consistency.toFixed(2)}`);
+
+    console.log(
+        `Cultural Adaptation: ${meanScores.culturalAdaptation.toFixed(2)}`,
+    );
+
+    // Calculate total score
+    const totalScore =
+        meanScores.accuracy +
+        meanScores.formatting +
+        meanScores.fluencyReadability +
+        meanScores.consistency +
+        meanScores.culturalAdaptation;
+
+    console.log(`\nTotal Score: ${totalScore.toFixed(2)}`);
 }
