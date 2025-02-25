@@ -46,7 +46,7 @@ Translate from ${inputLanguage} to ${outputLanguage}.
 - 'translated' must not be empty. 
 - 'context' is additional info if needed.
 - 'lastFailure' explains why the previous translation failed.
-- Preserve text meaning, tone, grammar, formality and formatting (case, whitespace, punctuation).
+- Preserve text meaning, tone, grammar, formality, rough length and formatting (case, whitespace, punctuation).
 
 Special Instructions:
 - Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
@@ -107,7 +107,7 @@ Translate from ${inputLanguage} to ${outputLanguage}.
 - 'translated' must not be empty. 
 - 'context' is additional info if needed.
 - 'lastFailure' explains why the previous translation failed.
-- Preserve text meaning, tone, grammar, formality and formatting (case, whitespace, punctuation).
+- Preserve text meaning, tone, grammar, formality, rough length and formatting (case, whitespace, punctuation).
 
 Special Instructions:
 - Treat anything in the format {{variableName}} as a placeholder. Never translate or modify its content.
@@ -181,7 +181,7 @@ Special Instructions:
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
 
-Allow minor grammar, phrasing, and formatting differences if meaning is clear.
+Allow minor grammar, phrasing, and formatting differences if the meaning is clear.
 Flag only significant issues affecting accuracy or readability.
 
 Return as JSON.

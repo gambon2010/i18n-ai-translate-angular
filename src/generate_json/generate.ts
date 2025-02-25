@@ -9,6 +9,7 @@ import {
     getMissingVariables,
     getTemplatedStringRegex,
     printError,
+    printExecutionTime,
     printProgress,
     retryJob,
 } from "../utils";
@@ -341,6 +342,13 @@ export default class GenerateTranslationJson {
             }
         }
 
+        if (options.verbose) {
+            printExecutionTime(
+                translationStats.batchStartTime,
+                "Translation execution time: ",
+            );
+        }
+
         return generatedTranslation;
     }
 
@@ -438,6 +446,13 @@ export default class GenerateTranslationJson {
                     translationStats.processedTokens,
                 );
             }
+        }
+
+        if (options.verbose) {
+            printExecutionTime(
+                translationStats.batchStartTime,
+                "Verification execution time: ",
+            );
         }
 
         return generatedVerification;
