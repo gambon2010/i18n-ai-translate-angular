@@ -339,82 +339,82 @@ export default class GenerateTranslationJson {
 
                 if (
                     gradedItem.accuracy.meaning < 0 ||
-                    gradedItem.accuracy.meaning > 4
+                    gradedItem.accuracy.meaning > 20
                 ) {
                     baseItem.lastFailure =
-                        "The meaning score must be between 0 and 4.";
+                        "The meaning score must be between 0 and 20.";
                     continue;
                 }
 
                 if (
                     gradedItem.accuracy.toneStyle < 0 ||
-                    gradedItem.accuracy.toneStyle > 2
+                    gradedItem.accuracy.toneStyle > 10
                 ) {
                     baseItem.lastFailure =
-                        "The tone style score must be between 0 and 2.";
+                        "The tone style score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.accuracy.grammarSyntax < 0 ||
-                    gradedItem.accuracy.grammarSyntax > 2
+                    gradedItem.accuracy.grammarSyntax > 10
                 ) {
                     baseItem.lastFailure =
-                        "The grammar syntax score must be between 0 and 2.";
+                        "The grammar syntax score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.formatting.punctuationSpacing < 0 ||
-                    gradedItem.formatting.punctuationSpacing > 2
+                    gradedItem.formatting.punctuationSpacing > 10
                 ) {
                     baseItem.lastFailure =
-                        "The punctuation spacing score must be between 0 and 2.";
+                        "The punctuation spacing score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.formatting.capitalizationFormatting < 0 ||
-                    gradedItem.formatting.capitalizationFormatting > 2
+                    gradedItem.formatting.capitalizationFormatting > 10
                 ) {
                     baseItem.lastFailure =
-                        "The capitalization formatting score must be between 0 and 2.";
+                        "The capitalization formatting score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.fluencyReadability.naturalness < 0 ||
-                    gradedItem.fluencyReadability.naturalness > 2
+                    gradedItem.fluencyReadability.naturalness > 10
                 ) {
                     baseItem.lastFailure =
-                        "The naturalness score must be between 0 and 2.";
+                        "The naturalness score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.fluencyReadability.clarity < 0 ||
-                    gradedItem.fluencyReadability.clarity > 2
+                    gradedItem.fluencyReadability.clarity > 10
                 ) {
                     baseItem.lastFailure =
-                        "The clarity score must be between 0 and 2.";
+                        "The clarity score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.consistency.terminologyWordChoice < 0 ||
-                    gradedItem.consistency.terminologyWordChoice > 2
+                    gradedItem.consistency.terminologyWordChoice > 10
                 ) {
                     baseItem.lastFailure =
-                        "The terminology word choice score must be between 0 and 2.";
+                        "The terminology word choice score must be between 0 and 10.";
                     continue;
                 }
 
                 if (
                     gradedItem.culturalAdaptation.localization < 0 ||
-                    gradedItem.culturalAdaptation.localization > 2
+                    gradedItem.culturalAdaptation.localization > 10
                 ) {
                     baseItem.lastFailure =
-                        "The localization score must be between 0 and 2.";
+                        "The localization score must be between 0 and 10.";
                     continue;
                 }
 

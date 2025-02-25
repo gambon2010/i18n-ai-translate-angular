@@ -30,32 +30,32 @@ Grading Process:
     Before grading, reflect on the translation and provide a brief analysis in the "think" field. This should include any notable observations about meaning preservation, tone, fluency, and potential issues.
     After reflection, proceed with grading according to the categories below.
 
-Grading Criteria (Score out of 20):
+Grading Criteria (Score out of 100):
 
-    Accuracy (8 points total)
-        Meaning (4 points): Does the translation preserve the exact meaning of the original text?
-        Tone & Style (2 points): Is the tone and formality appropriate?
-        Grammar & Syntax (2 points): Is the sentence grammatically correct and natural?
+    Accuracy (40 points total)
+        Meaning (20 points): Does the translation preserve the exact meaning of the original text?
+        Tone & Style (10 points): Is the tone and formality appropriate?
+        Grammar & Syntax (10 points): Is the sentence grammatically correct and natural?
 
-    Formatting (4 points total)
-        Punctuation & Spacing (2 points): Is punctuation correctly placed and spaced?
-        Capitalization & Formatting (2 points): Are proper nouns, titles, and formatting preserved?
+    Formatting (20 points total)
+        Punctuation & Spacing (10 points): Is punctuation correctly placed and spaced?
+        Capitalization & Formatting (10 points): Are proper nouns, titles, and formatting preserved?
 
-    Fluency & Readability (4 points total)
-        Naturalness (2 points): Does the sentence flow smoothly?
-        Clarity (2 points): Is the meaning clear and unambiguous?
+    Fluency & Readability (20 points total)
+        Naturalness (10 points): Does the sentence flow smoothly?
+        Clarity (10 points): Is the meaning clear and unambiguous?
 
-    Consistency (2 points total)
-        Terminology & Word Choice (2 points): Are key terms translated consistently?
+    Consistency (10 points total)
+        Terminology & Word Choice (10 points): Are key terms translated consistently?
 
-    Cultural & Contextual Adaptation (2 points total)
-        Localization (2 points): Are idioms, cultural references, or region-specific phrases adapted correctly?
+    Cultural & Contextual Adaptation (10 points total)
+        Localization (10 points): Are idioms, cultural references, or region-specific phrases adapted correctly?
 
 Where X is a score between 0 and the max points per category.
 
 Guidelines:
 
-    Be strict but fair in grading.
+    Be strict in grading.
     If context is provided, take it into account.
     If a category is flawless, give it full points.
     Justify deductions based on clear linguistic issues.
