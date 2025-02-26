@@ -274,7 +274,7 @@ export default class GenerateTranslationJson {
                 options,
                 promptSize,
                 options.disableThink ? 2 : 3,
-                this.getTranslateItemToken,
+                this.getTranslateItemToken.bind(this),
             );
 
             for (const batchTranslateItem of batchTranslateItemArray) {
@@ -384,7 +384,7 @@ export default class GenerateTranslationJson {
                 options,
                 promptTokens,
                 3,
-                this.getVerifyItemToken,
+                this.getVerifyItemToken.bind(this),
             );
 
             for (const batchVerifyItem of batchVerifyItemArray) {
@@ -423,16 +423,16 @@ export default class GenerateTranslationJson {
                 return Promise.reject(new Error("Verification job failed"));
             }
 
-            for (const translatedItem of result) {
+            for (const verifiedItem of result) {
                 const index = verifyItemArray.findIndex(
-                    (item) => item.id === translatedItem.id,
+                    (item) => item.id === verifiedItem.id,
                 );
 
                 if (index !== -1) {
                     verifyItemArray.splice(index, 1);
-                    generatedVerification.push(translatedItem);
+                    generatedVerification.push(verifiedItem);
                     translationStats.processedTokens +=
-                        translatedItem.translationTokens;
+                        verifiedItem.translationTokens;
                 }
 
                 translationStats.processedItems++;
@@ -496,7 +496,9 @@ export default class GenerateTranslationJson {
         }
     }
 
-    private isValidTranslateItem(item: any): item is TranslateItemOutput {
+    private isValidTranslateItem(
+        item: TranslateItemOutput,
+    ): item is TranslateItemOutput {
         return (
             typeof item.id === "number" &&
             typeof item.translated === "string" &&
@@ -504,13 +506,15 @@ export default class GenerateTranslationJson {
         );
     }
 
-    private isValidVerificationItem(item: any): item is VerifyItemOutput {
+    private isValidVerificationItem(
+        item: VerifyItemOutput,
+    ): item is VerifyItemOutput {
         if (!(typeof item.id === "number")) return false;
-        if (!(typeof item.valid === "boolean")) return false;
+        if (!(typeof item.isValid === "boolean")) return false;
         if (item.id <= 0) return false;
         // 'fixedTranslation' should be a translation if valid is false
         if (
-            item.valid === false &&
+            item.isValid === false &&
             !(typeof item.fixedTranslation === "string")
         )
             return false;
@@ -645,7 +649,7 @@ export default class GenerateTranslationJson {
         try {
             translated = await retryJob(
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                this.generateJob,
+                this.generateJob.bind(this),
                 [
                     generationPromptText,
                     options,
