@@ -39,12 +39,7 @@ export const TranslateItemOutputObjectSchema = z.object({
 export const ThinkTranslateItemOutputSchema = z.object({
     id: z.number(),
     think: z.string(),
-    // .min(
-    //     5,
-    //     "Think field should be at least 5 characters long to give a meaningful reflection.",
-    // ),
     translated: z.string(),
-    // .min(1, "Translated field should not be empty."),
 });
 
 export const ThinkTranslateItemOutputObjectSchema = z.object({
@@ -75,17 +70,17 @@ export type VerifyItemInput = {
 };
 
 export const VerifyItemOutputSchema = z.object({
-    // the order is important, having 'valid' and 'issue' before 'fixedTranslation' helps the LLM think and provide a better fix
+    // the order is important, having 'valid' and 'issues' before 'fixedTranslation' helps the LLM think and provide a better fix
     id: z.number(),
     isValid: z.boolean(),
-    issue: z.string(),
+    issues: z.string(),
     fixedTranslation: z.string(),
 });
 
 export type VerifyItemOutput = {
     id: number;
     isValid: boolean;
-    issue: string;
+    issues: string;
     fixedTranslation: string;
 };
 

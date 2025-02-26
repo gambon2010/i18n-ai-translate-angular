@@ -54,6 +54,7 @@ Special Instructions:
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
 - Use the think property to briefly reflect on the context or meaning of the text before generating the translation. This reflection should not be lengthy, just enough to aid in making the translation more accurate or contextually appropriate. Make sure to take into account the variable names during your reflection.
+- Preserve number format: digits stay digits, words stay words
 
 Return as JSON.
 \`\`\`json
@@ -114,6 +115,7 @@ Special Instructions:
 - Do not add your own variables
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
+- Preserve number format: digits stay digits, words stay words
 
 Return as JSON.
 \`\`\`json
@@ -172,7 +174,7 @@ If correct:
 
 If incorrect:
 - return 'isValid' as 'false'
-- explain the 'issue' thoroughly in a few words
+- explain all the 'issues' thoroughly in a few words, and suggest how to fix them.
 - fix the translation in 'fixTranslation' as a string. Make sure that 'fixTranslation' is in ${outputLanguage}
 
 Special Instructions:
@@ -180,6 +182,7 @@ Special Instructions:
 - Do not add variables that are not in the original.
 - The number of variables like {{timeLeft}} must be the same in the translated text.
 - Do not convert {{NEWLINE}} to \\n.
+- Preserve number format: digits stay digits, words stay words
 
 Allow minor grammar, phrasing, and formatting differences if the meaning is clear.
 Flag only significant issues affecting accuracy or readability.

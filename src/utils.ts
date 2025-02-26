@@ -186,7 +186,7 @@ export function printExecutionTime(startTime: number, prefix?: string): void {
     const endTime = Date.now();
     const roundedSeconds = Math.round((endTime - startTime) / 1000);
 
-    printInfo(`${prefix}${roundedSeconds} seconds\n`);
+    printInfo(`${prefix}${formatTime(roundedSeconds)}\n`);
 }
 
 /**
@@ -210,6 +210,16 @@ export function printProgress(
     const percentage = ((processedItems / totalItems) * 100).toFixed(0);
 
     process.stdout.write(
-        `\r${ansiColors.blueBright(title)} | ${ansiColors.greenBright(`Completed ${percentage}%`)} | ${ansiColors.yellowBright(`ETA: ${roundedEstimatedTimeLeftSeconds}s`)}`,
+        `\r${ansiColors.blueBright(title)} | ${ansiColors.greenBright(`Completed ${percentage}%`)} | ${ansiColors.yellowBright(`ETA: ${formatTime(roundedEstimatedTimeLeftSeconds)}             `)}`,
     );
+}
+
+function formatTime(seconds: number): string {
+    const hh = Math.floor(seconds / 3600);
+    const mm = Math.floor((seconds % 3600) / 60);
+    const ss = seconds % 60;
+
+    return [hh, mm, ss]
+        .map((unit) => String(unit).padStart(2, "0")) // Ensures two-digit formatting
+        .join(":");
 }

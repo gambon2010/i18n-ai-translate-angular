@@ -165,12 +165,12 @@ async function getTranslation(
 
             const generateTranslationJson = new GenerateTranslationJson(
                 options,
+                chats,
             );
 
             return generateTranslationJson.translateJson(
                 flatInput,
                 options,
-                chats,
                 translationStats,
             );
         case PromptMode.CSV:

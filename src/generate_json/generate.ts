@@ -32,12 +32,14 @@ import type { ZodType, ZodTypeDef } from "zod";
 import type Chats from "../interfaces/chats";
 import type GenerateTranslationOptionsJson from "../interfaces/generate_translation_options_json";
 import type TranslateOptions from "../interfaces/translate_options";
+import ChatInterface from "src/chat_interface/chat_interface";
 
 export default class GenerateTranslationJson {
     tikToken: Tiktoken;
     templatedStringRegex: RegExp;
+    chats: Chats;
 
-    constructor(options: TranslateOptions) {
+    constructor(options: TranslateOptions, chats: Chats) {
         this.tikToken = new Tiktoken(
             cl100k_base.bpe_ranks,
             cl100k_base.special_tokens,
@@ -48,19 +50,19 @@ export default class GenerateTranslationJson {
             options.templatedStringPrefix as string,
             options.templatedStringPrefix as string,
         );
+
+        this.chats = chats;
     }
 
     /**
      * Complete the initial translation of the input text.
      * @param flatInput - The flatinput object containing the json to translate
      * @param options - The options to generate the translation
-     * @param chats - The options to generate the translation
      * @param translationStats - The translation statictics
      */
     public async translateJson(
         flatInput: { [key: string]: string },
         options: TranslateOptions,
-        chats: Chats,
         translationStats: TranslationStats,
     ): Promise<{ [key: string]: string }> {
         const translateItemArray = this.generateTranslateItemArray(flatInput);
@@ -68,7 +70,6 @@ export default class GenerateTranslationJson {
         const generatedTranslation = await this.generateTranslationJson(
             translateItemArray,
             options,
-            chats,
             translationStats.translate,
         );
 
@@ -76,7 +77,6 @@ export default class GenerateTranslationJson {
             const generatedVerification = await this.generateVerificationJson(
                 generatedTranslation,
                 options,
-                chats,
                 translationStats.verify,
             );
 
@@ -237,7 +237,6 @@ export default class GenerateTranslationJson {
     private async generateTranslationJson(
         translateItemArray: TranslateItem[],
         options: TranslateOptions,
-        chats: Chats,
         translationStats: TranslationStatsItem,
     ): Promise<TranslateItem[]> {
         translationStats.batchStartTime = Date.now();
@@ -292,7 +291,6 @@ export default class GenerateTranslationJson {
 
             // eslint-disable-next-line no-await-in-loop
             const result = await this.runTranslationJob({
-                chats,
                 disableThink: options.disableThink as boolean,
                 ensureChangedTranslation:
                     options.ensureChangedTranslation as boolean,
@@ -345,7 +343,7 @@ export default class GenerateTranslationJson {
         if (options.verbose) {
             printExecutionTime(
                 translationStats.batchStartTime,
-                "Translation execution time: ",
+                "\nTranslation execution time: ",
             );
         }
 
@@ -355,7 +353,6 @@ export default class GenerateTranslationJson {
     private async generateVerificationJson(
         verifyItemArray: TranslateItem[],
         options: TranslateOptions,
-        chats: Chats,
         translationStats: TranslationStatsItem,
     ): Promise<TranslateItem[]> {
         const generatedVerification: TranslateItem[] = [];
@@ -402,7 +399,6 @@ export default class GenerateTranslationJson {
 
             // eslint-disable-next-line no-await-in-loop
             const result = await this.runVerificationJob({
-                chats,
                 disableThink: options.disableThink as boolean,
                 ensureChangedTranslation:
                     options.ensureChangedTranslation as boolean,
@@ -451,7 +447,7 @@ export default class GenerateTranslationJson {
         if (options.verbose) {
             printExecutionTime(
                 translationStats.batchStartTime,
-                "Verification execution time: ",
+                "\nVerification execution time: ",
             );
         }
 
@@ -613,8 +609,8 @@ export default class GenerateTranslationJson {
                         continue;
                     }
 
-                    // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
-                    translatedItem.lastFailure = `Previous issue that should be corrected: '${verifiedItem.issue}'`;
+                    // // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
+                    // translatedItem.lastFailure = `Previous issues that should be corrected: '${verifiedItem.issues}'`;
                 }
             }
         }
@@ -652,7 +648,7 @@ export default class GenerateTranslationJson {
                 this.generateJob.bind(this),
                 [
                     generationPromptText,
-                    options,
+                    this.chats.generateTranslationChat,
                     generateState,
                     options.disableThink
                         ? TranslateItemOutputObjectSchema
@@ -701,7 +697,7 @@ export default class GenerateTranslationJson {
                 this.generateJob.bind(this),
                 [
                     generationPromptText,
-                    options,
+                    this.chats.verifyTranslationChat,
                     generateState,
                     VerifyItemOutputObjectSchema,
                 ],
@@ -727,12 +723,12 @@ export default class GenerateTranslationJson {
 
     private verifyGenerationAndRetry(
         generationPromptText: string,
-        options: GenerateTranslationOptionsJson,
+        chatInterface: ChatInterface,
         generateState: GenerateStateJson,
     ): Promise<string> {
         generateState.generationRetries++;
         if (generateState.generationRetries > 10) {
-            options.chats.generateTranslationChat.resetChatHistory();
+            chatInterface.resetChatHistory();
             return Promise.reject(
                 new Error(
                     "Failed to generate content due to exception. Resetting history.",
@@ -742,7 +738,7 @@ export default class GenerateTranslationJson {
 
         printError(`Erroring text = ${generationPromptText}\n`);
 
-        options.chats.generateTranslationChat.rollbackLastMessage();
+        chatInterface.rollbackLastMessage();
         return Promise.reject(
             new Error("Failed to generate content due to exception."),
         );
@@ -750,11 +746,11 @@ export default class GenerateTranslationJson {
 
     private async generateJob(
         generationPromptText: string,
-        options: GenerateTranslationOptionsJson,
+        chatInterface: ChatInterface,
         generateState: GenerateStateJson,
         format: ZodType<any, ZodTypeDef, any>,
     ): Promise<string> {
-        const text = await options.chats.generateTranslationChat.sendMessage(
+        const text = await chatInterface.sendMessage(
             generationPromptText,
             format,
         );
@@ -762,7 +758,7 @@ export default class GenerateTranslationJson {
         if (!text) {
             return this.verifyGenerationAndRetry(
                 generationPromptText,
-                options,
+                chatInterface,
                 generateState,
             );
         } else {
