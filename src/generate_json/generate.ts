@@ -314,6 +314,7 @@ export default class GenerateTranslationJson {
             typeof item.consistency === "number" &&
             typeof item.culturalAdaptation === "number" &&
             typeof item.id === "number" &&
+            typeof item.valid === "boolean" &&
             item.id > 0
         );
     }

@@ -5,8 +5,8 @@ import {
 } from "./constants";
 import { flatten } from "flat";
 import {
+    getGradeStats,
     getLanguageCodeFromFilename,
-    getMeanGrade,
     printError,
     printExecutionTime,
     printInfo,
@@ -17,6 +17,7 @@ import fs from "fs";
 import type { TranslationStatsItem } from "./types";
 import type GradeFileOptions from "./interfaces/grade_file_options";
 import type GradeOptions from "./interfaces/grade_options";
+import { ExportGradeItem } from "./generate_json/types";
 
 function startTranslationStatsItem(): TranslationStatsItem {
     return {
@@ -72,8 +73,16 @@ export default async function grade(options: GradeOptions): Promise<Object> {
         translationStats,
     );
 
+    const exportGradeItem: ExportGradeItem = {
+        gradeItems: response,
+        gradingStats: getGradeStats(response),
+    };
+
     if (response) {
-        fs.writeFileSync("result.json", JSON.stringify(response, null, 4));
+        fs.writeFileSync(
+            "result.json",
+            JSON.stringify(exportGradeItem, null, 4),
+        );
     }
 
     if (options.verbose) {
@@ -81,8 +90,7 @@ export default async function grade(options: GradeOptions): Promise<Object> {
             translationStats.batchStartTime,
             "Total execution time: ",
         );
-        const meanGrade = getMeanGrade(response);
-        printResults(meanGrade);
+        printResults(exportGradeItem.gradingStats);
     }
 
     return Object;

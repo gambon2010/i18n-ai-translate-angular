@@ -63,15 +63,15 @@
         "ollama",
         "llama"
     ],
-    "author": "Taaha Mahdi",
+    "author": "gambon2010",
     "license": "GPL-3.0",
-    "description": "Use LLMs to translate your i18n JSON to any language.",
+    "description": "Use LLMs to grade your i18n JSON translation.",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/taahamahdi/i18n-ai-translate.git"
+        "url": "git+https://github.com/gambon2010/i18n-ai-translate-angular.git"
     },
     "bugs": {
-        "url": "https://github.com/taahamahdi/i18n-ai-translate/issues"
+        "url": "https://github.com/gambon2010/i18n-ai-translate-angular/issues"
     },
-    "homepage": "https://github.com/taahamahdi/i18n-ai-translate#readme"
+    "homepage": "https://github.com/gambon2010/i18n-ai-translate-angular#readme"
 }

@@ -19,6 +19,11 @@ export type GradeItemOutput = {
     grading: GradingScaleItemOutput;
 };
 
+export type ExportGradeItem = {
+    gradeItems: GradeItemOutput[];
+    gradingStats: GradingStats;
+};
+
 export type GradeResult = {
     key: string;
     original: string;
@@ -27,11 +32,12 @@ export type GradeResult = {
 };
 
 export type GradeItemInput = {
-    id: number;
-    original: string;
-    translated: string;
-    context?: string;
-    lastFailure?: string;
+    // order is important for prompt do not reorder
+    id: number; // 1
+    original: string; // 2
+    translated: string; // 3
+    context?: string; // 4
+    lastFailure?: string; // 5
 };
 
 export type GradingScaleItemOutput = {
@@ -42,16 +48,19 @@ export type GradingScaleItemOutput = {
     fluencyReadability: number;
     consistency: number;
     culturalAdaptation: number;
+    valid: boolean;
 };
 
 export const GradingScaleItemOutputSchema = z.object({
-    id: z.number(),
-    think: z.string(),
-    accuracy: z.number(),
-    formatting: z.number(),
-    fluencyReadability: z.number(),
-    consistency: z.number(),
-    culturalAdaptation: z.number(),
+    // order is important for prompt do not reorder
+    id: z.number(), // 1
+    think: z.string(), // 2
+    accuracy: z.number(), // 3
+    formatting: z.number(), // 4
+    fluencyReadability: z.number(), // 5
+    consistency: z.number(), // 6
+    culturalAdaptation: z.number(), // 7
+    valid: z.boolean(), // 8
 });
 
 export const GradingScaleItemOutputArraySchema = z.object({
@@ -59,6 +68,26 @@ export const GradingScaleItemOutputArraySchema = z.object({
         .array(GradingScaleItemOutputSchema)
         .describe("GradingScaleItemOutputSchema"), // used for open ai schema name
 });
+
+export type GradingStats = {
+    accuracyMean: number;
+    formattingMean: number;
+    fluencyReadabilityMean: number;
+    consistencyMean: number;
+    culturalAdaptationMean: number;
+    totalMean: number;
+    standardDeviation: number;
+    variance: number;
+    Q1: number;
+    Q3: number;
+    IQR: number;
+    median: number;
+    confidenceIntervalLow: number;
+    confidenceIntervalHigh: number;
+    lowestScore: number;
+    highestScore: number;
+    validPercent: number;
+};
 
 export type GenerateStateJson = {
     fixedTranslationMappings: { [input: string]: string };

@@ -54,6 +54,7 @@ Guidelines:
     Only give more than half points in each category if the translation is acceptable.
     Full points for flawless categories.
     Justify deductions based on clear linguistic issues.
+    If the translation is correct, return valid as true, if the translation is incorrect or has big issues return valid as false.
 
 Return as JSON.
 \`\`\`json

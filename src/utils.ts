@@ -2,10 +2,7 @@ import ISO6391 from "iso-639-1";
 import ansiColors from "ansi-colors";
 import fs from "fs";
 import path from "path";
-import type {
-    GradeItemOutput,
-    GradingScaleItemOutput,
-} from "./generate_json/types";
+import type { GradeItemOutput, GradingStats } from "./generate_json/types";
 
 /**
  * @param delayDuration - time (in ms) to delay
@@ -163,25 +160,43 @@ export function printProgress(
     const percentage = ((processedItems / totalItems) * 100).toFixed(0);
 
     process.stdout.write(
-        `\r${ansiColors.blueBright(title)} | ${ansiColors.greenBright(`Completed ${percentage}%`)} | ${ansiColors.yellowBright(`ETA: ${roundedEstimatedTimeLeftSeconds}s`)}`,
+        `\r${ansiColors.blueBright(title)} | ${ansiColors.greenBright(`Completed ${percentage}%`)} | ${ansiColors.yellowBright(`ETA: ${formatTime(roundedEstimatedTimeLeftSeconds)}             `)}`,
     );
+}
+
+function formatTime(seconds: number): string {
+    const hh = Math.floor(seconds / 3600);
+    const mm = Math.floor((seconds % 3600) / 60);
+    const ss = seconds % 60;
+
+    return [hh, mm, ss]
+        .map((unit) => String(unit).padStart(2, "0")) // Ensures two-digit formatting
+        .join(":");
 }
 
 /**
  * @param gradeItems - the gradeItems
  * @returns the mean of the results
  */
-export function getMeanGrade(
-    gradeItems: GradeItemOutput[],
-): GradingScaleItemOutput {
+export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
     const total = {
+        M2: 0,
         accuracy: 0,
         consistency: 0,
         culturalAdaptation: 0,
         fluencyReadability: 0,
         formatting: 0,
-        sum: 0,
+        mean: 0,
     };
+
+    const totalScoreArray: number[] = [];
+
+    const itemCount = gradeItems.length;
+
+    let highestScore = 0;
+    let lowestScore = 100;
+
+    let validItems = 0;
 
     for (const gradeItem of gradeItems) {
         total.accuracy += gradeItem.grading.accuracy;
@@ -194,53 +209,270 @@ export function getMeanGrade(
 
         total.culturalAdaptation += gradeItem.grading.culturalAdaptation;
 
-        total.sum +=
+        const sum =
             gradeItem.grading.accuracy +
             gradeItem.grading.formatting +
             gradeItem.grading.fluencyReadability +
             gradeItem.grading.consistency +
             gradeItem.grading.culturalAdaptation;
+
+        const delta = sum - total.mean;
+        total.mean += delta / itemCount;
+        total.M2 += delta * (sum - total.mean);
+
+        totalScoreArray.push(sum);
+
+        if (sum > highestScore) highestScore = sum;
+        if (sum < lowestScore) lowestScore = sum;
+        if (gradeItem.grading.valid) validItems++;
     }
 
-    const itemCount = gradeItems.length;
+    const variance = itemCount > 1 ? total.M2 / itemCount : 0;
+
+    const confidenceInterval = calculateConfidenceInterval(
+        total.mean,
+        variance,
+        itemCount,
+    );
+
+    const quartiles = getQuartiles(totalScoreArray);
 
     return {
-        accuracy: total.accuracy / itemCount,
-        consistency: total.consistency / itemCount,
-        culturalAdaptation: total.culturalAdaptation / itemCount,
-        fluencyReadability: total.fluencyReadability / itemCount,
-        formatting: total.formatting / itemCount,
-        id: 0,
-        think: "Compiled results of the results array",
+        IQR: quartiles.IQR,
+        Q1: quartiles.Q1,
+        Q3: quartiles.Q3,
+        accuracyMean: total.accuracy / itemCount,
+        confidenceIntervalHigh: confidenceInterval.upperBound,
+        confidenceIntervalLow: confidenceInterval.lowerBound,
+        consistencyMean: total.consistency / itemCount,
+        culturalAdaptationMean: total.culturalAdaptation / itemCount,
+        fluencyReadabilityMean: total.fluencyReadability / itemCount,
+        formattingMean: total.formatting / itemCount,
+        highestScore,
+        lowestScore,
+        median: quartiles.median,
+        standardDeviation: Math.sqrt(variance),
+        totalMean: total.mean,
+        validPercent: (validItems / itemCount) * 100,
+        variance,
     };
 }
 
 /**
- * @param meanScores - the meanScores
+ * @param gradingStats - the GradingStats
  */
-export function printResults(meanScores: GradingScaleItemOutput): void {
-    console.log("Mean Scores:");
-    console.log(`- Accuracy: ${meanScores.accuracy.toFixed(2)}`);
-
-    console.log(`- Formatting: ${meanScores.formatting.toFixed(2)}`);
-
+export function printResults(gradingStats: GradingStats): void {
     console.log(
-        `- Fluency & Readability: ${meanScores.fluencyReadability.toFixed(2)}`,
+        ansiColors.bold(
+            "\n================= 📊 Grading Statistics 📊 =================\n",
+        ),
     );
 
-    console.log(`- Consistency: ${meanScores.consistency.toFixed(2)}`);
-
+    console.log(ansiColors.bold("Category Means:"));
     console.log(
-        `Cultural Adaptation: ${meanScores.culturalAdaptation.toFixed(2)}`,
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
     );
 
-    // Calculate total score
-    const totalScore =
-        meanScores.accuracy +
-        meanScores.formatting +
-        meanScores.fluencyReadability +
-        meanScores.consistency +
-        meanScores.culturalAdaptation;
+    console.log(
+        `🔹 Accuracy:             ${ansiColors.cyan(gradingStats.accuracyMean.toFixed(2))}/100`,
+    );
 
-    console.log(`\nTotal Score: ${totalScore.toFixed(2)}`);
+    console.log(
+        `🔹 Formatting:           ${ansiColors.cyan(gradingStats.formattingMean.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔹 Fluency Readability:  ${ansiColors.cyan(gradingStats.fluencyReadabilityMean.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔹 Consistency:          ${ansiColors.cyan(gradingStats.consistencyMean.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔹 Cultural Adaptation:  ${ansiColors.cyan(gradingStats.culturalAdaptationMean.toFixed(2))}/100`,
+    );
+
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(`\n${ansiColors.bold("Overall Statistics:")}`);
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(
+        `📌 Total Mean:            ${ansiColors.green(gradingStats.totalMean.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `📌 Variance:              ${ansiColors.magenta(gradingStats.variance.toFixed(2))}`,
+    );
+
+    console.log(
+        `📌 Standard Deviation:    ${ansiColors.magenta(gradingStats.standardDeviation.toFixed(2))}`,
+    );
+
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(`\n${ansiColors.bold("Confidence Interval (95%):")}`);
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(
+        `✅ Lower Bound:          ${ansiColors.yellow(gradingStats.confidenceIntervalLow.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `✅ Upper Bound:          ${ansiColors.yellow(gradingStats.confidenceIntervalHigh.toFixed(2))}/100`,
+    );
+
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(`\n${ansiColors.bold("Quartiles & IQR:")}`);
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(
+        `🔸 Q1 (25%):             ${ansiColors.blue(gradingStats.Q1.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔸 Median (50%):         ${ansiColors.blue(gradingStats.median.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔸 Q3 (75%):             ${ansiColors.blue(gradingStats.Q3.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔸 Interquartile Range:  ${ansiColors.blue(gradingStats.IQR.toFixed(2))}`,
+    );
+
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(
+        `🔸 Highest score:        ${ansiColors.red(gradingStats.highestScore.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔸 Lowest score:         ${ansiColors.red(gradingStats.lowestScore.toFixed(2))}/100`,
+    );
+
+    console.log(
+        `🔸 Valid items:          ${ansiColors.red(gradingStats.validPercent.toFixed(2))}%`,
+    );
+
+    console.log(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    console.log(
+        `\n✅ ${ansiColors.bold(
+            "Summary:",
+        )} The middle 50% of scores lie between ${ansiColors.green(
+            gradingStats.Q1.toFixed(2),
+        )} and ${ansiColors.green(gradingStats.Q3.toFixed(2))}, ` +
+            `with an average score of ${ansiColors.cyan(gradingStats.totalMean.toFixed(2))}.`,
+    );
+
+    console.log(
+        ansiColors.bold(
+            "\n============================================================\n",
+        ),
+    );
+}
+
+function getPercentile(sorted: number[], percentile: number): number {
+    const index = (percentile / 100) * (sorted.length - 1);
+    const lower = Math.floor(index);
+    const upper = Math.ceil(index);
+
+    if (lower === upper) return sorted[lower];
+
+    // Linear interpolation between the two closest ranks
+    return sorted[lower] + (index - lower) * (sorted[upper] - sorted[lower]);
+}
+
+function getQuartiles(scores: number[]): {
+    IQR: number;
+    Q1: number;
+    Q3: number;
+    median: number;
+} {
+    if (scores.length === 0) {
+        throw new Error("Array is empty");
+    }
+
+    // Sort the array in ascending order
+    const sorted = scores.slice().sort((a, b) => a - b);
+
+    // Compute quartiles
+    const Q1 = getPercentile(sorted, 25);
+    const median = getPercentile(sorted, 50);
+    const Q3 = getPercentile(sorted, 75);
+    const IQR = Q3 - Q1;
+
+    return { IQR, Q1, Q3, median };
+}
+
+function calculateConfidenceInterval(
+    mean: number,
+    variance: number,
+    itemCount: number,
+    confidenceLevel: number = 0.95,
+): { lowerBound: number; upperBound: number } {
+    if (itemCount <= 1)
+        throw new Error("Not enough data points for confidence interval");
+
+    // Standard deviation from variance
+    const stdDev = Math.sqrt(variance);
+
+    // Standard error of the mean
+    const standardError = stdDev / Math.sqrt(itemCount);
+
+    // Get Z-score based on confidence level (for 95% CI, Z ≈ 1.96)
+    const zTable: { [key: number]: number } = {
+        0.9: 1.645,
+        0.95: 1.96,
+        0.99: 2.576,
+    };
+
+    const z = zTable[confidenceLevel] || 1.96; // Default to 95% if invalid level
+
+    // Compute margin of error
+    const marginOfError = z * standardError;
+
+    // Confidence interval bounds
+    const lowerBound = mean - marginOfError;
+    const upperBound = mean + marginOfError;
+
+    return { lowerBound, upperBound };
 }
