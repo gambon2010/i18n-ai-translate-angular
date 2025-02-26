@@ -698,7 +698,7 @@ export default class GenerateTranslationJson {
         try {
             verified = await retryJob(
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                this.generateJob,
+                this.generateJob.bind(this),
                 [
                     generationPromptText,
                     options,
