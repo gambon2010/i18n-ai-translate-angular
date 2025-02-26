@@ -167,7 +167,7 @@ Check translations from ${inputLanguage} to ${outputLanguage}.
 - 'translated' is the translated text to verify. 
 - 'context' is additional info if needed.
 - 'lastFailure' explains why the previous translation failed.
-- check for Accuracy (meaning, tone, grammar, formality), Formatting (case, whitespace, punctuation).
+- check for Accuracy (meaning, tone, grammar, formality), Formatting (case, whitespace, punctuation) and that the translated text is in the target language.
 
 If correct:
 - return 'isValid' as 'true' and nothing else.
