@@ -13386,8 +13386,8 @@
         "Q1": 94,
         "Q3": 100,
         "accuracyMean": 52.1457399103139,
-        "confidenceIntervalHigh": 59.33933136635247,
-        "confidenceIntervalLow": 50.82876633058392,
+        "confidenceIntervalHigh": 89.51170461331434,
+        "confidenceIntervalLow": 85.6407617543989,
         "consistencyMean": 8.882286995515695,
         "culturalAdaptationMean": 8.769058295964125,
         "fluencyReadabilityMean": 8.70067264573991,
@@ -13395,9 +13395,9 @@
         "highestScore": 100,
         "lowestScore": 0,
         "median": 100,
-        "standardDeviation": 64.8417541197466,
-        "totalMean": 55.08404884846819,
+        "standardDeviation": 29.492604076753487,
+        "totalMean": 87.57623318385662,
         "validPercent": 82.62331838565022,
-        "variance": 4204.453077325675
+        "variance": 869.8136952281365
     }
 }

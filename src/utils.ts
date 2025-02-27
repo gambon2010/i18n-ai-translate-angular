@@ -186,7 +186,7 @@ export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
     let lowestScore = 100;
 
     let validItems = 0;
-
+    let count = 0;
     for (const gradeItem of gradeItems) {
         total.accuracy += gradeItem.grading.accuracy;
 
@@ -205,9 +205,12 @@ export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
             gradeItem.grading.consistency +
             gradeItem.grading.culturalAdaptation;
 
+        count++;
+
         const delta = sum - total.mean;
-        total.mean += delta / itemCount;
-        total.M2 += delta * (sum - total.mean);
+        total.mean += delta / count;
+        const delat2 = sum - total.mean;
+        total.M2 += delta * delat2;
 
         totalScoreArray.push(sum);
 
@@ -216,7 +219,9 @@ export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
         if (gradeItem.grading.valid) validItems++;
     }
 
-    const variance = itemCount > 1 ? total.M2 / itemCount : 0;
+    console.log(JSON.stringify(totalScoreArray));
+
+    const variance = count > 1 ? total.M2 / count : 0;
 
     const confidenceInterval = calculateConfidenceInterval(
         total.mean,
