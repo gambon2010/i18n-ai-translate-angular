@@ -87,6 +87,7 @@ export type GradingStats = {
     lowestScore: number;
     highestScore: number;
     validPercent: number;
+    totalScoreArray: number[];
 };
 
 export type GenerateStateJson = {

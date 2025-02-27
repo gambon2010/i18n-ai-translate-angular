@@ -71,13 +71,6 @@ export async function retryJob<Type>(
 }
 
 /**
- * @returns all language codes
- */
-export function getAllLanguageCodes(): string[] {
-    return ISO6391.getAllCodes();
-}
-
-/**
  * @param directory - the directory to list all files for
  * @returns all files with their absolute path that exist within the directory, recursively
  */
@@ -96,28 +89,6 @@ export function getAllFilesInPath(directory: string): Array<string> {
 }
 
 /**
- * @param sourceFilePath - the source file's path
- * @param key - the key associated with the translation
- * @param inputLanguageCode - the language code of the source language
- * @param outputLanguageCode - the language code of the output language
- * @returns a key to use when translating a key from a directory;
- * swaps the input language code with the output language code
- */
-export function getTranslationDirectoryKey(
-    sourceFilePath: string,
-    key: string,
-    inputLanguageCode: string,
-    outputLanguageCode?: string,
-): string {
-    const outputPath = sourceFilePath.replace(
-        `/${inputLanguageCode}/`,
-        `/${outputLanguageCode ?? inputLanguageCode}/`,
-    );
-
-    return `${outputPath}:${key}`;
-}
-
-/**
  * @param startTime - the startTime
  * @param prefix - the prefix of the Execution Time
  */
@@ -125,7 +96,7 @@ export function printExecutionTime(startTime: number, prefix?: string): void {
     const endTime = Date.now();
     const roundedSeconds = Math.round((endTime - startTime) / 1000);
 
-    printInfo(`${prefix}${roundedSeconds} seconds\n`);
+    printInfo(`${prefix}${formatTime(roundedSeconds)}\n`);
 }
 
 /**
@@ -219,8 +190,6 @@ export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
         if (gradeItem.grading.valid) validItems++;
     }
 
-    console.log(JSON.stringify(totalScoreArray));
-
     const variance = count > 1 ? total.M2 / count : 0;
 
     const confidenceInterval = calculateConfidenceInterval(
@@ -247,6 +216,7 @@ export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
         median: quartiles.median,
         standardDeviation: Math.sqrt(variance),
         totalMean: total.mean,
+        totalScoreArray,
         validPercent: (validItems / itemCount) * 100,
         variance,
     };
@@ -256,139 +226,141 @@ export function getGradeStats(gradeItems: GradeItemOutput[]): GradingStats {
  * @param gradingStats - the GradingStats
  */
 export function printResults(gradingStats: GradingStats): void {
-    console.log(
+    console.info(
         ansiColors.bold(
             "\n================= 📊 Grading Statistics 📊 =================\n",
         ),
     );
 
-    console.log(ansiColors.bold("Category Means:"));
-    console.log(
+    console.info(ansiColors.bold("Category Means:"));
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(
+    console.info(
         `🔹 Accuracy:             ${ansiColors.cyan(gradingStats.accuracyMean.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔹 Formatting:           ${ansiColors.cyan(gradingStats.formattingMean.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔹 Fluency Readability:  ${ansiColors.cyan(gradingStats.fluencyReadabilityMean.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔹 Consistency:          ${ansiColors.cyan(gradingStats.consistencyMean.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔹 Cultural Adaptation:  ${ansiColors.cyan(gradingStats.culturalAdaptationMean.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(`\n${ansiColors.bold("Overall Statistics:")}`);
-    console.log(
+    console.info(`\n${ansiColors.bold("Overall Statistics:")}`);
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(
+    console.info(
         `📌 Total Mean:            ${ansiColors.green(gradingStats.totalMean.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `📌 Variance:              ${ansiColors.magenta(gradingStats.variance.toFixed(2))}`,
     );
 
-    console.log(
+    console.info(
         `📌 Standard Deviation:    ${ansiColors.magenta(gradingStats.standardDeviation.toFixed(2))}`,
     );
 
-    console.log(
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(`\n${ansiColors.bold("Confidence Interval (95%):")}`);
-    console.log(
+    console.info(`\n${ansiColors.bold("Confidence Interval (95%):")}`);
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(
+    console.info(
         `✅ Lower Bound:          ${ansiColors.yellow(gradingStats.confidenceIntervalLow.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `✅ Upper Bound:          ${ansiColors.yellow(gradingStats.confidenceIntervalHigh.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(`\n${ansiColors.bold("Quartiles & IQR:")}`);
-    console.log(
+    console.info(`\n${ansiColors.bold("Quartiles & IQR:")}`);
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(
+    console.info(
         `🔸 Q1 (25%):             ${ansiColors.blue(gradingStats.Q1.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔸 Median (50%):         ${ansiColors.blue(gradingStats.median.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔸 Q3 (75%):             ${ansiColors.blue(gradingStats.Q3.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔸 Interquartile Range:  ${ansiColors.blue(gradingStats.IQR.toFixed(2))}`,
     );
 
-    console.log(
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(
+    console.info(
         `🔸 Highest score:        ${ansiColors.red(gradingStats.highestScore.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔸 Lowest score:         ${ansiColors.red(gradingStats.lowestScore.toFixed(2))}/100`,
     );
 
-    console.log(
+    console.info(
         `🔸 Valid items:          ${ansiColors.red(gradingStats.validPercent.toFixed(2))}%`,
     );
 
-    console.log(
+    console.info(
         ansiColors.gray(
             "------------------------------------------------------------",
         ),
     );
 
-    console.log(
+    displayHistogram(gradingStats.totalScoreArray);
+
+    console.info(
         `\n✅ ${ansiColors.bold(
             "Summary:",
         )} The middle 50% of scores lie between ${ansiColors.green(
@@ -397,7 +369,7 @@ export function printResults(gradingStats: GradingStats): void {
             `with an average score of ${ansiColors.cyan(gradingStats.totalMean.toFixed(2))}.`,
     );
 
-    console.log(
+    console.info(
         ansiColors.bold(
             "\n============================================================\n",
         ),
@@ -469,4 +441,61 @@ function calculateConfidenceInterval(
     const upperBound = mean + marginOfError;
 
     return { lowerBound, upperBound };
+}
+
+function displayHistogram(scores: number[]): void {
+    console.info(`\n${ansiColors.bold("Score Distribution Histogram:")}`);
+    console.info(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+
+    const bins = [
+        { count: 0, label: "  0-10" },
+        { count: 0, label: " 11-20" },
+        { count: 0, label: " 21-30" },
+        { count: 0, label: " 31-40" },
+        { count: 0, label: " 41-50" },
+        { count: 0, label: " 51-60" },
+        { count: 0, label: " 61-70" },
+        { count: 0, label: " 71-80" },
+        { count: 0, label: " 81-90" },
+        { count: 0, label: "91-100" },
+    ];
+
+    // Count frequencies per bin
+    for (const score of scores) {
+        const index = Math.min(Math.floor(score / 10), 9); // Ensure 100 goes in last bin
+        bins[index].count++;
+    }
+
+    // Determine scaling factor
+    const maxStars = 50; // Max stars to display
+    const maxCount = Math.max(...bins.map((bin) => bin.count)) || 1;
+    const scale = maxCount > maxStars ? maxStars / maxCount : 1;
+
+    // Print histogram with true scaling
+    for (const bin of bins) {
+        console.info(
+            `${ansiColors.bold(bin.label)} | ${ansiColors.green("*".repeat(Math.floor(bin.count * scale)))}`,
+        );
+    }
+
+    console.info(
+        ansiColors.gray(
+            "------------------------------------------------------------",
+        ),
+    );
+}
+
+/**
+ * @param filePath - the filePath
+ * @returns filename
+ */
+export function getFileName(filePath: string): string {
+    const splitFilePath = filePath.split("/");
+    const lastPart = splitFilePath[splitFilePath.length - 1];
+    const splitLastPart = lastPart.split(".");
+    return splitLastPart[0];
 }

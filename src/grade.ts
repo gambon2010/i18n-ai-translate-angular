@@ -5,6 +5,7 @@ import {
 } from "./constants";
 import { flatten } from "flat";
 import {
+    getFileName,
     getGradeStats,
     printError,
     printExecutionTime,
@@ -79,7 +80,7 @@ export default async function grade(options: GradeOptions): Promise<Object> {
 
     if (response) {
         fs.writeFileSync(
-            "result.json",
+            `graded_${options.translatedFileName}.json`,
             JSON.stringify(exportGradeItem, null, 4),
         );
     }
@@ -134,6 +135,7 @@ export async function gradeFile(options: GradeFileOptions): Promise<void> {
             originalJSON,
             originalLanguage: options.originalFileLanguage,
             rateLimitMs: options.rateLimitMs,
+            translatedFileName: getFileName(options.translatedFilePath),
             translatedJSON,
             translatedLanguage: options.translatedFileLanguage,
             verbose: options.verbose,

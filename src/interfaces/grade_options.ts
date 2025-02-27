@@ -5,4 +5,5 @@ export default interface GradeOptions extends Options {
     originalLanguage: string;
     translatedJSON: Object;
     translatedLanguage: string;
+    translatedFileName: string;
 }
