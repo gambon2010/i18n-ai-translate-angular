@@ -8,12 +8,8 @@ import {
 } from "./types";
 import { RETRY_ATTEMPTS } from "../constants";
 import { Tiktoken } from "tiktoken";
-import {
-    printError,
-    printExecutionTime,
-    printProgress,
-    retryJob,
-} from "../utils";
+import { printError, printProgress } from "../print";
+import { retryJob } from "../utils";
 import ChatFactory from "../chat_interface/chat_factory";
 import RateLimiter from "../rate_limiter";
 import cl100k_base from "tiktoken/encoders/cl100k_base.json";
@@ -212,7 +208,9 @@ export default class GenerateTranslationJson {
         const generatedTranslation: GradeItem[] = [];
 
         translationStats.totalItems = gradeItemArray.length;
-        translationStats.totalTokens = gradeItemArray.reduce(
+
+        let processedTokens = 0;
+        const totalTokens = gradeItemArray.reduce(
             (sum, gradeItem) => sum + gradeItem.gradingTokens,
             0,
         );
@@ -254,6 +252,7 @@ export default class GenerateTranslationJson {
                 gradeItems: batchTranslateItemArray,
                 originalLanguage: `[${options.originalLanguage}]`,
                 translatedLanguage: `[${options.translatedLanguage}]`,
+                translationStats,
                 verboseLogging: options.verbose as boolean,
             });
 
@@ -271,22 +270,21 @@ export default class GenerateTranslationJson {
                     // If it does remove it from the 'translateItemArray' used to queue items for translation
                     gradeItemArray.splice(index, 1);
                     generatedTranslation.push(translatedItem);
-                    translationStats.processedTokens +=
-                        translatedItem.gradingTokens;
+                    processedTokens += translatedItem.gradingTokens;
                 }
-
-                translationStats.processedItems++;
             }
 
             if (options.verbose) {
                 printProgress(
                     "Grading",
                     translationStats.batchStartTime,
-                    translationStats.totalTokens,
-                    translationStats.processedTokens,
+                    totalTokens,
+                    processedTokens,
                 );
             }
         }
+
+        translationStats.batchEndTime = Date.now();
 
         return generatedTranslation;
     }
@@ -402,6 +400,7 @@ export default class GenerateTranslationJson {
                     generationPromptText,
                     generateState,
                     GradingScaleItemOutputArraySchema,
+                    options.translationStats,
                 ],
                 RETRY_ATTEMPTS,
                 true,
@@ -449,8 +448,13 @@ export default class GenerateTranslationJson {
         generationPromptText: string,
         generateState: GenerateStateJson,
         format: ZodType<any, ZodTypeDef, any>,
+        translationStats: TranslationStatsItem,
     ): Promise<string> {
-        const text = await this.chats.sendMessage(generationPromptText, format);
+        const text = await this.chats.sendMessage(
+            generationPromptText,
+            translationStats,
+            format,
+        );
 
         if (!text) {
             return this.verifyGenerationAndRetry(

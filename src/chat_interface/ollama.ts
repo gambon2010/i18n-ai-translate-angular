@@ -1,11 +1,15 @@
-import { printError } from "../utils";
+import { Tiktoken } from "tiktoken";
+import { printError } from "../print";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";
+import cl100k_base from "tiktoken/encoders/cl100k_base.json";
 import zodToJsonSchema from "zod-to-json-schema";
 import type { ChatRequest, Ollama as InternalOllama, Message } from "ollama";
+import type { TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
 
 export default class Ollama extends ChatInterface {
+    tikToken: Tiktoken;
     model: InternalOllama;
 
     chatParams:
@@ -21,6 +25,11 @@ export default class Ollama extends ChatInterface {
         this.model = model;
         this.chatParams = null;
         this.history = [];
+        this.tikToken = new Tiktoken(
+            cl100k_base.bpe_ranks,
+            cl100k_base.special_tokens,
+            cl100k_base.pat_str,
+        );
     }
 
     startChat(params: ChatRequest): void {
@@ -32,12 +41,19 @@ export default class Ollama extends ChatInterface {
 
     async sendMessage(
         message: string,
+        translationStats: TranslationStatsItem,
         format?: ZodType<any, ZodTypeDef, any>,
     ): Promise<string> {
         if (!this.chatParams) {
             console.trace("Chat not started");
             return "";
         }
+
+        // Get message len and history len in token for stats/price estimates
+        translationStats.enqueuedTokens += this.tikToken.encode(message).length;
+        translationStats.enqueuedHistoryTokens += this.tikToken.encode(
+            this.history.map((message) => message.content).join(" "),
+        ).length;
 
         this.history.push({ content: message, role: Role.User });
 
@@ -46,9 +62,7 @@ export default class Ollama extends ChatInterface {
         this.chatParams = {
             ...this.chatParams,
             format: formatSchema,
-            messages: [{ content: message, role: Role.User }],
-            // message history breaks small models, they translate the previous message over and over instead of translating the new lines
-            // we should add a way to enable/disable message history
+            messages: this.history,
         };
 
         try {
@@ -58,6 +72,10 @@ export default class Ollama extends ChatInterface {
             if (!responseText) {
                 return "";
             }
+
+            // Get response length in tokens for stats/price estimates
+            translationStats.receivedTokens +=
+                this.tikToken.encode(responseText).length;
 
             this.history.push({ content: responseText, role: Role.Assistant });
             return responseText;

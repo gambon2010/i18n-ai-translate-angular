@@ -3,15 +3,15 @@ import {
     DEFAULT_REQUEST_TOKENS,
     FLATTEN_DELIMITER,
 } from "./constants";
-import { flatten } from "flat";
 import {
-    getFileName,
-    getGradeStats,
+    displayFullTranslationProcess,
     printError,
     printExecutionTime,
     printInfo,
     printResults,
-} from "./utils";
+} from "./print";
+import { flatten } from "flat";
+import { getFileName, getGradeStats } from "./utils";
 import GenerateTranslationJson from "./generate_json/generate";
 import fs from "fs";
 import type { ExportGradeItem } from "./generate_json/types";
@@ -21,12 +21,13 @@ import type GradeOptions from "./interfaces/grade_options";
 
 function startTranslationStatsItem(): TranslationStatsItem {
     return {
+        batchEndTime: 0,
         batchStartTime: 0,
+        enqueuedHistoryTokens: 0,
         enqueuedItems: 0,
-        processedItems: 0,
-        processedTokens: 0,
+        enqueuedTokens: 0,
+        receivedTokens: 0,
         totalItems: 0,
-        totalTokens: 0,
     } as TranslationStatsItem;
 }
 
@@ -76,6 +77,7 @@ export default async function grade(options: GradeOptions): Promise<Object> {
     const exportGradeItem: ExportGradeItem = {
         gradeItems: response,
         gradingStats: getGradeStats(response),
+        translationStats,
     };
 
     if (response) {
@@ -88,8 +90,10 @@ export default async function grade(options: GradeOptions): Promise<Object> {
     if (options.verbose) {
         printExecutionTime(
             translationStats.batchStartTime,
+            translationStats.batchEndTime,
             "Total execution time: ",
         );
+        displayFullTranslationProcess(translationStats);
         printResults(exportGradeItem.gradingStats);
     }
 
@@ -160,6 +164,12 @@ export function calculateGradeStats(filePath: string): void {
     }
 
     gradeItemFile.gradingStats = getGradeStats(gradeItemFile.gradeItems);
+
+    if (gradeItemFile.translationStats) {
+        displayFullTranslationProcess(gradeItemFile.translationStats);
+    } else {
+        console.info("No translation token info");
+    }
 
     printResults(gradeItemFile.gradingStats);
 

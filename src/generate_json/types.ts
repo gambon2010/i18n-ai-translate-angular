@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { TranslationStatsItem } from "../types";
 
 export type GradeItem = {
     id: number;
@@ -22,6 +23,7 @@ export type GradeItemOutput = {
 export type ExportGradeItem = {
     gradeItems: GradeItemOutput[];
     gradingStats: GradingStats;
+    translationStats: TranslationStatsItem;
 };
 
 export type GradeResult = {
@@ -52,14 +54,26 @@ export type GradingScaleItemOutput = {
 };
 
 export const GradingScaleItemOutputSchema = z.object({
+    // 2
+    accuracy: z.number(),
+
+    // 5
+    consistency: z.number(),
+
+    // 6
+    culturalAdaptation: z.number(),
+
+    // 4
+    fluencyReadability: z.number(),
+
+    // 3
+    formatting: z.number(),
+
     // order is important for prompt do not reorder
-    id: z.number(), // 1
-    think: z.string(), // 2
-    accuracy: z.number(), // 3
-    formatting: z.number(), // 4
-    fluencyReadability: z.number(), // 5
-    consistency: z.number(), // 6
-    culturalAdaptation: z.number(), // 7
+    id: z.number(),
+
+    // 1
+    think: z.string(), // 7
     valid: z.boolean(), // 8
 });
 

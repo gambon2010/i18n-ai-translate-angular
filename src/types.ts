@@ -28,9 +28,10 @@ export type ModelArgs = {
 
 export type TranslationStatsItem = {
     batchStartTime: number;
-    processedItems: number;
-    processedTokens: number;
+    batchEndTime: number;
     enqueuedItems: number;
     totalItems: number;
-    totalTokens: number;
+    enqueuedTokens: number;
+    enqueuedHistoryTokens: number;
+    receivedTokens: number;
 };

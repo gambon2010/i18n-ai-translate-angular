@@ -1,7 +1,6 @@
 import { CLI_HELP, DEFAULT_MODEL, VERSION } from "./constants";
-import { config } from "dotenv";
 import { calculateGradeStats, gradeFile } from "./grade";
-import { printError } from "./utils";
+import { config } from "dotenv";
 import { program } from "commander";
 import Engine from "./enums/engine";
 import fs from "fs";
@@ -185,7 +184,7 @@ program
                     verbose: options.verbose,
                 });
             } catch (err) {
-                printError(`Failed to grade file to : ${err}`);
+                URIError(`Failed to grade file to : ${err}`);
             }
         }
     });
@@ -204,7 +203,7 @@ program
                 // eslint-disable-next-line no-await-in-loop
                 calculateGradeStats(filePath);
             } catch (err) {
-                printError(`Failed to grade file to : ${err}`);
+                URIError(`Failed to grade file to : ${err}`);
             }
         }
     });
