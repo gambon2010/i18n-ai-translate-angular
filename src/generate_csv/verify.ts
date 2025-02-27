@@ -1,11 +1,12 @@
-import { isACK, isNAK, printError, retryJob } from "../utils";
+import { isACK, isNAK, retryJob } from "../utils";
 import {
     stylingVerificationPrompt,
     translationVerificationPrompt,
 } from "./prompts";
 import type ChatInterface from "../chat_interface/chat_interface";
 import type OverridePrompt from "../interfaces/override_prompt";
-import { TranslationStatsItem } from "src/types";
+import { TranslationStatsItem } from "../types";
+import { printError } from "../print";
 
 /**
  * Confirm whether a given translation is valid

@@ -1,13 +1,7 @@
 import { RETRY_ATTEMPTS } from "../constants";
 import { failedTranslationPrompt, generationPrompt } from "./prompts";
-import {
-    getTemplatedStringRegex,
-    isNAK,
-    printError,
-    printInfo,
-    printProgress,
-    retryJob,
-} from "../utils";
+import { getTemplatedStringRegex, isNAK, retryJob } from "../utils";
+import { printError, printInfo, printProgress } from "../print";
 import { verifyStyling, verifyTranslation } from "./verify";
 import type { GenerateStateCsv, TranslationStats } from "../types";
 import type Chats from "../interfaces/chats";

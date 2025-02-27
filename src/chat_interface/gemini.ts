@@ -1,5 +1,5 @@
 import { Tiktoken } from "tiktoken";
-import { printError } from "../utils";
+import { printError } from "../print";
 import { toGeminiSchema } from "gemini-zod";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";
@@ -10,7 +10,7 @@ import type {
     GenerativeModel,
     StartChatParams,
 } from "@google/generative-ai";
-import type { TranslationStatsItem } from "src/types";
+import type { TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
 import type RateLimiter from "../rate_limiter";
 

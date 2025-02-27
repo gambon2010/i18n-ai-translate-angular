@@ -5,17 +5,13 @@ import {
     DEFAULT_TEMPLATED_STRING_SUFFIX,
     FLATTEN_DELIMITER,
 } from "./constants";
+import { distance } from "fastest-levenshtein";
+import { flatten, unflatten } from "flat";
 import {
-    displayFullTranslationProcess,
     getAllFilesInPath,
     getLanguageCodeFromFilename,
     getTranslationDirectoryKey,
-    printError,
-    printExecutionTime,
-    printInfo,
 } from "./utils";
-import { distance } from "fastest-levenshtein";
-import { flatten, unflatten } from "flat";
 import ChatFactory from "./chat_interface/chat_factory";
 import GenerateTranslationJson from "./generate_json/generate";
 import PromptMode from "./enums/prompt_mode";
@@ -31,6 +27,12 @@ import type TranslateDirectoryOptions from "./interfaces/translate_directory_opt
 import type TranslateFileDiffOptions from "./interfaces/translate_file_diff_options";
 import type TranslateFileOptions from "./interfaces/translate_file_options";
 import type TranslateOptions from "./interfaces/translate_options";
+import {
+    printInfo,
+    displayFullTranslationProcess,
+    printExecutionTime,
+    printError,
+} from "./print";
 
 function getChats(options: TranslateOptions): Chats {
     const rateLimiter = new RateLimiter(
@@ -268,7 +270,6 @@ export async function translate(options: TranslateOptions): Promise<Object> {
     });
 
     if (options.verbose) {
-        console.log(translationStats);
         printExecutionTime(
             translationStats.startTime,
             translationStats.endTime,

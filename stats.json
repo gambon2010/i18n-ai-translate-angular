@@ -1,6 +1,6 @@
 {
-    "endTime": 0,
-    "startTime": 1740673698526,
+    "endTime": 1740685987939,
+    "startTime": 1740685664142,
     "style": {
         "batchEndTime": 0,
         "batchStartTime": 0,
@@ -8,24 +8,24 @@
         "enqueuedItems": 0,
         "enqueuedTokens": 0,
         "receivedTokens": 0,
-        "totalItems": 0
+        "totalItems": 892
     },
     "translate": {
-        "batchEndTime": 1740673834760,
-        "batchStartTime": 1740673698558,
-        "enqueuedHistoryTokens": 24963,
-        "enqueuedItems": 183,
-        "enqueuedTokens": 4231,
-        "receivedTokens": 5651,
-        "totalItems": 183
+        "batchEndTime": 0,
+        "batchStartTime": 0,
+        "enqueuedHistoryTokens": 114207,
+        "enqueuedItems": 0,
+        "enqueuedTokens": 11480,
+        "receivedTokens": 13826,
+        "totalItems": 892
     },
     "verify": {
-        "batchEndTime": 1740673940874,
-        "batchStartTime": 1740673834761,
-        "enqueuedHistoryTokens": 43223,
-        "enqueuedItems": 195,
-        "enqueuedTokens": 8260,
-        "receivedTokens": 3252,
-        "totalItems": 183
+        "batchEndTime": 0,
+        "batchStartTime": 0,
+        "enqueuedHistoryTokens": 0,
+        "enqueuedItems": 0,
+        "enqueuedTokens": 0,
+        "receivedTokens": 0,
+        "totalItems": 892
     }
 }

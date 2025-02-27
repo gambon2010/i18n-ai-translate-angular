@@ -1,5 +1,5 @@
 import { Tiktoken } from "tiktoken";
-import { printError } from "../utils";
+import { printError } from "../print";
 import { zodResponseFormat } from "openai/helpers/zod";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";

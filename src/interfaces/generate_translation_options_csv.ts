@@ -1,4 +1,4 @@
-import type { TranslationStats } from "src/types";
+import type { TranslationStats } from "../types";
 import type Chats from "./chats";
 import type OverridePrompt from "./override_prompt";
 

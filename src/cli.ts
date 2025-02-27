@@ -7,13 +7,8 @@ import {
 } from "./constants";
 import { OVERRIDE_PROMPT_KEYS } from "./interfaces/override_prompt";
 import { config } from "dotenv";
-import {
-    getAllLanguageCodes,
-    getLanguageCodeFromFilename,
-    printError,
-    printInfo,
-    printWarn,
-} from "./utils";
+import { getAllLanguageCodes, getLanguageCodeFromFilename } from "./utils";
+import { printError, printInfo, printWarn } from "./print";
 import { program } from "commander";
 import {
     translateDirectory,

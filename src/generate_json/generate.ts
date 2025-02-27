@@ -8,11 +8,9 @@ import { Tiktoken } from "tiktoken";
 import {
     getMissingVariables,
     getTemplatedStringRegex,
-    printError,
-    printExecutionTime,
-    printProgress,
     retryJob,
 } from "../utils";
+import { printError, printExecutionTime, printProgress } from "../print";
 import {
     translationPromptJsonWithThink,
     translationPromptJsonWithoutThink,
@@ -29,7 +27,7 @@ import type {
 } from "./types";
 import type { TranslationStats, TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
-import type ChatInterface from "src/chat_interface/chat_interface";
+import type ChatInterface from "../chat_interface/chat_interface";
 import type Chats from "../interfaces/chats";
 import type GenerateTranslationOptionsJson from "../interfaces/generate_translation_options_json";
 import type TranslateOptions from "../interfaces/translate_options";

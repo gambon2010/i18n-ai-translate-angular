@@ -1,4 +1,5 @@
-import { delay, printInfo } from "./utils";
+import { delay } from "./utils";
+import { printInfo } from "./print";
 
 export default class RateLimiter {
     lastAPICall: number | null;

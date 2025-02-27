@@ -1,5 +1,5 @@
 import { Tiktoken } from "tiktoken";
-import { printError } from "../utils";
+import { printError } from "../print";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";
 import cl100k_base from "tiktoken/encoders/cl100k_base.json";
@@ -8,7 +8,7 @@ import type {
     MessageCreateParams,
     MessageParam,
 } from "@anthropic-ai/sdk/resources";
-import type { TranslationStatsItem } from "src/types";
+import type { TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
 import type RateLimiter from "../rate_limiter";
 

@@ -1,11 +1,11 @@
 import { Tiktoken } from "tiktoken";
-import { printError } from "../utils";
+import { printError } from "../print";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";
 import cl100k_base from "tiktoken/encoders/cl100k_base.json";
 import zodToJsonSchema from "zod-to-json-schema";
 import type { ChatRequest, Ollama as InternalOllama, Message } from "ollama";
-import type { TranslationStatsItem } from "src/types";
+import type { TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
 
 export default class Ollama extends ChatInterface {
