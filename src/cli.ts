@@ -1,6 +1,6 @@
 import { CLI_HELP, DEFAULT_MODEL, VERSION } from "./constants";
 import { config } from "dotenv";
-import { gradeFile } from "./grade";
+import { calculateGradeStats, gradeFile } from "./grade";
 import { printError } from "./utils";
 import { program } from "commander";
 import Engine from "./enums/engine";
@@ -123,8 +123,16 @@ program
         "Original i18n file or path of source language, in the jsons/ directory if a relative path is given",
     )
     .requiredOption(
+        "--ol, --orignal-language <orignal-language>",
+        "The language of the original file",
+    )
+    .requiredOption(
         "-t, --translated <translated>",
         "Translated i18n file to grade",
+    )
+    .requiredOption(
+        "--tl, --translated-language <translated-language>",
+        "The language of the translated file",
     )
     .requiredOption("-e, --engine <engine>", CLI_HELP.Engine)
     .option("-m, --model <model>", CLI_HELP.Model)
@@ -169,13 +177,34 @@ program
                     engine: options.engine,
                     host,
                     model,
+                    originalFileLanguage: options.orignalLanguage,
                     originalFilePath,
                     rateLimitMs,
+                    translatedFileLanguage: options.translatedLanguage,
                     translatedFilePath,
                     verbose: options.verbose,
                 });
             } catch (err) {
-                printError(`Failed to translate file to : ${err}`);
+                printError(`Failed to grade file to : ${err}`);
+            }
+        }
+    });
+
+program
+    .command("calc-grade-stats")
+    .requiredOption("-p, --path <path>", "Path of the grade file")
+    .action(async (options: any) => {
+        let filePath: string = options.path;
+        if (path.isAbsolute(options.path)) {
+            filePath = path.resolve(options.path);
+        }
+
+        if (fs.statSync(filePath).isFile()) {
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                calculateGradeStats(filePath);
+            } catch (err) {
+                printError(`Failed to grade file to : ${err}`);
             }
         }
     });

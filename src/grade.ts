@@ -6,7 +6,6 @@ import {
 import { flatten } from "flat";
 import {
     getGradeStats,
-    getLanguageCodeFromFilename,
     printError,
     printExecutionTime,
     printInfo,
@@ -14,10 +13,10 @@ import {
 } from "./utils";
 import GenerateTranslationJson from "./generate_json/generate";
 import fs from "fs";
+import type { ExportGradeItem } from "./generate_json/types";
 import type { TranslationStatsItem } from "./types";
 import type GradeFileOptions from "./interfaces/grade_file_options";
 import type GradeOptions from "./interfaces/grade_options";
-import { ExportGradeItem } from "./generate_json/types";
 
 function startTranslationStatsItem(): TranslationStatsItem {
     return {
@@ -123,14 +122,6 @@ export async function gradeFile(options: GradeFileOptions): Promise<void> {
         return;
     }
 
-    const originalLanguage = getLanguageCodeFromFilename(
-        options.originalFilePath,
-    );
-
-    const translatedLanguage = getLanguageCodeFromFilename(
-        options.translatedFilePath,
-    );
-
     try {
         await grade({
             apiKey: options.apiKey,
@@ -141,13 +132,34 @@ export async function gradeFile(options: GradeFileOptions): Promise<void> {
             host: options.host,
             model: options.model,
             originalJSON,
-            originalLanguage,
+            originalLanguage: options.originalFileLanguage,
             rateLimitMs: options.rateLimitMs,
             translatedJSON,
-            translatedLanguage,
+            translatedLanguage: options.translatedFileLanguage,
             verbose: options.verbose,
         });
     } catch (err) {
         printError(`Failed to grade file: ${err}`);
     }
+}
+
+/**
+ * Recalculates grading stats
+ * @param filePath - The file path
+ */
+export function calculateGradeStats(filePath: string): void {
+    let gradeItemFile = {} as ExportGradeItem;
+    try {
+        const originalFile = fs.readFileSync(filePath, "utf-8");
+        gradeItemFile = JSON.parse(originalFile);
+    } catch (e) {
+        printError(`Invalid input JSON: ${e}`);
+        return;
+    }
+
+    gradeItemFile.gradingStats = getGradeStats(gradeItemFile.gradeItems);
+
+    printResults(gradeItemFile.gradingStats);
+
+    fs.writeFileSync(filePath, JSON.stringify(gradeItemFile, null, 4));
 }
