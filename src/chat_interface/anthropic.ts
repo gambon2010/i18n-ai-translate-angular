@@ -1,15 +1,20 @@
+import { Tiktoken } from "tiktoken";
 import { printError } from "../utils";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";
+import cl100k_base from "tiktoken/encoders/cl100k_base.json";
 import type { Anthropic as InternalAnthropic } from "@anthropic-ai/sdk";
 import type {
     MessageCreateParams,
     MessageParam,
 } from "@anthropic-ai/sdk/resources";
+import type { TranslationStatsItem } from "src/types";
 import type { ZodType, ZodTypeDef } from "zod";
 import type RateLimiter from "../rate_limiter";
 
 export default class Anthropic extends ChatInterface {
+    tikToken: Tiktoken;
+
     model: InternalAnthropic;
 
     chatParams: MessageCreateParams | null;
@@ -24,6 +29,11 @@ export default class Anthropic extends ChatInterface {
         this.chatParams = null;
         this.history = [];
         this.rateLimiter = rateLimiter;
+        this.tikToken = new Tiktoken(
+            cl100k_base.bpe_ranks,
+            cl100k_base.special_tokens,
+            cl100k_base.pat_str,
+        );
     }
 
     startChat(params: MessageCreateParams): void {
@@ -35,6 +45,7 @@ export default class Anthropic extends ChatInterface {
 
     async sendMessage(
         message: string,
+        translationStats: TranslationStatsItem,
         format?: ZodType<any, ZodTypeDef, any>,
     ): Promise<string> {
         if (!this.chatParams) {
@@ -46,6 +57,12 @@ export default class Anthropic extends ChatInterface {
         if (this.history.length > 10) {
             this.history = this.history.slice(this.history.length - 10);
         }
+
+        // Get message len and history len in token for stats/price estimates
+        translationStats.enqueuedTokens += this.tikToken.encode(message).length;
+        translationStats.enqueuedHistoryTokens += this.tikToken.encode(
+            this.history.map((message) => message.content).join(" "),
+        ).length;
 
         await this.rateLimiter.wait();
         this.rateLimiter.apiCalled();
@@ -69,6 +86,11 @@ export default class Anthropic extends ChatInterface {
             }
 
             const responseText = responseBlock[0].text;
+
+            // Get response length in tokens for stats/price estimates
+            translationStats.receivedTokens +=
+                this.tikToken.encode(responseText).length;
+
             this.history.push({ content: responseText, role: Role.Assistant });
             return responseText;
         } catch (err) {

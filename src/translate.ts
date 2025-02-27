@@ -5,9 +5,8 @@ import {
     DEFAULT_TEMPLATED_STRING_SUFFIX,
     FLATTEN_DELIMITER,
 } from "./constants";
-import { distance } from "fastest-levenshtein";
-import { flatten, unflatten } from "flat";
 import {
+    displayFullTranslationProcess,
     getAllFilesInPath,
     getLanguageCodeFromFilename,
     getTranslationDirectoryKey,
@@ -15,6 +14,8 @@ import {
     printExecutionTime,
     printInfo,
 } from "./utils";
+import { distance } from "fastest-levenshtein";
+import { flatten, unflatten } from "flat";
 import ChatFactory from "./chat_interface/chat_factory";
 import GenerateTranslationJson from "./generate_json/generate";
 import PromptMode from "./enums/prompt_mode";
@@ -135,20 +136,24 @@ function groupSimilarValues(flatInput: { [key: string]: string }): {
 
 function startTranslationStatsItem(): TranslationStatsItem {
     return {
+        batchEndTime: 0,
         batchStartTime: 0,
+        enqueuedHistoryTokens: 0,
         enqueuedItems: 0,
-        processedItems: 0,
-        processedTokens: 0,
+        enqueuedTokens: 0,
+        receivedTokens: 0,
         totalItems: 0,
-        totalTokens: 0,
     } as TranslationStatsItem;
 }
 
 function startTranslationStats(): TranslationStats {
     return {
+        endTime: 0,
+        startTime: 0,
+        style: startTranslationStatsItem(),
         translate: startTranslationStatsItem(),
         verify: startTranslationStatsItem(),
-    } as TranslationStats;
+    };
 }
 
 async function getTranslation(
@@ -178,12 +183,7 @@ async function getTranslation(
                 printInfo("Transaltion prompting mode: CSV\n");
             }
 
-            return translateCsv(
-                flatInput,
-                options,
-                chats,
-                translationStats.translate,
-            );
+            return translateCsv(flatInput, options, chats, translationStats);
         default:
             throw new Error("Prompt mode is not set");
     }
@@ -245,6 +245,12 @@ export async function translate(options: TranslateOptions): Promise<Object> {
         translationStats,
     );
 
+    translationStats.endTime = Date.now();
+
+    fs.writeFileSync("stats.json", JSON.stringify(translationStats, null, 4));
+
+    displayFullTranslationProcess(translationStats);
+
     // sort the keys
     const sortedOutput: { [key: string]: string } = {};
     for (const key of Object.keys(flatInput).sort()) {
@@ -262,8 +268,10 @@ export async function translate(options: TranslateOptions): Promise<Object> {
     });
 
     if (options.verbose) {
+        console.log(translationStats);
         printExecutionTime(
-            translationStats.translate.batchStartTime,
+            translationStats.startTime,
+            translationStats.endTime,
             "Total execution time: ",
         );
     }

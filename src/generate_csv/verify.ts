@@ -5,6 +5,7 @@ import {
 } from "./prompts";
 import type ChatInterface from "../chat_interface/chat_interface";
 import type OverridePrompt from "../interfaces/override_prompt";
+import { TranslationStatsItem } from "src/types";
 
 /**
  * Confirm whether a given translation is valid
@@ -13,6 +14,7 @@ import type OverridePrompt from "../interfaces/override_prompt";
  * @param outputLanguage - the language of the output
  * @param input - the input text
  * @param outputToVerify - the output text to verify
+ * @param translationStatsItem - translationStatsItem
  * @param overridePrompt - An optional custom prompt
  */
 export async function verifyTranslation(
@@ -21,6 +23,7 @@ export async function verifyTranslation(
     outputLanguage: string,
     input: string,
     outputToVerify: string,
+    translationStatsItem: TranslationStatsItem,
     overridePrompt?: OverridePrompt,
 ): Promise<string> {
     const translationVerificationPromptText = translationVerificationPrompt(
@@ -32,7 +35,11 @@ export async function verifyTranslation(
     );
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return verify(chat, translationVerificationPromptText);
+    return verify(
+        chat,
+        translationVerificationPromptText,
+        translationStatsItem,
+    );
 }
 
 /**
@@ -42,6 +49,7 @@ export async function verifyTranslation(
  * @param outputLanguage - the language of the output
  * @param input - the input text
  * @param outputToVerify - the output text to verify
+ * @param translationStatsItem - translationStatsItem
  * @param overridePrompt - An optional custom prompt
  */
 export async function verifyStyling(
@@ -50,6 +58,7 @@ export async function verifyStyling(
     outputLanguage: string,
     input: string,
     outputToVerify: string,
+    translationStatsItem: TranslationStatsItem,
     overridePrompt?: OverridePrompt,
 ): Promise<string> {
     const stylingVerificationPromptText = stylingVerificationPrompt(
@@ -61,18 +70,22 @@ export async function verifyStyling(
     );
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return verify(chat, stylingVerificationPromptText);
+    return verify(chat, stylingVerificationPromptText, translationStatsItem);
 }
 
 const verify = async (
     chat: ChatInterface,
     verificationPromptText: string,
+    translationStatsItem: TranslationStatsItem,
 ): Promise<string> => {
     let verification = "";
     try {
         verification = await retryJob(
             async (): Promise<string> => {
-                const text = await chat.sendMessage(verificationPromptText);
+                const text = await chat.sendMessage(
+                    verificationPromptText,
+                    translationStatsItem,
+                );
 
                 if (text === "") {
                     return Promise.reject(

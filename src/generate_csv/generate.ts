@@ -9,7 +9,7 @@ import {
     retryJob,
 } from "../utils";
 import { verifyStyling, verifyTranslation } from "./verify";
-import type { GenerateStateCsv, TranslationStatsItem } from "../types";
+import type { GenerateStateCsv, TranslationStats } from "../types";
 import type Chats from "../interfaces/chats";
 import type GenerateTranslationOptionsCsv from "../interfaces/generate_translation_options_csv";
 import type TranslateOptions from "../interfaces/translate_options";
@@ -25,7 +25,7 @@ export default async function translateCsv(
     flatInput: { [key: string]: string },
     options: TranslateOptions,
     chats: Chats,
-    translationStats: TranslationStatsItem,
+    translationStats: TranslationStats,
 ): Promise<{ [key: string]: string }> {
     const output: { [key: string]: string } = {};
 
@@ -33,7 +33,10 @@ export default async function translateCsv(
 
     const batchSize = Number(options.batchSize);
 
-    translationStats.batchStartTime = Date.now();
+    translationStats.startTime = Date.now();
+    translationStats.translate.totalItems = Object.keys(flatInput).length;
+    translationStats.verify.totalItems = Object.keys(flatInput).length;
+    translationStats.style.totalItems = Object.keys(flatInput).length;
 
     for (let i = 0; i < Object.keys(flatInput).length; i += batchSize) {
         const keys = allKeys.slice(i, i + batchSize);
@@ -54,6 +57,7 @@ export default async function translateCsv(
                 options.skipTranslationVerification as boolean,
             templatedStringPrefix: options.templatedStringPrefix as string,
             templatedStringSuffix: options.templatedStringSuffix as string,
+            translationStats,
             verboseLogging: options.verbose as boolean,
         });
 
@@ -76,7 +80,7 @@ export default async function translateCsv(
         if (options.verbose && i > 0) {
             printProgress(
                 "Completed",
-                translationStats.batchStartTime,
+                translationStats.startTime,
                 Object.keys(flatInput).length,
                 i,
             );
@@ -166,8 +170,10 @@ async function generate(
         splitInput, // Fine to destructure here -- we never modify the original
     } = generateState;
 
-    let text =
-        await chats.generateTranslationChat.sendMessage(generationPromptText);
+    let text = await chats.generateTranslationChat.sendMessage(
+        generationPromptText,
+        options.translationStats.translate,
+    );
 
     if (!text) {
         generateState.generationRetries++;
@@ -272,6 +278,7 @@ async function generate(
                 // eslint-disable-next-line no-await-in-loop
                 await chats.generateTranslationChat.sendMessage(
                     retryTranslationPromptText,
+                    options.translationStats.verify,
                 );
 
             if (fixedText === "") {
@@ -333,6 +340,7 @@ async function generate(
             outputLanguage,
             input,
             text,
+            options.translationStats.verify,
             options.overridePrompt,
         );
     }
@@ -350,6 +358,7 @@ async function generate(
             outputLanguage,
             input,
             text,
+            options.translationStats.style,
             options.overridePrompt,
         );
     }

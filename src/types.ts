@@ -39,13 +39,17 @@ export type GenerateStateCsv = {
 export type TranslationStats = {
     translate: TranslationStatsItem;
     verify: TranslationStatsItem;
+    style: TranslationStatsItem;
+    startTime: number;
+    endTime: number;
 };
 
 export type TranslationStatsItem = {
     batchStartTime: number;
-    processedItems: number;
-    processedTokens: number;
+    batchEndTime: number;
     enqueuedItems: number;
     totalItems: number;
-    totalTokens: number;
+    enqueuedTokens: number;
+    enqueuedHistoryTokens: number;
+    receivedTokens: number;
 };

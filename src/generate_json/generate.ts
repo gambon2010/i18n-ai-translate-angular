@@ -29,10 +29,10 @@ import type {
 } from "./types";
 import type { TranslationStats, TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
+import type ChatInterface from "src/chat_interface/chat_interface";
 import type Chats from "../interfaces/chats";
 import type GenerateTranslationOptionsJson from "../interfaces/generate_translation_options_json";
 import type TranslateOptions from "../interfaces/translate_options";
-import ChatInterface from "src/chat_interface/chat_interface";
 
 export default class GenerateTranslationJson {
     tikToken: Tiktoken;
@@ -65,6 +65,8 @@ export default class GenerateTranslationJson {
         options: TranslateOptions,
         translationStats: TranslationStats,
     ): Promise<{ [key: string]: string }> {
+        translationStats.startTime = Date.now();
+
         const translateItemArray = this.generateTranslateItemArray(flatInput);
 
         const generatedTranslation = await this.generateTranslationJson(
@@ -244,7 +246,9 @@ export default class GenerateTranslationJson {
         const generatedTranslation: TranslateItem[] = [];
 
         translationStats.totalItems = translateItemArray.length;
-        translationStats.totalTokens = translateItemArray.reduce(
+
+        let processedTokens = 0;
+        const totalTokens = translateItemArray.reduce(
             (sum, translateItem) => sum + translateItem.translationTokens,
             0,
         );
@@ -304,6 +308,7 @@ export default class GenerateTranslationJson {
                 templatedStringPrefix: options.templatedStringPrefix as string,
                 templatedStringSuffix: options.templatedStringSuffix as string,
                 translateItems: batchTranslateItemArray,
+                translationStats,
                 verboseLogging: options.verbose as boolean,
             });
 
@@ -321,11 +326,8 @@ export default class GenerateTranslationJson {
                     // If it does remove it from the 'translateItemArray' used to queue items for translation
                     translateItemArray.splice(index, 1);
                     generatedTranslation.push(translatedItem);
-                    translationStats.processedTokens +=
-                        translatedItem.translationTokens;
+                    processedTokens += translatedItem.translationTokens;
                 }
-
-                translationStats.processedItems++;
             }
 
             if (options.verbose) {
@@ -334,15 +336,18 @@ export default class GenerateTranslationJson {
                         ? "Translating"
                         : "Step 1/2 - Translating",
                     translationStats.batchStartTime,
-                    translationStats.totalTokens,
-                    translationStats.processedTokens,
+                    totalTokens,
+                    processedTokens,
                 );
             }
         }
 
+        translationStats.batchEndTime = Date.now();
+
         if (options.verbose) {
             printExecutionTime(
                 translationStats.batchStartTime,
+                translationStats.batchEndTime,
                 "\nTranslation execution time: ",
             );
         }
@@ -361,7 +366,8 @@ export default class GenerateTranslationJson {
 
         translationStats.totalItems = verifyItemArray.length;
 
-        translationStats.totalTokens = verifyItemArray.reduce(
+        let processedTokens = 0;
+        const totalTokens = verifyItemArray.reduce(
             (sum, verifyItem) => sum + verifyItem.translationTokens,
             0,
         );
@@ -412,6 +418,7 @@ export default class GenerateTranslationJson {
                 templatedStringPrefix: options.templatedStringPrefix as string,
                 templatedStringSuffix: options.templatedStringSuffix as string,
                 translateItems: batchVerifyItemArray,
+                translationStats,
                 verboseLogging: options.verbose as boolean,
             });
 
@@ -427,26 +434,26 @@ export default class GenerateTranslationJson {
                 if (index !== -1) {
                     verifyItemArray.splice(index, 1);
                     generatedVerification.push(verifiedItem);
-                    translationStats.processedTokens +=
-                        verifiedItem.translationTokens;
+                    processedTokens += verifiedItem.translationTokens;
                 }
-
-                translationStats.processedItems++;
             }
 
             if (options.verbose) {
                 printProgress(
                     "Step 2/2 - Verifying",
                     translationStats.batchStartTime,
-                    translationStats.totalTokens,
-                    translationStats.processedTokens,
+                    totalTokens,
+                    processedTokens,
                 );
             }
         }
 
+        translationStats.batchEndTime = Date.now();
+
         if (options.verbose) {
             printExecutionTime(
                 translationStats.batchStartTime,
+                translationStats.batchEndTime,
                 "\nVerification execution time: ",
             );
         }
@@ -653,6 +660,7 @@ export default class GenerateTranslationJson {
                     options.disableThink
                         ? TranslateItemOutputObjectSchema
                         : ThinkTranslateItemOutputObjectSchema,
+                    options.translationStats,
                 ],
                 RETRY_ATTEMPTS,
                 true,
@@ -700,6 +708,7 @@ export default class GenerateTranslationJson {
                     this.chats.verifyTranslationChat,
                     generateState,
                     VerifyItemOutputObjectSchema,
+                    options.translationStats,
                 ],
                 RETRY_ATTEMPTS,
                 true,
@@ -749,9 +758,11 @@ export default class GenerateTranslationJson {
         chatInterface: ChatInterface,
         generateState: GenerateStateJson,
         format: ZodType<any, ZodTypeDef, any>,
+        translationStats: TranslationStatsItem,
     ): Promise<string> {
         const text = await chatInterface.sendMessage(
             generationPromptText,
+            translationStats,
             format,
         );
 

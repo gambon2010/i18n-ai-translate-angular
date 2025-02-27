@@ -1,12 +1,17 @@
+import { Tiktoken } from "tiktoken";
 import { printError } from "../utils";
 import { zodResponseFormat } from "openai/helpers/zod";
 import ChatInterface from "./chat_interface";
 import Role from "../enums/role";
+import cl100k_base from "tiktoken/encoders/cl100k_base.json";
+import type { TranslationStatsItem } from "../types";
 import type { ZodType, ZodTypeDef } from "zod";
 import type OpenAI from "openai";
 import type RateLimiter from "../rate_limiter";
 
 export default class ChatGPT extends ChatInterface {
+    tikToken: Tiktoken;
+
     model: OpenAI;
 
     chatParams: OpenAI.ChatCompletionCreateParamsNonStreaming | null;
@@ -21,6 +26,11 @@ export default class ChatGPT extends ChatInterface {
         this.chatParams = null;
         this.history = [];
         this.rateLimiter = rateLimiter;
+        this.tikToken = new Tiktoken(
+            cl100k_base.bpe_ranks,
+            cl100k_base.special_tokens,
+            cl100k_base.pat_str,
+        );
     }
 
     startChat(params: OpenAI.ChatCompletionCreateParamsNonStreaming): void {
@@ -32,6 +42,7 @@ export default class ChatGPT extends ChatInterface {
 
     async sendMessage(
         message: string,
+        translationStats: TranslationStatsItem,
         format?: ZodType<any, ZodTypeDef, any>,
     ): Promise<string> {
         if (!this.chatParams) {
@@ -43,6 +54,12 @@ export default class ChatGPT extends ChatInterface {
         if (this.history.length > 10) {
             this.history = this.history.slice(this.history.length - 10);
         }
+
+        // Get message len and history len in tokens for stats/price estimates
+        translationStats.enqueuedTokens += this.tikToken.encode(message).length;
+        translationStats.enqueuedHistoryTokens += this.tikToken.encode(
+            this.history.map((message) => message.content).join(" "),
+        ).length;
 
         await this.rateLimiter.wait();
         this.rateLimiter.apiCalled();
@@ -63,6 +80,10 @@ export default class ChatGPT extends ChatInterface {
             if (!responseText) {
                 return "";
             }
+
+            // Get response length in tokens for stats/price estimates
+            translationStats.receivedTokens +=
+                this.tikToken.encode(responseText).length;
 
             this.history.push({ content: responseText, role: Role.Assistant });
             return responseText;

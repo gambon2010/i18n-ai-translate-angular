@@ -1,3 +1,4 @@
+import type { TranslationStats } from "src/types";
 import type Chats from "./chats";
 import type OverridePrompt from "./override_prompt";
 
@@ -14,4 +15,5 @@ export default interface GenerateTranslationOptionsCsv {
     skipTranslationVerification: boolean;
     skipStylingVerification: boolean;
     overridePrompt?: OverridePrompt;
+    translationStats: TranslationStats;
 }

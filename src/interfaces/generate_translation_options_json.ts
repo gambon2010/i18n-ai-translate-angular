@@ -1,5 +1,5 @@
 import type { TranslateItem } from "../generate_json/types";
-import type Chats from "./chats";
+import type { TranslationStatsItem } from "../types";
 import type OverridePrompt from "./override_prompt";
 
 export default interface GenerateTranslationOptionsJson {
@@ -14,4 +14,5 @@ export default interface GenerateTranslationOptionsJson {
     skipStylingVerification: boolean;
     overridePrompt?: OverridePrompt;
     disableThink: boolean;
+    translationStats: TranslationStatsItem;
 }
