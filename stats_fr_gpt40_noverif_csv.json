@@ -1,0 +1,31 @@
+{
+    "endTime": 1740685987939,
+    "startTime": 1740685664142,
+    "style": {
+        "batchEndTime": 0,
+        "batchStartTime": 0,
+        "enqueuedHistoryTokens": 0,
+        "enqueuedItems": 0,
+        "enqueuedTokens": 0,
+        "receivedTokens": 0,
+        "totalItems": 892
+    },
+    "translate": {
+        "batchEndTime": 0,
+        "batchStartTime": 0,
+        "enqueuedHistoryTokens": 114207,
+        "enqueuedItems": 0,
+        "enqueuedTokens": 11480,
+        "receivedTokens": 13826,
+        "totalItems": 892
+    },
+    "verify": {
+        "batchEndTime": 0,
+        "batchStartTime": 0,
+        "enqueuedHistoryTokens": 0,
+        "enqueuedItems": 0,
+        "enqueuedTokens": 0,
+        "receivedTokens": 0,
+        "totalItems": 892
+    }
+}
