@@ -11,6 +11,9 @@ import {
     getAllFilesInPath,
     getLanguageCodeFromFilename,
     getTranslationDirectoryKey,
+    printError,
+    printExecutionTime,
+    printInfo,
 } from "./utils";
 import ChatFactory from "./chat_interface/chat_factory";
 import GenerateTranslationJson from "./generate_json/generate";
@@ -47,6 +50,7 @@ function getChats(options: TranslateOptions): Chats {
             rateLimiter,
             options.apiKey,
             options.host,
+            options.chatParams,
         ),
         verifyStylingChat: ChatFactory.newChat(
             options.engine,
@@ -54,6 +58,7 @@ function getChats(options: TranslateOptions): Chats {
             rateLimiter,
             options.apiKey,
             options.host,
+            options.chatParams,
         ),
         verifyTranslationChat: ChatFactory.newChat(
             options.engine,
@@ -61,6 +66,7 @@ function getChats(options: TranslateOptions): Chats {
             rateLimiter,
             options.apiKey,
             options.host,
+            options.chatParams,
         ),
     };
 }
@@ -138,6 +144,7 @@ function groupSimilarValues(flatInput: { [key: string]: string }): {
 
 function startTranslationStatsItem(): TranslationStatsItem {
     return {
+<<<<<<< HEAD
         batchEndTime: 0,
         batchStartTime: 0,
         enqueuedHistoryTokens: 0,
@@ -188,6 +195,32 @@ async function getTranslation(
             return translateCsv(flatInput, options, chats, translationStats);
         default:
             throw new Error("Prompt mode is not set");
+=======
+        batchStartTime: 0,
+        enqueuedItems: 0,
+        processedItems: 0,
+        processedTokens: 0,
+        totalItems: 0,
+        totalTokens: 0,
+    } as TranslationStatsItem;
+}
+
+function startTranslationStats(): TranslationStats {
+    return {
+        translate: startTranslationStatsItem(),
+        verify: startTranslationStatsItem(),
+    } as TranslationStats;
+}
+
+async function getTranslation(
+    flatInput: { [key: string]: string },
+    options: TranslateOptions,
+    chats: Chats,
+    translationStats: TranslationStats,
+): Promise<{ [key: string]: string }> {
+    if (options.verbose) {
+        printInfo(`Translation prompting mode: ${options.promptMode}\n`);
+>>>>>>> master
     }
 }
 
@@ -253,6 +286,85 @@ export async function translate(options: TranslateOptions): Promise<Object> {
 
     displayFullTranslationProcess(translationStats);
 
+    switch (options.promptMode) {
+        case PromptMode.JSON:
+            const generateTranslationJson = new GenerateTranslationJson(
+                options,
+            );
+
+            return generateTranslationJson.translateJson(
+                flatInput,
+                options,
+                chats,
+                translationStats,
+            );
+        case PromptMode.CSV:
+            return translateCsv(
+                flatInput,
+                options,
+                chats,
+                translationStats.translate,
+            );
+        default:
+            throw new Error("Prompt mode is not set");
+    }
+}
+
+function setDefaults(options: TranslateOptions): void {
+    if (!options.templatedStringPrefix)
+        options.templatedStringPrefix = DEFAULT_TEMPLATED_STRING_PREFIX;
+    if (!options.templatedStringSuffix)
+        options.templatedStringSuffix = DEFAULT_TEMPLATED_STRING_SUFFIX;
+    if (!options.batchMaxTokens)
+        options.batchMaxTokens = DEFAULT_REQUEST_TOKENS;
+    if (!options.batchSize) options.batchSize = DEFAULT_BATCH_SIZE;
+    if (!options.verbose) options.verbose = false;
+    if (!options.ensureChangedTranslation)
+        options.ensureChangedTranslation = false;
+    if (!options.skipTranslationVerification)
+        options.skipTranslationVerification = false;
+    if (!options.skipStylingVerification)
+        options.skipStylingVerification = false;
+}
+
+/**
+ * Translate the input JSON to the given language
+ * @param options - The options for the translation
+ */
+export async function translate(options: TranslateOptions): Promise<Object> {
+    setDefaults(options);
+
+    if (options.verbose) {
+        printInfo(
+            `Translating from ${options.inputLanguage} to ${options.outputLanguage}...`,
+        );
+    }
+
+    const chats: Chats = getChats(options);
+
+    let flatInput = flatten(options.inputJSON, {
+        delimiter: FLATTEN_DELIMITER,
+    }) as {
+        [key: string]: string;
+    };
+
+    replaceNewlinesWithPlaceholder(
+        options.templatedStringPrefix as string,
+        options.templatedStringSuffix as string,
+        flatInput,
+    );
+
+    flatInput = groupSimilarValues(flatInput);
+
+    const translationStats = startTranslationStats();
+
+    const output = await getTranslation(
+        flatInput,
+        options,
+        chats,
+        translationStats,
+    );
+
     // sort the keys
     const sortedOutput: { [key: string]: string } = {};
     for (const key of Object.keys(flatInput).sort()) {
@@ -271,8 +383,12 @@ export async function translate(options: TranslateOptions): Promise<Object> {
 
     if (options.verbose) {
         printExecutionTime(
+<<<<<<< HEAD
             translationStats.startTime,
             translationStats.endTime,
+=======
+            translationStats.translate.batchStartTime,
+>>>>>>> master
             "Total execution time: ",
         );
     }

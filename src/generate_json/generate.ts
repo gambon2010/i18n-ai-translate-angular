@@ -1,4 +1,5 @@
 import { RETRY_ATTEMPTS } from "../constants";
+<<<<<<< HEAD
 import {
     ThinkTranslateItemOutputObjectSchema,
     TranslateItemOutputObjectSchema,
@@ -16,6 +17,23 @@ import {
     translationPromptJsonWithoutThink,
     verificationPromptJson,
 } from "./prompts";
+=======
+import { Tiktoken } from "tiktoken";
+import {
+    TranslateItemOutputObjectSchema,
+    VerifyItemOutputObjectSchema,
+} from "./types";
+import {
+    getMissingVariables,
+    getTemplatedStringRegex,
+    printError,
+    printExecutionTime,
+    printProgress,
+    printWarn,
+    retryJob,
+} from "../utils";
+import { translationPromptJson, verificationPromptJson } from "./prompts";
+>>>>>>> master
 import cl100k_base from "tiktoken/encoders/cl100k_base.json";
 import type {
     GenerateStateJson,
@@ -48,7 +66,7 @@ export default class GenerateTranslationJson {
             options.templatedStringPrefix as string,
             options.templatedStringPrefix as string,
         );
-
+        
         this.chats = chats;
     }
 
@@ -56,20 +74,34 @@ export default class GenerateTranslationJson {
      * Complete the initial translation of the input text.
      * @param flatInput - The flatinput object containing the json to translate
      * @param options - The options to generate the translation
+<<<<<<< HEAD
+=======
+     * @param chats - The options to generate the translation
+>>>>>>> master
      * @param translationStats - The translation statictics
      */
     public async translateJson(
         flatInput: { [key: string]: string },
         options: TranslateOptions,
+<<<<<<< HEAD
         translationStats: TranslationStats,
     ): Promise<{ [key: string]: string }> {
         translationStats.startTime = Date.now();
 
+=======
+        chats: Chats,
+        translationStats: TranslationStats,
+    ): Promise<{ [key: string]: string }> {
+>>>>>>> master
         const translateItemArray = this.generateTranslateItemArray(flatInput);
 
         const generatedTranslation = await this.generateTranslationJson(
             translateItemArray,
             options,
+<<<<<<< HEAD
+=======
+            chats,
+>>>>>>> master
             translationStats.translate,
         );
 
@@ -77,6 +109,7 @@ export default class GenerateTranslationJson {
             const generatedVerification = await this.generateVerificationJson(
                 generatedTranslation,
                 options,
+<<<<<<< HEAD
                 translationStats.verify,
             );
 
@@ -87,6 +120,12 @@ export default class GenerateTranslationJson {
                 verificationItem.lastFailure = "";
             }
 
+=======
+                chats,
+                translationStats.verify,
+            );
+
+>>>>>>> master
             return this.convertTranslateItemToIndex(generatedVerification);
         }
 
@@ -99,15 +138,26 @@ export default class GenerateTranslationJson {
         return translateItems.map(
             (translateItem) =>
                 ({
+<<<<<<< HEAD
                     id: translateItem.id,
                     original: translateItem.original,
+=======
+>>>>>>> master
                     // Only adds 'context' to the object if it's not empty. Makes the prompt shorter and uses less tokens
                     ...(translateItem.context !== ""
                         ? { context: translateItem.context }
                         : {}),
+<<<<<<< HEAD
                     ...(translateItem.lastFailure !== ""
                         ? { failure: translateItem.lastFailure }
                         : {}),
+=======
+                    ...(translateItem.failure !== ""
+                        ? { failure: translateItem.failure }
+                        : {}),
+                    id: translateItem.id,
+                    original: translateItem.original,
+>>>>>>> master
                 }) as TranslateItemInput,
         );
     }
@@ -118,6 +168,7 @@ export default class GenerateTranslationJson {
         return verifyItems.map(
             (verifyItem) =>
                 ({
+<<<<<<< HEAD
                     id: verifyItem.id,
                     original: verifyItem.original,
                     translated: verifyItem.translated,
@@ -127,6 +178,17 @@ export default class GenerateTranslationJson {
                     ...(verifyItem.lastFailure !== ""
                         ? { failure: verifyItem.lastFailure }
                         : {}),
+=======
+                    ...(verifyItem.context !== ""
+                        ? { context: verifyItem.context }
+                        : {}),
+                    ...(verifyItem.failure !== ""
+                        ? { failure: verifyItem.failure }
+                        : {}),
+                    id: verifyItem.id,
+                    original: verifyItem.original,
+                    translated: verifyItem.translated,
+>>>>>>> master
                 }) as VerifyItemInput,
         );
     }
@@ -138,14 +200,25 @@ export default class GenerateTranslationJson {
     ): TranslateItem {
         const translateItem = {
             context: "",
+<<<<<<< HEAD
             id,
             key,
             lastFailure: "",
+=======
+            failure: "",
+            id,
+            key,
+>>>>>>> master
             original,
             templateStrings: [],
             translated: "",
             translationAttempts: 0,
             translationTokens: 0,
+<<<<<<< HEAD
+=======
+            verificationAttempts: 0,
+            verificationTokens: 0,
+>>>>>>> master
         } as TranslateItem;
 
         // Maps the 'placeholders' in the translated object to make sure that none are missing
@@ -164,6 +237,7 @@ export default class GenerateTranslationJson {
     private getBatchTranslateItemArray(
         translateItemArray: TranslateItem[],
         options: TranslateOptions,
+<<<<<<< HEAD
         promptTokens: number,
         tokenSplit: number,
         itemTokenFunction: (translatedItem: TranslateItem) => number,
@@ -172,6 +246,21 @@ export default class GenerateTranslationJson {
         const maxInputTokens =
             ((Number(options.batchMaxTokens) - promptTokens) * 0.9) /
             tokenSplit;
+=======
+    ): TranslateItem[] {
+        const promptTokens = this.tikToken.encode(
+            translationPromptJson(
+                options.inputLanguage,
+                options.outputLanguage,
+                [],
+                options.overridePrompt,
+            ),
+        ).length;
+
+        // Remove the tokens used by the prompt and divide the remaining tokens divided by 2 (half for the input/output) with a 10% margin of error
+        const maxInputTokens =
+            ((Number(options.batchMaxTokens) - promptTokens) * 0.9) / 2;
+>>>>>>> master
 
         let currentTokens = 0;
 
@@ -180,8 +269,13 @@ export default class GenerateTranslationJson {
         for (const translateItem of translateItemArray) {
             // If a failure message is added the tokens for an item change
             currentTokens +=
+<<<<<<< HEAD
                 translateItem.lastFailure !== ""
                     ? itemTokenFunction(translateItem)
+=======
+                translateItem.failure !== ""
+                    ? this.getTranslateItemToken(translateItem)
+>>>>>>> master
                     : translateItem.translationTokens;
 
             if (
@@ -204,6 +298,55 @@ export default class GenerateTranslationJson {
         return batchTranslateItemArray;
     }
 
+<<<<<<< HEAD
+=======
+    private getBatchVerifyItemArray(
+        translatedItemArray: TranslateItem[],
+        options: TranslateOptions,
+    ): TranslateItem[] {
+        const promptTokens = this.tikToken.encode(
+            verificationPromptJson(
+                options.inputLanguage,
+                options.outputLanguage,
+                [],
+                options.overridePrompt,
+            ),
+        ).length;
+
+        const maxInputTokens =
+            ((Number(options.batchMaxTokens) - promptTokens) * 0.9) / 2;
+
+        let currentTokens = 0;
+
+        const batchVerifyItemArray: TranslateItem[] = [];
+
+        for (const translatedItem of translatedItemArray) {
+            currentTokens +=
+                translatedItem.failure !== ""
+                    ? this.getVerifyItemToken(translatedItem)
+                    : translatedItem.verificationTokens;
+
+            if (
+                batchVerifyItemArray.length !== 0 &&
+                (currentTokens >= maxInputTokens ||
+                    batchVerifyItemArray.length >= Number(options.batchSize))
+            ) {
+                break;
+            }
+
+            batchVerifyItemArray.push(translatedItem);
+
+            if (translatedItem.verificationAttempts > 5) {
+                // Add a minimum of one items if the item has been tried many times
+                // Too many items can cause translations to fail
+                break;
+            }
+        }
+
+        return batchVerifyItemArray;
+    }
+
+>>>>>>> master
     private generateTranslateItemArray(flatInput: any): TranslateItem[] {
         return Object.keys(flatInput).reduce((acc, key) => {
             if (Object.prototype.hasOwnProperty.call(flatInput, key)) {
@@ -237,6 +380,7 @@ export default class GenerateTranslationJson {
     private async generateTranslationJson(
         translateItemArray: TranslateItem[],
         options: TranslateOptions,
+<<<<<<< HEAD
         translationStats: TranslationStatsItem,
     ): Promise<TranslateItem[]> {
         translationStats.batchStartTime = Date.now();
@@ -247,10 +391,19 @@ export default class GenerateTranslationJson {
 
         let processedTokens = 0;
         const totalTokens = translateItemArray.reduce(
+=======
+        chats: Chats,
+        translationStats: TranslationStatsItem,
+    ): Promise<TranslateItem[]> {
+        const generatedTranslation: TranslateItem[] = [];
+        translationStats.totalItems = translateItemArray.length;
+        translationStats.totalTokens = translateItemArray.reduce(
+>>>>>>> master
             (sum, translateItem) => sum + translateItem.translationTokens,
             0,
         );
 
+<<<<<<< HEAD
         const promptSize = this.tikToken.encode(
             options.disableThink
                 ? translationPromptJsonWithoutThink(
@@ -266,6 +419,9 @@ export default class GenerateTranslationJson {
                       options.overridePrompt,
                   ),
         ).length;
+=======
+        translationStats.batchStartTime = Date.now();
+>>>>>>> master
 
         // translate items are removed from 'translateItemArray' when one is generated
         // this is done to avoid 'losing' items if the model doesn't return one
@@ -273,9 +429,12 @@ export default class GenerateTranslationJson {
             const batchTranslateItemArray = this.getBatchTranslateItemArray(
                 translateItemArray,
                 options,
+<<<<<<< HEAD
                 promptSize,
                 options.disableThink ? 2 : 3,
                 this.getTranslateItemToken.bind(this),
+=======
+>>>>>>> master
             );
 
             for (const batchTranslateItem of batchTranslateItemArray) {
@@ -293,7 +452,11 @@ export default class GenerateTranslationJson {
 
             // eslint-disable-next-line no-await-in-loop
             const result = await this.runTranslationJob({
+<<<<<<< HEAD
                 disableThink: options.disableThink as boolean,
+=======
+                chats,
+>>>>>>> master
                 ensureChangedTranslation:
                     options.ensureChangedTranslation as boolean,
                 inputLanguage: `[${options.inputLanguage}]`,
@@ -306,7 +469,10 @@ export default class GenerateTranslationJson {
                 templatedStringPrefix: options.templatedStringPrefix as string,
                 templatedStringSuffix: options.templatedStringSuffix as string,
                 translateItems: batchTranslateItemArray,
+<<<<<<< HEAD
                 translationStats,
+=======
+>>>>>>> master
                 verboseLogging: options.verbose as boolean,
             });
 
@@ -323,6 +489,7 @@ export default class GenerateTranslationJson {
                 if (index !== -1) {
                     // If it does remove it from the 'translateItemArray' used to queue items for translation
                     translateItemArray.splice(index, 1);
+<<<<<<< HEAD
                     generatedTranslation.push(translatedItem);
                     processedTokens += translatedItem.translationTokens;
                 }
@@ -350,12 +517,41 @@ export default class GenerateTranslationJson {
             );
         }
 
+=======
+                    // Prepare the object then add it to results
+                    translatedItem.verificationTokens =
+                        this.getVerifyItemToken(translatedItem);
+                    generatedTranslation.push(translatedItem);
+                    translationStats.processedTokens +=
+                        translatedItem.translationTokens;
+                }
+
+                translationStats.processedItems++;
+            }
+
+            printProgress(
+                options.skipTranslationVerification
+                    ? "Translating"
+                    : "Step 1/2 - Translating",
+                translationStats.batchStartTime,
+                translationStats.totalTokens,
+                translationStats.processedTokens,
+            );
+        }
+
+        printExecutionTime(
+            translationStats.batchStartTime,
+            "\nTranslation execution time: ",
+        );
+
+>>>>>>> master
         return generatedTranslation;
     }
 
     private async generateVerificationJson(
         verifyItemArray: TranslateItem[],
         options: TranslateOptions,
+<<<<<<< HEAD
         translationStats: TranslationStatsItem,
     ): Promise<TranslateItem[]> {
         const generatedVerification: TranslateItem[] = [];
@@ -391,6 +587,29 @@ export default class GenerateTranslationJson {
             for (const batchVerifyItem of batchVerifyItemArray) {
                 batchVerifyItem.translationAttempts++;
                 if (batchVerifyItem.translationAttempts > RETRY_ATTEMPTS) {
+=======
+        chats: Chats,
+        translationStats: TranslationStatsItem,
+    ): Promise<TranslateItem[]> {
+        const generatedVerification: TranslateItem[] = [];
+        translationStats.totalItems = verifyItemArray.length;
+        translationStats.totalTokens = verifyItemArray.reduce(
+            (sum, verifyItem) => sum + verifyItem.verificationTokens,
+            0,
+        );
+
+        translationStats.batchStartTime = Date.now();
+
+        while (verifyItemArray.length > 0) {
+            const batchVerifyItemArray = this.getBatchVerifyItemArray(
+                verifyItemArray,
+                options,
+            );
+
+            for (const batchVerifyItem of batchVerifyItemArray) {
+                batchVerifyItem.verificationAttempts++;
+                if (batchVerifyItem.verificationAttempts > RETRY_ATTEMPTS) {
+>>>>>>> master
                     return Promise.reject(
                         new Error(
                             `Item failed to verify too many times: ${JSON.stringify(batchVerifyItem)}. If this persists try a different model`,
@@ -403,7 +622,11 @@ export default class GenerateTranslationJson {
 
             // eslint-disable-next-line no-await-in-loop
             const result = await this.runVerificationJob({
+<<<<<<< HEAD
                 disableThink: options.disableThink as boolean,
+=======
+                chats,
+>>>>>>> master
                 ensureChangedTranslation:
                     options.ensureChangedTranslation as boolean,
                 inputLanguage: `[${options.inputLanguage}]`,
@@ -416,7 +639,10 @@ export default class GenerateTranslationJson {
                 templatedStringPrefix: options.templatedStringPrefix as string,
                 templatedStringSuffix: options.templatedStringSuffix as string,
                 translateItems: batchVerifyItemArray,
+<<<<<<< HEAD
                 translationStats,
+=======
+>>>>>>> master
                 verboseLogging: options.verbose as boolean,
             });
 
@@ -424,13 +650,20 @@ export default class GenerateTranslationJson {
                 return Promise.reject(new Error("Verification job failed"));
             }
 
+<<<<<<< HEAD
             for (const verifiedItem of result) {
                 const index = verifyItemArray.findIndex(
                     (item) => item.id === verifiedItem.id,
+=======
+            for (const translatedItem of result) {
+                const index = verifyItemArray.findIndex(
+                    (item) => item.id === translatedItem.id,
+>>>>>>> master
                 );
 
                 if (index !== -1) {
                     verifyItemArray.splice(index, 1);
+<<<<<<< HEAD
                     generatedVerification.push(verifiedItem);
                     processedTokens += verifiedItem.translationTokens;
                 }
@@ -456,6 +689,29 @@ export default class GenerateTranslationJson {
             );
         }
 
+=======
+                    generatedVerification.push(translatedItem);
+                    translationStats.processedTokens +=
+                        translatedItem.verificationTokens;
+                }
+
+                translationStats.processedItems++;
+            }
+
+            printProgress(
+                "Step 2/2 - Verifying",
+                translationStats.batchStartTime,
+                translationStats.totalTokens,
+                translationStats.processedTokens,
+            );
+        }
+
+        printExecutionTime(
+            translationStats.batchStartTime,
+            "Verification execution time: ",
+        );
+
+>>>>>>> master
         return generatedVerification;
     }
 
@@ -511,11 +767,19 @@ export default class GenerateTranslationJson {
         item: VerifyItemOutput,
     ): item is VerifyItemOutput {
         if (!(typeof item.id === "number")) return false;
+<<<<<<< HEAD
         if (!(typeof item.isValid === "boolean")) return false;
         if (item.id <= 0) return false;
         // 'fixedTranslation' should be a translation if valid is false
         if (
             item.isValid === false &&
+=======
+        if (!(typeof item.valid === "boolean")) return false;
+        if (item.id <= 0) return false;
+        // 'fixedTranslation' should be a translation if valid is false
+        if (
+            item.valid === false &&
+>>>>>>> master
             !(typeof item.fixedTranslation === "string")
         )
             return false;
@@ -539,7 +803,11 @@ export default class GenerateTranslationJson {
                 untranslatedItem.translated = translatedItem.translated;
 
                 if (translatedItem.translated === "") {
+<<<<<<< HEAD
                     untranslatedItem.lastFailure =
+=======
+                    untranslatedItem.failure =
+>>>>>>> master
                         "The translated value cannot be an empty string";
                     continue;
                 }
@@ -557,7 +825,11 @@ export default class GenerateTranslationJson {
                 if (missingVariables.length !== 0) {
                     // Item is updated with a failure message. This message gives the LLM a context to help it fix the translation.
                     // Without this the same error is made over and over again, with the message the new translation is generally accepted.
+<<<<<<< HEAD
                     untranslatedItem.lastFailure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables)}'`;
+=======
+                    untranslatedItem.failure = `Ensure all variables are included. The following variables are missing from the previous translation and must be added: '${JSON.stringify(missingVariables)}'`;
+>>>>>>> master
                     continue;
                 }
 
@@ -584,7 +856,11 @@ export default class GenerateTranslationJson {
             );
 
             if (verifiedItem) {
+<<<<<<< HEAD
                 if (verifiedItem.isValid) {
+=======
+                if (verifiedItem.valid) {
+>>>>>>> master
                     output.push({
                         ...translatedItem,
                         failure: "",
@@ -594,7 +870,11 @@ export default class GenerateTranslationJson {
                         verifiedItem.fixedTranslation as string;
 
                     if (verifiedItem.fixedTranslation === "") {
+<<<<<<< HEAD
                         translatedItem.lastFailure =
+=======
+                        translatedItem.failure =
+>>>>>>> master
                             "The translated value cannot be an empty string";
                         continue;
                     }
@@ -610,12 +890,21 @@ export default class GenerateTranslationJson {
                     );
 
                     if (missingVariables.length !== 0) {
+<<<<<<< HEAD
                         translatedItem.lastFailure = `Must add variables, missing from last translation: '${JSON.stringify(missingVariables)}'`;
                         continue;
                     }
 
                     // // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
                     // translatedItem.lastFailure = `Previous issues that should be corrected: '${verifiedItem.issues}'`;
+=======
+                        translatedItem.failure = `Must add variables, missing from last translation: '${JSON.stringify(missingVariables)}'`;
+                        continue;
+                    }
+
+                    // 'translatedItem' is updated and queued again to check if the new fixed translation is valid
+                    translatedItem.failure = `Previous issue that should be corrected: '${verifiedItem.issue}'`;
+>>>>>>> master
                 }
             }
         }
@@ -632,6 +921,7 @@ export default class GenerateTranslationJson {
             translationToRetryAttempts: {},
         };
 
+<<<<<<< HEAD
         const generationPromptText = options.disableThink
             ? translationPromptJsonWithoutThink(
                   options.inputLanguage,
@@ -645,11 +935,20 @@ export default class GenerateTranslationJson {
                   this.generateTranslateItemsInput(options.translateItems),
                   options.overridePrompt,
               );
+=======
+        const generationPromptText = translationPromptJson(
+            options.inputLanguage,
+            options.outputLanguage,
+            this.generateTranslateItemsInput(options.translateItems),
+            options.overridePrompt,
+        );
+>>>>>>> master
 
         let translated = "";
         try {
             translated = await retryJob(
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
+<<<<<<< HEAD
                 this.generateJob.bind(this),
                 [
                     generationPromptText,
@@ -659,6 +958,14 @@ export default class GenerateTranslationJson {
                         ? TranslateItemOutputObjectSchema
                         : ThinkTranslateItemOutputObjectSchema,
                     options.translationStats,
+=======
+                this.generateJob,
+                [
+                    generationPromptText,
+                    options,
+                    generateState,
+                    TranslateItemOutputObjectSchema,
+>>>>>>> master
                 ],
                 RETRY_ATTEMPTS,
                 true,
@@ -703,10 +1010,16 @@ export default class GenerateTranslationJson {
                 this.generateJob.bind(this),
                 [
                     generationPromptText,
+<<<<<<< HEAD
                     this.chats.verifyTranslationChat,
                     generateState,
                     VerifyItemOutputObjectSchema,
                     options.translationStats,
+=======
+                    options,
+                    generateState,
+                    VerifyItemOutputObjectSchema,
+>>>>>>> master
                 ],
                 RETRY_ATTEMPTS,
                 true,
@@ -730,12 +1043,20 @@ export default class GenerateTranslationJson {
 
     private verifyGenerationAndRetry(
         generationPromptText: string,
+<<<<<<< HEAD
         chatInterface: ChatInterface,
+=======
+        options: GenerateTranslationOptionsJson,
+>>>>>>> master
         generateState: GenerateStateJson,
     ): Promise<string> {
         generateState.generationRetries++;
         if (generateState.generationRetries > 10) {
+<<<<<<< HEAD
             chatInterface.resetChatHistory();
+=======
+            options.chats.generateTranslationChat.resetChatHistory();
+>>>>>>> master
             return Promise.reject(
                 new Error(
                     "Failed to generate content due to exception. Resetting history.",
@@ -745,7 +1066,11 @@ export default class GenerateTranslationJson {
 
         printError(`Erroring text = ${generationPromptText}\n`);
 
+<<<<<<< HEAD
         chatInterface.rollbackLastMessage();
+=======
+        options.chats.generateTranslationChat.rollbackLastMessage();
+>>>>>>> master
         return Promise.reject(
             new Error("Failed to generate content due to exception."),
         );
@@ -753,6 +1078,7 @@ export default class GenerateTranslationJson {
 
     private async generateJob(
         generationPromptText: string,
+<<<<<<< HEAD
         chatInterface: ChatInterface,
         generateState: GenerateStateJson,
         format: ZodType<any, ZodTypeDef, any>,
@@ -761,19 +1087,38 @@ export default class GenerateTranslationJson {
         const text = await chatInterface.sendMessage(
             generationPromptText,
             translationStats,
+=======
+        options: GenerateTranslationOptionsJson,
+        generateState: GenerateStateJson,
+        format: ZodType<any, ZodTypeDef, any>,
+    ): Promise<string> {
+        const text = await options.chats.generateTranslationChat.sendMessage(
+            generationPromptText,
+>>>>>>> master
             format,
         );
 
         if (!text) {
             return this.verifyGenerationAndRetry(
                 generationPromptText,
+<<<<<<< HEAD
                 chatInterface,
+=======
+                options,
+>>>>>>> master
                 generateState,
             );
         } else {
             generateState.generationRetries = 0;
         }
 
+<<<<<<< HEAD
+=======
+        if (options.verboseLogging) {
+            printWarn(text);
+        }
+
+>>>>>>> master
         return text;
     }
 }

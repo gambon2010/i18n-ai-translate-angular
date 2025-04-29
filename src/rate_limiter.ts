@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { delay } from "./utils";
 import { printInfo } from "./print";
+=======
+import { delay, printInfo } from "./utils";
+>>>>>>> master
 
 export default class RateLimiter {
     lastAPICall: number | null;
@@ -26,7 +30,11 @@ export default class RateLimiter {
             if (timeToWait > 0) {
                 if (this.verboseLogging) {
                     printInfo(
+<<<<<<< HEAD
                         `RateLimiter | Waiting ${timeToWait}ms before next API call`,
+=======
+                        `\nRateLimiter | Waiting ${timeToWait}ms before next API call`,
+>>>>>>> master
                     );
                 }
 

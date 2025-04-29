@@ -7,9 +7,17 @@ export type TranslateItem = {
     translated: string;
     context: string;
     translationTokens: number;
+<<<<<<< HEAD
     templateStrings: string[];
     translationAttempts: number;
     lastFailure: string;
+=======
+    verificationTokens: number;
+    templateStrings: string[];
+    translationAttempts: number;
+    verificationAttempts: number;
+    failure: string;
+>>>>>>> master
 };
 
 // translation objects
@@ -18,22 +26,37 @@ export type TranslateItemInput = {
     id: number;
     original: string;
     context?: string;
+<<<<<<< HEAD
     lastFailure?: string;
 };
 
 // Translate without think
 
+=======
+    failure?: string;
+};
+
+>>>>>>> master
 export const TranslateItemOutputSchema = z.object({
     id: z.number(),
     translated: z.string(),
 });
 
+<<<<<<< HEAD
+=======
+export type TranslateItemOutput = {
+    id: number;
+    translated: string;
+};
+
+>>>>>>> master
 export const TranslateItemOutputObjectSchema = z.object({
     items: z
         .array(TranslateItemOutputSchema)
         .describe("TranslateItemOutputObjectSchema"), // used for open ai schema name
 });
 
+<<<<<<< HEAD
 // Translate with think
 
 export const ThinkTranslateItemOutputSchema = z.object({
@@ -55,6 +78,8 @@ export type TranslateItemOutput = {
     translated: string;
 };
 
+=======
+>>>>>>> master
 export type TranslateItemOutputObject = {
     items: TranslateItemOutput[];
 };
@@ -66,6 +91,7 @@ export type VerifyItemInput = {
     original: string;
     translated: string;
     context: string;
+<<<<<<< HEAD
     lastFailure: string;
 };
 
@@ -74,13 +100,28 @@ export const VerifyItemOutputSchema = z.object({
     id: z.number(),
     isValid: z.boolean(),
     issues: z.string(),
+=======
+    failure: string;
+};
+
+export const VerifyItemOutputSchema = z.object({
+    // the order is important, having 'valid' and 'issue' before 'fixedTranslation' helps the LLM think and provide a better fix
+    id: z.number(),
+    valid: z.boolean(),
+    issue: z.string(),
+>>>>>>> master
     fixedTranslation: z.string(),
 });
 
 export type VerifyItemOutput = {
     id: number;
+<<<<<<< HEAD
     isValid: boolean;
     issues: string;
+=======
+    valid: boolean;
+    issue: string;
+>>>>>>> master
     fixedTranslation: string;
 };
 

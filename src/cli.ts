@@ -7,8 +7,18 @@ import {
 } from "./constants";
 import { OVERRIDE_PROMPT_KEYS } from "./interfaces/override_prompt";
 import { config } from "dotenv";
+<<<<<<< HEAD
 import { getAllLanguageCodes, getLanguageCodeFromFilename } from "./utils";
 import { printError, printInfo, printWarn } from "./print";
+=======
+import {
+    getAllLanguageCodes,
+    getLanguageCodeFromFilename,
+    printError,
+    printInfo,
+    printWarn,
+} from "./utils";
+>>>>>>> master
 import { program } from "commander";
 import {
     translateDirectory,
@@ -164,15 +174,22 @@ const processModelArgs = (options: any): ModelArgs => {
                 throw new Error("'--batch-max-tokens' is not used in CSV mode");
             }
 
+<<<<<<< HEAD
             if (options.disableThink) {
                 throw new Error("'--disable-think' is not used in CSV mode");
             }
 
+=======
+>>>>>>> master
             break;
         case PromptMode.JSON:
             if (options.skipStylingVerification) {
                 throw new Error(
+<<<<<<< HEAD
                     "'--skip-styling-verification' is not used in CSV mode",
+=======
+                    "'--skip-styling-verification' is not used in JSON mode",
+>>>>>>> master
                 );
             }
 
@@ -302,7 +319,10 @@ program
     .option("--verbose", CLI_HELP.Verbose, false)
     .option("--prompt-mode <prompt-mode>", CLI_HELP.PromptMode)
     .option("--batch-max-tokens <batch-max-tokens>", CLI_HELP.MaxTokens)
+<<<<<<< HEAD
     .option("--disable-think", CLI_HELP.DisableThink, false)
+=======
+>>>>>>> master
     .action(async (options: any) => {
         const {
             model,
@@ -593,7 +613,10 @@ program
     .option("--verbose", CLI_HELP.Verbose, false)
     .option("--prompt-mode <prompt-mode>", CLI_HELP.PromptMode)
     .option("--batch-max-tokens <batch-max-tokens>", CLI_HELP.MaxTokens)
+<<<<<<< HEAD
     .option("--disable-think", CLI_HELP.DisableThink, false)
+=======
+>>>>>>> master
     .action(async (options: any) => {
         const {
             model,
