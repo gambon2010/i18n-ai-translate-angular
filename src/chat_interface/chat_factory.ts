@@ -8,9 +8,6 @@ import Gemini from "./gemini";
 import Ollama from "./ollama";
 import OpenAI from "openai";
 import type { ChatParams, Model } from "../types";
-import type { ChatRequest } from "ollama";
-import type { MessageCreateParams } from "@anthropic-ai/sdk/resources";
-import type { StartChatParams } from "@google/generative-ai";
 import type ChatInterface from "./chat_interface";
 import type RateLimiter from "../rate_limiter";
 
@@ -21,7 +18,6 @@ export default class ChatFactory {
         rateLimiter: RateLimiter,
         apiKey?: string,
         host?: string,
-        chatParams?: ChatParams,
     ): ChatInterface {
         let chat: ChatInterface;
         let params: ChatParams;
@@ -31,7 +27,7 @@ export default class ChatFactory {
                 const geminiModel = genAI.getGenerativeModel({ model });
                 chat = new Gemini(geminiModel, rateLimiter);
                 params = {
-                    ...(chatParams as StartChatParams),
+                    history: [],
                 };
                 break;
             }
@@ -40,7 +36,7 @@ export default class ChatFactory {
                 const openAI = new OpenAI({ apiKey: apiKey! });
                 chat = new ChatGPT(openAI, rateLimiter);
                 params = {
-                    ...(chatParams as OpenAI.ChatCompletionCreateParamsNonStreaming),
+                    messages: [],
                     model,
                 };
                 break;
@@ -50,7 +46,7 @@ export default class ChatFactory {
                 const llama = new InternalOllama({ host });
                 chat = new Ollama(llama);
                 params = {
-                    ...(chatParams as ChatRequest),
+                    messages: [],
                     model,
                 };
 
@@ -61,7 +57,7 @@ export default class ChatFactory {
                 const anthropic = new InternalAnthropic({ apiKey: apiKey! });
                 chat = new Anthropic(anthropic, rateLimiter);
                 params = {
-                    ...(chatParams as MessageCreateParams),
+                    messages: [],
                     model,
                 };
 
